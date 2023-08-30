@@ -6,6 +6,8 @@ import 'groups_screen.dart';
 import 'test_screen.dart';
 import 'user_profile.dart';
 import '../components/group_filter.dart';
+import '../components/home_drawer.dart';
+import '../components/home_state_manager.dart';
 import '../components/nav_bar_manager.dart';
 import '../utils/colors.dart';
 import '../utils/globals.dart';
@@ -18,12 +20,14 @@ class Skeleton extends StatefulWidget {
 
 class _SkeletonState extends State<Skeleton> {
   late final NavStateManager _navManager;
+  late final HomeStateManager _homeManager;
   Future<bool>? done;
 
   @override
   void initState() {
     super.initState();
     _navManager = NavStateManager();
+    _homeManager = HomeStateManager();
     done = getUser();
   }
 
@@ -83,17 +87,31 @@ class _SkeletonState extends State<Skeleton> {
                       },
                     ),
                   ] : null),
+                  leading: _navManager.buttonNotifier.value == NavState.home ?
+                    Builder(
+                      builder: (context) {
+                        return IconButton(
+                          icon: Icon(
+                            Icons.list,
+                            color: searchFieldColor,
+                          ),
+                          iconSize: 35,
+                          onPressed: () => Scaffold.of(context).openDrawer(),
+                        );
+                      },
+                    ) : null,
                   centerTitle: true,
                   backgroundColor: black,
                   automaticallyImplyLeading: false,
                 ),
+                drawer: _navManager.buttonNotifier.value == NavState.home ? HomeDrawer(homeState: _homeManager,) : null,
                 endDrawer: _navManager.buttonNotifier.value == NavState.group ? FilterDrawer() : null,
                 body: ValueListenableBuilder<NavState>(
                     valueListenable: _navManager.buttonNotifier,
                     builder: (_, value, __) {
                       switch (value) {
                         case NavState.home:
-                          return HomeScreen();
+                          return HomeScreen(homeManager: _homeManager,);
                         case NavState.concert:
                           return ConcertsScreen();
                         case NavState.test:
@@ -184,7 +202,7 @@ class _SkeletonState extends State<Skeleton> {
                                 ),
                               ),
                             ),
-                            Expanded(
+                            /*Expanded(
                               flex: 2,
                               child: Container(
                                   decoration: _navManager.buttonNotifier
@@ -219,7 +237,7 @@ class _SkeletonState extends State<Skeleton> {
                                     ),
                                   )
                               ),
-                            ),
+                            ),*/
                             Expanded(
                               flex: 2,
                               child: Container(
@@ -292,7 +310,7 @@ class _SkeletonState extends State<Skeleton> {
                                   )
                               ),
                             ),
-                            if (user!.isAdmin)
+                            if (user != null && user!.isAdmin)
                               Expanded(
                                 flex: 2,
                                 child: Container(

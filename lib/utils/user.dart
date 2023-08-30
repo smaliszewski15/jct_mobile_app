@@ -25,14 +25,14 @@ class User {
     return newUser;
   }
 
-  Future<User> getUserFromStorage() async {
+  Future<User?> getUserFromStorage() async {
     try {
       final prefs = await SharedPreferences.getInstance();
 
       String un = prefs.getString("username") ?? '';
 
       if (un.isEmpty) {
-        return User();
+        return null;
       }
 
       Map<String, dynamic> json = {};
