@@ -10,88 +10,91 @@ class UserProfilePage extends StatelessWidget {
     try {
       if (user!.logged == true) {
         return Profile();
-      } else {
-        return Container(
-          width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height,
-          padding: const EdgeInsets.all(10),
-          decoration: BoxDecoration(color: backgroundColor),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Flexible(
-                child: Text(
-                  'You are currently not logged in. You must be logged in to view this page',
-                  style: TextStyle(
-                    fontSize: titleFontSize,
-                    color: textColor,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-              Container(
-                margin: const EdgeInsets.all(20),
-                padding: const EdgeInsets.all(5),
-                decoration: BoxDecoration(
-                  color: gold,
-                  border: Border.all(color: black, width: 3),
-                ),
-                child: OutlinedButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, '/login');
-                  },
-                  child: Text(
-                    'Log in',
-                    style: TextStyle(
-                      fontSize: bigButtonFontSize,
-                      color: buttonTextColor,
-                      fontWeight: FontWeight.w400,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              ),
-              Flexible(
-                child: Text(
-                  'New user? Sign up now!\nYou will be able to join concerts, or even start your own!',
-                  style: TextStyle(
-                    fontSize: titleFontSize,
-                    color: textColor,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-              Container(
-                margin: const EdgeInsets.all(20),
-                padding: const EdgeInsets.all(5),
-                decoration: BoxDecoration(
-                  color: gold,
-                  border: Border.all(color: black, width: 3),
-                ),
-                child: OutlinedButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, '/register');
-                  },
-                  child: Text(
-                    'Sign Up',
-                    style: TextStyle(
-                      fontSize: bigButtonFontSize,
-                      color: buttonTextColor,
-                      fontWeight: FontWeight.w400,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        );
       }
+      return notLogged(context);
     }
     catch(e) {
       print(e.toString());
-      return Container();
+      return notLogged(context);
     }
+  }
+
+  Widget notLogged(BuildContext context) {
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      height: MediaQuery.of(context).size.height,
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(color: backgroundColor),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Flexible(
+            child: Text(
+              'You are currently not logged in. You must be logged in to view this page',
+              style: TextStyle(
+                fontSize: titleFontSize,
+                color: textColor,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
+          Container(
+            margin: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(5),
+            decoration: BoxDecoration(
+              color: gold,
+              border: Border.all(color: black, width: 3),
+            ),
+            child: OutlinedButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/login');
+              },
+              child: Text(
+                'Log in',
+                style: TextStyle(
+                  fontSize: bigButtonFontSize,
+                  color: buttonTextColor,
+                  fontWeight: FontWeight.w400,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ),
+          Flexible(
+            child: Text(
+              'New user? Sign up now!\nYou will be able to join concerts, or even start your own!',
+              style: TextStyle(
+                fontSize: titleFontSize,
+                color: textColor,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
+          Container(
+            margin: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(5),
+            decoration: BoxDecoration(
+              color: gold,
+              border: Border.all(color: black, width: 3),
+            ),
+            child: OutlinedButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/register');
+              },
+              child: Text(
+                'Sign Up',
+                style: TextStyle(
+                  fontSize: bigButtonFontSize,
+                  color: buttonTextColor,
+                  fontWeight: FontWeight.w400,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 

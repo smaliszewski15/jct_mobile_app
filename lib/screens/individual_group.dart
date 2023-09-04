@@ -98,6 +98,8 @@ class _GroupState extends State<Group> {
                 },
               );
 
+              if (!mounted) return;
+
               if (confirm) {
                 Navigator.pop(context);
               }
@@ -290,7 +292,7 @@ class _GroupState extends State<Group> {
                     }
                 ),
                 const Spacer(),
-                if (!isEditing && _selectedDate.difference(DateTime.now()).inMinutes < 40)
+                if (!isEditing && _selectedDate.difference(DateTime.now()).inMinutes < 40 && members.contains(user!.username))
                   Container(
                     margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                     padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 67),
@@ -311,7 +313,7 @@ class _GroupState extends State<Group> {
                       ),
                     ),
                   ),
-                if (!widget.creator && user == null ? true : !members.contains(user!.username))
+                if (!widget.creator && user!.logged ? true : !members.contains(user!.username))
                   Container(
                     margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                     padding: const EdgeInsets.all(5),
@@ -411,7 +413,7 @@ class _GroupState extends State<Group> {
                       ),
                     ),
                   ),
-                if (!isEditing && !widget.creator && (user == null ? false : members.contains(user!.username)))
+                if (!isEditing && !widget.creator && (user!.logged ? members.contains(user!.username) : false))
                   Container(
                     margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                     padding: const EdgeInsets.all(5),

@@ -1,1 +1,1 @@
-const String link = 'http://JohnCageTribute.org/api';
+const String link = 'https://JohnCageTribute.org/api';

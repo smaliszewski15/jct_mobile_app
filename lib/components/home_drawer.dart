@@ -33,7 +33,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
         shrinkWrap: true,
         children: <Widget>[
           DrawerHeader(
-            child: user == null ? UserLogin(context) : UserProfile(context),
+            child: user!.logged == false ? UserLogin(context) : UserProfile(context),
           ),
           Container(
             margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),

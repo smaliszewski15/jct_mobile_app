@@ -39,7 +39,7 @@ class _ConcertPageState extends State<ConcertPage> {
             _pageManager.pause;
             return true;
           }
-          return false;
+          return true;
         },
         child: Scaffold(
             appBar: AppBar(

@@ -5,7 +5,7 @@ const Color white = Colors.white;
 const Color darkGrey = Color(0xff838383);
 const Color lightGrey = Color(0xffD9D9D9);
 const Color gold = Color(0xffFFF500);
-const Color red = Color(0xffD00000);
+const Color red = Color(0xfffc5353);
 
 Color mainSchemeColor = gold;
 Color accentColor = black;

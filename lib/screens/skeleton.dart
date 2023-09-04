@@ -5,6 +5,7 @@ import 'home_screen.dart';
 import 'groups_screen.dart';
 import 'test_screen.dart';
 import 'user_profile.dart';
+import '../components/concert_filter.dart';
 import '../components/group_filter.dart';
 import '../components/home_drawer.dart';
 import '../components/home_state_manager.dart';
@@ -40,9 +41,7 @@ class _SkeletonState extends State<Skeleton> {
             case ConnectionState.none:
             case ConnectionState.active:
             case ConnectionState.waiting:
-              return const Center(
-                  child: CircularProgressIndicator()
-              );
+              return const Center(child: CircularProgressIndicator());
             case ConnectionState.done:
               if (snapshot.hasError) {
                 print('Error');
@@ -56,62 +55,80 @@ class _SkeletonState extends State<Skeleton> {
                       color: textColor,
                     ),
                   ),
-                  actions: _navManager.buttonNotifier.value == NavState.profile && user!.logged == true ? <Widget>[
-                    IconButton(
-                      icon: Icon(
-                        Icons.logout_outlined,
-                        color: invalidColor,
-                      ),
-                      iconSize: 35,
-                      onPressed: () async {
-                        try {
-                          user = await user!.logout();
-                          setState(() {});
-                        } catch (e) {
-                          print("No user logged in!");
-                        }
-                      },
-                    ),
-                  ] : (_navManager.buttonNotifier.value == NavState.group ?
-                  <Widget>[
-                    Builder(
-                      builder: (context) {
-                        return IconButton(
-                          icon: Icon(
-                            Icons.filter_list,
-                            color: invalidColor,
+                  actions: _navManager.buttonNotifier.value ==
+                              NavState.profile &&
+                          user!.logged
+                      ? <Widget>[
+                          IconButton(
+                            icon: Icon(
+                              Icons.logout_outlined,
+                              color: invalidColor,
+                            ),
+                            iconSize: 35,
+                            onPressed: () async {
+                              try {
+                                user = await user!.logout();
+                                setState(() {});
+                              } catch (e) {
+                                print("No user logged in!");
+                              }
+                            },
                           ),
-                          iconSize: 35,
-                          onPressed: () => Scaffold.of(context).openEndDrawer(),
-                        );
-                      },
-                    ),
-                  ] : null),
-                  leading: _navManager.buttonNotifier.value == NavState.home ?
-                    Builder(
-                      builder: (context) {
-                        return IconButton(
-                          icon: Icon(
-                            Icons.list,
-                            color: searchFieldColor,
-                          ),
-                          iconSize: 35,
-                          onPressed: () => Scaffold.of(context).openDrawer(),
-                        );
-                      },
-                    ) : null,
+                        ]
+                      : (_navManager.buttonNotifier.value == NavState.group
+                  || _navManager.buttonNotifier.value == NavState.concert
+                          ? <Widget>[
+                              Builder(
+                                builder: (context) {
+                                  return IconButton(
+                                    icon: Icon(
+                                      Icons.filter_list,
+                                      color: invalidColor,
+                                    ),
+                                    iconSize: 35,
+                                    onPressed: () =>
+                                        Scaffold.of(context).openEndDrawer(),
+                                  );
+                                },
+                              ),
+                            ]
+                          : null),
+                  leading: _navManager.buttonNotifier.value == NavState.home
+                      ? Builder(
+                          builder: (context) {
+                            return IconButton(
+                              icon: Icon(
+                                Icons.list,
+                                color: searchFieldColor,
+                              ),
+                              iconSize: 35,
+                              onPressed: () =>
+                                  Scaffold.of(context).openDrawer(),
+                            );
+                          },
+                        )
+                      : null,
                   centerTitle: true,
                   backgroundColor: black,
                   automaticallyImplyLeading: false,
                 ),
-                drawer: _navManager.buttonNotifier.value == NavState.home ? HomeDrawer(homeState: _homeManager,) : null,
-                endDrawer: _navManager.buttonNotifier.value == NavState.group ? FilterDrawer() : null,
+                drawer: _navManager.buttonNotifier.value == NavState.home
+                    ? HomeDrawer(
+                        homeState: _homeManager,
+                      )
+                    : null,
+                endDrawer: _navManager.buttonNotifier.value == NavState.group
+                    ? FilterDrawer()
+                    : (_navManager.buttonNotifier.value == NavState.concert ?
+                TagFilterDrawer() : null),
                 body: ValueListenableBuilder<NavState>(
                     valueListenable: _navManager.buttonNotifier,
                     builder: (_, value, __) {
                       switch (value) {
                         case NavState.home:
-                          return HomeScreen(homeManager: _homeManager,);
+                          return HomeScreen(
+                            homeManager: _homeManager,
+                          );
                         case NavState.concert:
                           return ConcertsScreen();
                         case NavState.test:
@@ -123,56 +140,66 @@ class _SkeletonState extends State<Skeleton> {
                         case NavState.admin:
                           return Container();
                       }
-                    }
-                ),
+                    }),
                 bottomNavigationBar: BottomAppBar(
                   color: black,
                   child: SizedBox(
-                      height: 80,
-                      child: Center(
-                        child: Row(
-                          children: <Widget>[
-                            Expanded(
-                              flex: 2,
-                              child: Container(
-                                  decoration: _navManager.buttonNotifier
-                                      .value ==
-                                      NavState.home ? lit : null,
-                                  child: OutlinedButton(
-                                    onPressed: () {
-                                      if (_navManager.buttonNotifier.value !=
-                                          NavState.home) {
-                                        _navManager.home();
-                                        setState(() {});
-                                      }
-                                    },
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment
-                                          .center,
-                                      children: <Widget>[
-                                        Icon(
-                                          Icons.home,
-                                          size: bottomIconSize,
-                                          color: mainSchemeColor,
-                                        ),
-                                        Text(
-                                          'Home',
-                                          style: TextStyle(
-                                            fontSize: navBarTextSize,
+                    height: 80,
+                    child: Center(
+                      child: Row(
+                        children: <Widget>[
+                          Expanded(
+                            flex: 2,
+                            child: Container(
+                                width: MediaQuery.of(context).size.width,
+                                height: MediaQuery.of(context).size.height,
+                                padding: const EdgeInsets.all(10),
+                                child: Container(
+                                    decoration:
+                                        _navManager.buttonNotifier.value ==
+                                                NavState.home
+                                            ? lit
+                                            : null,
+                                    child: OutlinedButton(
+                                      onPressed: () {
+                                        if (_navManager.buttonNotifier.value !=
+                                            NavState.home) {
+                                          _navManager.home();
+                                          setState(() {});
+                                        }
+                                      },
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: <Widget>[
+                                          Icon(
+                                            Icons.home,
+                                            size: bottomIconSize,
                                             color: mainSchemeColor,
                                           ),
-                                          textAlign: TextAlign.center,
-                                        )
-                                      ],
-                                    ),
-                                  )
-                              ),
-                            ),
-                            Expanded(
-                              flex: 2,
+                                          Text(
+                                            'Home',
+                                            style: TextStyle(
+                                              fontSize: navBarTextSize,
+                                              color: mainSchemeColor,
+                                            ),
+                                            textAlign: TextAlign.center,
+                                          )
+                                        ],
+                                      ),
+                                    ))),
+                          ),
+                          Expanded(
+                            flex: 2,
+                            child: Container(
+                              width: MediaQuery.of(context).size.width,
+                              height: MediaQuery.of(context).size.height,
+                              padding: const EdgeInsets.all(10),
                               child: Container(
                                 decoration: _navManager.buttonNotifier.value ==
-                                    NavState.concert ? lit : null,
+                                        NavState.concert
+                                    ? lit
+                                    : null,
                                 child: OutlinedButton(
                                   onPressed: () {
                                     if (_navManager.buttonNotifier.value !=
@@ -202,7 +229,8 @@ class _SkeletonState extends State<Skeleton> {
                                 ),
                               ),
                             ),
-                            /*Expanded(
+                          ),
+                          /*Expanded(
                               flex: 2,
                               child: Container(
                                   decoration: _navManager.buttonNotifier
@@ -238,11 +266,17 @@ class _SkeletonState extends State<Skeleton> {
                                   )
                               ),
                             ),*/
-                            Expanded(
-                              flex: 2,
+                          Expanded(
+                            flex: 2,
+                            child: Container(
+                              width: MediaQuery.of(context).size.width,
+                              height: MediaQuery.of(context).size.height,
+                              padding: const EdgeInsets.all(10),
                               child: Container(
                                 decoration: _navManager.buttonNotifier.value ==
-                                    NavState.group ? lit : null,
+                                        NavState.group
+                                    ? lit
+                                    : null,
                                 child: OutlinedButton(
                                   onPressed: () {
                                     if (_navManager.buttonNotifier.value !=
@@ -272,12 +306,19 @@ class _SkeletonState extends State<Skeleton> {
                                 ),
                               ),
                             ),
-                            Expanded(
-                              flex: 2,
+                          ),
+                          Expanded(
+                            flex: 2,
+                            child: Container(
+                              width: MediaQuery.of(context).size.width,
+                              height: MediaQuery.of(context).size.height,
+                              padding: const EdgeInsets.all(10),
                               child: Container(
-                                  decoration: _navManager.buttonNotifier
-                                      .value ==
-                                      NavState.profile ? lit : null,
+                                  decoration:
+                                      _navManager.buttonNotifier.value ==
+                                              NavState.profile
+                                          ? lit
+                                          : null,
                                   child: OutlinedButton(
                                     onPressed: () {
                                       if (_navManager.buttonNotifier.value !=
@@ -287,8 +328,8 @@ class _SkeletonState extends State<Skeleton> {
                                       }
                                     },
                                     child: Column(
-                                      mainAxisAlignment: MainAxisAlignment
-                                          .center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: <Widget>[
                                         Center(
                                           child: Icon(
@@ -307,21 +348,27 @@ class _SkeletonState extends State<Skeleton> {
                                         )
                                       ],
                                     ),
-                                  )
-                              ),
+                                  )),
                             ),
-                            if (user != null && user!.isAdmin)
-                              Expanded(
-                                flex: 2,
+                          ),
+                          if (user!.isAdmin)
+                            Expanded(
+                              flex: 2,
+                              child: Container(
+                                width: MediaQuery.of(context).size.width,
+                                height: MediaQuery.of(context).size.height,
+                                padding: const EdgeInsets.all(10),
                                 child: Container(
-                                  decoration: _navManager.buttonNotifier
-                                      .value ==
-                                      NavState.admin ? lit : null,
+                                  decoration:
+                                      _navManager.buttonNotifier.value ==
+                                              NavState.admin
+                                          ? lit
+                                          : null,
                                   child: OutlinedButton(
                                     onPressed: null,
                                     child: Column(
-                                      mainAxisAlignment: MainAxisAlignment
-                                          .center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: <Widget>[
                                         Icon(
                                           Icons.construction,
@@ -341,23 +388,89 @@ class _SkeletonState extends State<Skeleton> {
                                   ),
                                 ),
                               ),
-                          ],
-                        ),
-                      )
+                            ),
+                        ],
+                      ),
+                    ),
                   ),
                 ),
-                floatingActionButton: _navManager.buttonNotifier.value ==
-                    NavState.group ? FloatingActionButton.large(
-                  onPressed: null,
-                  tooltip: "Create a Group",
-                  backgroundColor: mainSchemeColor,
-                  foregroundColor: black,
-                  child: const Icon(Icons.add, size: 100),
-                ) : null,
+                floatingActionButton:
+                    _navManager.buttonNotifier.value == NavState.group
+                        ? FloatingActionButton.large(
+                            onPressed: () async {
+                              if (!user!.logged) {
+                                await showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      title: const Text('You\'re not logged in', style: TextStyle(
+                                        fontSize: titleFontSize, color: black),
+                                      ),
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      elevation: 15,
+                                      actions: <Widget>[
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.pop(context, 'Register');
+                                          },
+                                          child: const Text(
+                                            'Register',
+                                            style: TextStyle(color: black, fontSize: 18),
+                                            ),
+                                          ),
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.pop(context, 'Login');
+                                          },
+                                          child: const Text(
+                                            'Login',
+                                            style: TextStyle(color: red, fontSize: 18),
+                                          ),
+                                        ),
+                                      ],
+                                      content: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: const <Widget>[
+                                          Flexible(
+                                            child: Text(
+                                              'You must be logged in to create a group. If you do not have an account, you can create one'),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                ).then((value) {
+                                  if (!mounted) return;
+
+                                  if (value == 'Register') {
+                                    Navigator.pushNamed(context, '/register').then((_) {
+                                      if (user!.logged) {
+                                        Navigator.pushNamed(context, '/groups/add');
+                                      }
+                                    });
+                                  } else if (value == 'Login') {
+                                    Navigator.pushNamed(context, '/login').then((_) {
+                                      if (user!.logged) {
+                                        Navigator.pushNamed(context, '/groups/add');
+                                      }
+                                    });
+                                  }
+                                });
+                              } else {
+                                Navigator.pushNamed(context, '/groups/add');
+                              }
+                            },
+                            tooltip: "Create a Group",
+                            backgroundColor: mainSchemeColor,
+                            foregroundColor: black,
+                            child: const Icon(Icons.add, size: 100),
+                          )
+                        : null,
               );
           }
-        }
-    );
+        });
   }
 
   Future<bool> getUser() async {
