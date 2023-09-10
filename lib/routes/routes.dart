@@ -44,7 +44,7 @@ class Routes {
           return MaterialPageRoute(builder: (context) => ConcertPage(arguments));
         }
         else {
-          return MaterialPageRoute(builder: (context) => Skeleton());
+          return MaterialPageRoute(builder: (context) => ErrorScreen());
         }
       case groupPage:
         var arguments = settings.arguments;
@@ -52,7 +52,7 @@ class Routes {
           return MaterialPageRoute(builder: (context) => Group(arguments));
         }
         else {
-          return MaterialPageRoute(builder: (context) => Skeleton());
+          return MaterialPageRoute(builder: (context) => ErrorScreen());
         }
       default:
         return MaterialPageRoute(builder: (context) => ErrorScreen());

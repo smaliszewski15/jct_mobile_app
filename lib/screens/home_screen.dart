@@ -27,9 +27,9 @@ class _HomeScreenState extends State<HomeScreen> {
             case HomeState.home:
               return Home();
             case HomeState.about_us:
-              return Container();
+              return AboutUs();
             case HomeState.john_cage:
-              return Container();
+              return JohnCage();
             case HomeState.upcoming_concerts:
               return Container();
           }
@@ -81,5 +81,32 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
     );
+  }
+
+  Widget AboutUs() {
+    return Center(
+        child: Container(
+          width: MediaQuery.of(context).size.width,
+          padding: const EdgeInsets.all(15),
+          child: Row(
+            children: <Widget>[
+              Flexible(
+                child: Text(
+                  'We are a group of students from UCF creating this project for our Senior Design Project',
+                  style: TextStyle(
+                      fontSize: bioTextSize,
+                      color: textColor
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ],
+          ),
+        )
+    );
+  }
+
+  Widget JohnCage() {
+    return Container();
   }
 }
