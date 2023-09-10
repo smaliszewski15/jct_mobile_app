@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../screens/home_screen.dart';
 import '../utils/colors.dart';
 import '../utils/globals.dart';
 import 'home_state_manager.dart';
@@ -17,7 +16,7 @@ class HomeDrawer extends StatefulWidget {
 
 class _HomeDrawerState extends State<HomeDrawer> {
 
-  List<String> homeNav = ["Home", "About Us", "John Cage", "Upcoming Concerts"];
+  List<String> homeNav = ["Home", "About Us", "John Cage"];
 
   @override
   void initState() {
@@ -28,9 +27,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
   Widget build(BuildContext context) {
     return Drawer(
       backgroundColor: backgroundColor,
-      child: ListView(
-        padding: const EdgeInsets.all(5),
-        shrinkWrap: true,
+      child: Column(
         children: <Widget>[
           DrawerHeader(
             child: user!.logged == false ? UserLogin(context) : UserProfile(context),
@@ -107,26 +104,26 @@ class _HomeDrawerState extends State<HomeDrawer> {
               ),
             ),
           ),
-          Container(
-            margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: accentColor,
-            ),
-            child: OutlinedButton(
-              onPressed: () {
-                widget.homeState.upcoming_concerts();
-                setState(() {});
-              },
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  "Upcoming Concerts",
-                  style: TextStyle(
-                    fontSize: 24,
-                    color: widget.homeState.buttonNotifier.value == HomeState.upcoming_concerts ? mainSchemeColor : textColor,
+          Expanded(
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: Container(
+                width: MediaQuery.of(context).size.width,
+                margin: const EdgeInsets.all(20),
+                padding: const EdgeInsets.symmetric(horizontal: 30),
+                decoration: BoxDecoration(
+                  color: accentColor,
+                  borderRadius: const BorderRadius.all(Radius.circular(roundedCorners)),
+                ),
+                child: TextButton(
+                  onPressed: null,
+                  child: Text(
+                      'Sign Out',
+                      style: TextStyle(
+                        fontSize: bioTextSize,
+                        color: invalidColor,
+                      )
                   ),
-                  textAlign: TextAlign.left,
                 ),
               ),
             ),
@@ -139,45 +136,49 @@ class _HomeDrawerState extends State<HomeDrawer> {
   Widget UserProfile(BuildContext context) {
     return Column(
       children: <Widget>[
-        ElevatedButton(
-            onPressed: null,
-            child: Container(
-              width: MediaQuery.of(context).size.width,
-              padding: const EdgeInsets.all(5),
-              child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Container(
-                      width: 50,
-                      height: 50,
-                      child: Container(
-                        decoration: const BoxDecoration(
-                          image: DecorationImage(
-                            image: AssetImage('assets/images/default-profile-image.jpg'),
-                            fit: BoxFit.cover,
-                          ),
-                        ),
+        Container(
+          width: MediaQuery.of(context).size.width,
+          padding: const EdgeInsets.all(5),
+          child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                SizedBox(
+                  width: 50,
+                  height: 50,
+                  child: Container(
+                    decoration: const BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage('assets/images/default-profile-image.jpg'),
+                        fit: BoxFit.cover,
                       ),
                     ),
-                    Text(
-                      user!.username,
-                      style: buttonTextStyle,
-                      textAlign: TextAlign.center,
-                    )
-                  ]
-              ),
-            )
-        ),
-        TextButton(
-          onPressed: null,
-          child: Text(
-            'Log Out',
-            style: TextStyle(
-              fontSize: bioTextSize,
-              color: invalidColor,
-            )
+                  ),
+                ),
+                Text(
+                  'Hello, ${user!.username}',
+                  style: buttonTextStyle,
+                  textAlign: TextAlign.center,
+                )
+              ]
           ),
         ),
+        Container(
+          decoration: BoxDecoration(
+            color: accentColor,
+            borderRadius: const BorderRadius.all(Radius.circular(roundedCorners)),
+          ),
+          child: OutlinedButton(
+            onPressed: () => Navigator.restorablePushNamed(context, '/profile'),
+            child: Text(
+              'View Profile',
+              style: TextStyle(
+                fontSize: infoFontSize,
+                color: textColor,
+              ),
+              textAlign: TextAlign.center,
+            )
+          )
+        )
       ],
     );
   }
