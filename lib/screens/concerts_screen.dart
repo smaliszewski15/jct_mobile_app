@@ -17,7 +17,7 @@ class _ConcertsState extends State<ConcertsScreen> {
   @override
   void initState() {
     super.initState();
-    done = getConcertList('');
+    done = getConcertList();
   }
 
   List<Concert> searchResults = [];
@@ -69,7 +69,7 @@ class _ConcertsState extends State<ConcertsScreen> {
                         onSubmitted: (query) {
                           if (oldQuery.isEmpty || oldQuery != query) {
                             oldQuery = query;
-                            getConcertList(query);
+                            done = getConcertList();
                             setState(() {});
                           }
                         },
@@ -133,10 +133,15 @@ class _ConcertsState extends State<ConcertsScreen> {
     );
   }
 
-  Future<bool> getConcertList(String searchQuery) async {
+  Future<bool> getConcertList() async {
     searchResults = [];
+    Map<String,dynamic> query = {};
 
-    final res = await Concerts.searchSongs();
+    if (!_search.value.text.isEmpty) {
+      query['search'] = _search.value.text;
+    }
+
+    final res = await Concerts.searchSongs(query);
 
     if (res.statusCode != 200) {
       return false;
