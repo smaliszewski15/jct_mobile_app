@@ -10,14 +10,11 @@ class ConcertPage extends StatefulWidget {
   ConcertPage(this.name);
 
   @override
-  _ConcertPageState createState() => _ConcertPageState(name);
+  _ConcertPageState createState() => _ConcertPageState();
 }
 
 class _ConcertPageState extends State<ConcertPage> {
   late final ConcertPlayer _pageManager;
-  late final String name;
-
-  _ConcertPageState(this.name);
 
   @override
   void initState() {
@@ -39,7 +36,7 @@ class _ConcertPageState extends State<ConcertPage> {
             _pageManager.pause;
             return true;
           }
-          return false;
+          return true;
         },
         child: Scaffold(
             appBar: AppBar(
@@ -62,7 +59,7 @@ class _ConcertPageState extends State<ConcertPage> {
                     child: Container(
                       margin: const EdgeInsets.symmetric(vertical: 50),
                       child: Text(
-                        name,
+                        widget.name,
                         style: TextStyle(
                           fontSize: titleFontSize,
                           color: textColor,

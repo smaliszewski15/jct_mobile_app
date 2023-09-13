@@ -2,12 +2,42 @@
 import 'dart:io';*/
 
 import 'package:flutter/material.dart';
+import '../components/home_drawer.dart';
 import '../utils/colors.dart';
 import '../utils/globals.dart';
+import '../components/home_state_manager.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
+  late final HomeStateManager homeManager;
+
+  HomeScreen({required this.homeManager});
+
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+
   @override
   Widget build(BuildContext context) {
+    return ValueListenableBuilder<HomeState>(
+        valueListenable: widget.homeManager.buttonNotifier,
+        builder: (_, value, __) {
+          switch (value) {
+            case HomeState.home:
+              return Home();
+            case HomeState.about_us:
+              return AboutUs();
+            case HomeState.john_cage:
+              return JohnCage();
+            case HomeState.upcoming_concerts:
+              return Container();
+          }
+        }
+    );
+  }
+
+  Widget Home() {
     return Container(
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.height,
@@ -51,5 +81,32 @@ class HomeScreen extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Widget AboutUs() {
+    return Center(
+        child: Container(
+          width: MediaQuery.of(context).size.width,
+          padding: const EdgeInsets.all(15),
+          child: Row(
+            children: <Widget>[
+              Flexible(
+                child: Text(
+                  'We are a group of students from UCF creating this project for our Senior Design Project',
+                  style: TextStyle(
+                      fontSize: bioTextSize,
+                      color: textColor
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ],
+          ),
+        )
+    );
+  }
+
+  Widget JohnCage() {
+    return Container();
   }
 }

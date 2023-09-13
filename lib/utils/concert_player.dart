@@ -12,7 +12,8 @@ class ConcertPlayer {
   );
   final buttonNotifier = ValueNotifier<ButtonState>(ButtonState.paused);
 
-  static const url = 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3';
+  //static const url = 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3';
+  static const url = 'https://johncagetribute.org/api/getSong?id=242432';
   late AudioPlayer _audioPlayer;
 
   ConcertPlayer() {
@@ -21,7 +22,19 @@ class ConcertPlayer {
 
   void _init() async {
     _audioPlayer = AudioPlayer();
-    await _audioPlayer.setUrl(url);
+    try {
+      await _audioPlayer.setUrl(url);
+    }
+    on PlayerException catch (e) {
+      print("Error Code: ${e.code}");
+      print("Error Message: ${e.message}");
+    }
+    on PlayerInterruptedException catch (e) {
+      print("Conncetion aborted: ${e.message}");
+    } catch (e) {
+      print(e);
+    }
+
 
     _audioPlayer.playerStateStream.listen((playerState) {
       final isPlaying = playerState.playing;

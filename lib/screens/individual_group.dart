@@ -40,74 +40,76 @@ class _GroupState extends State<Group> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          leading: IconButton(
-            icon: const Icon(Icons.navigate_before, color: gold),
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.navigate_before, color: gold),
+          iconSize: 35,
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        actions: widget.creator ? <Widget>[
+          IconButton(
+            icon: Icon(
+              Icons.delete,
+              color: invalidColor,
+            ),
             iconSize: 35,
-            onPressed: () {
-              Navigator.pop(context);
+            onPressed: () async {
+              bool confirm = await showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (context) {
+                  return AlertDialog(
+                    title: const Text('Delete Group?', style: TextStyle(
+                        fontSize: titleFontSize, color: black)),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)),
+                    elevation: 15,
+                    actions: <Widget>[
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pop(context, false);
+                        },
+                        child: const Text(
+                          'Cancel',
+                          style: TextStyle(color: black, fontSize: 18),
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pop(context, true);
+                        },
+                        child: const Text(
+                          'Delete',
+                          style: TextStyle(color: red, fontSize: 18),
+                        ),
+                      )
+                    ],
+                    content:
+                    Column(mainAxisSize: MainAxisSize.min,
+                      children: const <Widget>[
+                        Flexible(
+                            child: Text(
+                                'Are you sure you want to delete this group?')),
+                      ],
+                    ),
+                  );
+                },
+              );
+
+              if (!mounted) return;
+
+              if (confirm) {
+                Navigator.pop(context);
+              }
             },
           ),
-          actions: widget.creator ? <Widget>[
-            IconButton(
-              icon: Icon(
-                Icons.delete,
-                color: invalidColor,
-              ),
-              iconSize: 35,
-              onPressed: () async {
-                bool confirm = await showDialog(
-                  context: context,
-                  barrierDismissible: false,
-                  builder: (context) {
-                    return AlertDialog(
-                      title: const Text('Delete Group?', style: TextStyle(
-                          fontSize: titleFontSize, color: black)),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10)),
-                      elevation: 15,
-                      actions: <Widget>[
-                        TextButton(
-                          onPressed: () {
-                            Navigator.pop(context, false);
-                          },
-                          child: const Text(
-                            'Cancel',
-                            style: TextStyle(color: black, fontSize: 18),
-                          ),
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            Navigator.pop(context, true);
-                          },
-                          child: const Text(
-                            'Delete',
-                            style: TextStyle(color: red, fontSize: 18),
-                          ),
-                        )
-                      ],
-                      content:
-                      Column(mainAxisSize: MainAxisSize.min,
-                          children: const <Widget>[
-                            Flexible(
-                                child: Text(
-                                    'Are you sure you want to delete this group?')),
-                          ],
-                      ),
-                    );
-                  },
-                );
-
-                if (confirm) {
-                  Navigator.pop(context);
-                }
-              },
-            ),
-          ] : null,
-          backgroundColor: black,
-          automaticallyImplyLeading: false,
-        ),
-        body: GestureDetector(
+        ] : null,
+        backgroundColor: black,
+        automaticallyImplyLeading: false,
+      ),
+      body: GestureDetector(
           behavior: HitTestBehavior.translucent,
           onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
           child: Container(
@@ -213,30 +215,30 @@ class _GroupState extends State<Group> {
                       ),
                       if (isEditing)
                         Container(
-                          padding: const EdgeInsets.all(5),
-                          decoration: BoxDecoration(
-                            color: mainSchemeColor,
-                            borderRadius: BorderRadius.circular(20),
-                            border: Border.all(color: black),
-                          ),
-                          child: DropdownButton<String>(
-                              value: method,
-                              dropdownColor: mainSchemeColor,
-                              icon: const Icon(
-                                  Icons.arrow_drop_down,
-                                  color: black),
-                              onChanged: (String? value) {
-                                setState(() {
-                                  method = value!;
-                                });
-                              },
-                              items: methods.map<DropdownMenuItem<String>>((String value) {
-                                return DropdownMenuItem<String>(
-                                  value: value,
-                                  child: Text(value),
-                                );
-                              },
-                              ).toList())
+                            padding: const EdgeInsets.all(5),
+                            decoration: BoxDecoration(
+                              color: mainSchemeColor,
+                              borderRadius: BorderRadius.circular(20),
+                              border: Border.all(color: black),
+                            ),
+                            child: DropdownButton<String>(
+                                value: method,
+                                dropdownColor: mainSchemeColor,
+                                icon: const Icon(
+                                    Icons.arrow_drop_down,
+                                    color: black),
+                                onChanged: (String? value) {
+                                  setState(() {
+                                    method = value!;
+                                  });
+                                },
+                                items: methods.map<DropdownMenuItem<String>>((String value) {
+                                  return DropdownMenuItem<String>(
+                                    value: value,
+                                    child: Text(value),
+                                  );
+                                },
+                                ).toList())
                         )
                       else
                         Text(
@@ -255,14 +257,14 @@ class _GroupState extends State<Group> {
                   ),
                 ),
                 Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(5),
-                  margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                  color: black,
-                  child: Text(
-                    'Leader Person',
-                    style: defaultTextStyle,
-                  )
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(5),
+                    margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                    color: black,
+                    child: Text(
+                      'Leader Person',
+                      style: defaultTextStyle,
+                    )
                 ),
                 Container(
                   width: double.infinity,
@@ -273,24 +275,24 @@ class _GroupState extends State<Group> {
                   ),
                 ),
                 ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: members.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(5),
-                        margin: const EdgeInsets.symmetric(vertical: 2, horizontal: 10),
-                        color: black,
-                        child: Text(
-                          members[index],
-                          style: defaultTextStyle,
-                        )
-                    );
-                  }
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: members.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.all(5),
+                          margin: const EdgeInsets.symmetric(vertical: 2, horizontal: 10),
+                          color: black,
+                          child: Text(
+                            members[index],
+                            style: defaultTextStyle,
+                          )
+                      );
+                    }
                 ),
                 const Spacer(),
-                if (!isEditing && _selectedDate.difference(DateTime.now()).inMinutes < 40)
+                if (!isEditing && _selectedDate.difference(DateTime.now()).inMinutes < 40 && members.contains(user!.username))
                   Container(
                     margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                     padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 67),
@@ -302,6 +304,82 @@ class _GroupState extends State<Group> {
                       onPressed: null,
                       child: Text(
                         'Join Session',
+                        style: TextStyle(
+                          fontSize: bigButtonFontSize,
+                          color: buttonTextColor,
+                          fontWeight: FontWeight.w400,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                if (!widget.creator && user!.logged ? true : !members.contains(user!.username))
+                  Container(
+                    margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                    padding: const EdgeInsets.all(5),
+                    decoration: BoxDecoration(
+                      color: gold,
+                      border: Border.all(color: black, width: 3),
+                    ),
+                    child: OutlinedButton(
+                      onPressed: () async {
+                        if (user == null) {
+                          bool confirm = await showDialog(
+                            context: context,
+                            barrierDismissible: false,
+                            builder: (context) {
+                              return AlertDialog(
+                                title: const Text('Not Logged In', style: TextStyle(fontSize: titleFontSize, color: black)),
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                elevation: 15,
+                                actions: <Widget>[
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(context, false);
+                                    },
+                                    child: const Text(
+                                      'Create an account',
+                                      style: TextStyle(color: Colors.red, fontSize: 18),
+                                    ),
+                                  ),
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(context, true);
+                                    },
+                                    child: const Text(
+                                      'Log In',
+                                      style: TextStyle(color: black, fontSize: 18),
+                                    ),
+                                  )
+                                ],
+                                content:
+                                Column(mainAxisSize: MainAxisSize.min, children: const <Widget>[
+                                  Flexible(
+                                      child: Text(
+                                          'You are currently not logged in. You can either create an account or log in to join this group.')),
+                                ]),
+                              );
+                            },
+                          );
+                          if (confirm) {
+                            Navigator.pushNamed(context, '/login').then((value){
+                              if (user != null) {
+                                members.add(user!.username);
+                              }
+                            }
+                            );
+                          } else {
+                            Navigator.pushNamed(context, '/register').then((value){
+                              if (user != null) {
+                                members.add(user!.username);
+                              }
+                            }
+                            );
+                          }
+                        }
+                      },
+                      child: Text(
+                        'Join Group',
                         style: TextStyle(
                           fontSize: bigButtonFontSize,
                           color: buttonTextColor,
@@ -335,7 +413,7 @@ class _GroupState extends State<Group> {
                       ),
                     ),
                   ),
-                if (!isEditing && !widget.creator)
+                if (!isEditing && !widget.creator && (user!.logged ? members.contains(user!.username) : false))
                   Container(
                     margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                     padding: const EdgeInsets.all(5),
@@ -429,41 +507,41 @@ class _GroupState extends State<Group> {
                     child: OutlinedButton(
                       onPressed: () async {
                         bool confirm = await showDialog(
-                            context: context,
-                            barrierDismissible: false,
-                            builder: (context) {
-                              return AlertDialog(
-                                title: const Text('Confirm', style: TextStyle(fontSize: titleFontSize, color: black)),
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                                elevation: 15,
-                                actions: <Widget>[
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.pop(context, false);
-                                    },
-                                    child: const Text(
-                                      'Cancel',
-                                      style: TextStyle(color: Colors.red, fontSize: 18),
-                                    ),
+                          context: context,
+                          barrierDismissible: false,
+                          builder: (context) {
+                            return AlertDialog(
+                              title: const Text('Confirm', style: TextStyle(fontSize: titleFontSize, color: black)),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                              elevation: 15,
+                              actions: <Widget>[
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context, false);
+                                  },
+                                  child: const Text(
+                                    'Cancel',
+                                    style: TextStyle(color: Colors.red, fontSize: 18),
                                   ),
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.pop(context, true);
-                                    },
-                                    child: const Text(
-                                      'Confirm',
-                                      style: TextStyle(color: black, fontSize: 18),
-                                    ),
-                                  )
-                                ],
-                                content:
-                                Column(mainAxisSize: MainAxisSize.min, children: const <Widget>[
-                                  Flexible(
-                                      child: Text(
-                                          'Confirm changes made to the group?')),
-                                ]),
-                              );
-                            },
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context, true);
+                                  },
+                                  child: const Text(
+                                    'Confirm',
+                                    style: TextStyle(color: black, fontSize: 18),
+                                  ),
+                                )
+                              ],
+                              content:
+                              Column(mainAxisSize: MainAxisSize.min, children: const <Widget>[
+                                Flexible(
+                                    child: Text(
+                                        'Confirm changes made to the group?')),
+                              ]),
+                            );
+                          },
                         );
                         if (!confirm)
                           return;
@@ -509,7 +587,7 @@ class _GroupState extends State<Group> {
               ],
             ),
           )
-        ),
+      ),
     );
   }
 
