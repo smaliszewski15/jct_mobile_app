@@ -32,6 +32,11 @@ class NavStateManager {
     title = 'Current Test Features';
     buttonNotifier.value = NavState.test;
   }
+
+  void admin() {
+    title = 'Admin Page';
+    buttonNotifier.value = NavState.admin;
+  }
 }
 
 enum NavState{

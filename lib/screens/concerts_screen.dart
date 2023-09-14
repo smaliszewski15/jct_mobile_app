@@ -6,7 +6,6 @@ import '../APIfunctions/concertAPI.dart';
 import '../utils/concert.dart';
 import '../utils/colors.dart';
 import '../utils/globals.dart';
-import 'individual_concert.dart';
 
 class ConcertsScreen extends StatefulWidget {
   @override
