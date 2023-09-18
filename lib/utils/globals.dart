@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'colors.dart';
 
-const double titleFontSize = 32;
+const double titleFontSize = 40;
 const double infoFontSize = 20;
 const double bioTextSize = 18;
 const double navBarTextSize = 10;
@@ -27,6 +27,11 @@ final buttonTextStyle = TextStyle(
 
 final defaultTextStyle = TextStyle(
   fontSize: infoFontSize,
+  color: textColor,
+);
+
+final titleTextStyle = TextStyle(
+  fontSize: titleFontSize,
   color: textColor,
 );
 

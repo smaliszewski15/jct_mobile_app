@@ -2,12 +2,17 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:john_cage_tribute/components/concert_tags_manager.dart';
 import '../APIfunctions/concertAPI.dart';
 import '../utils/concert.dart';
 import '../utils/colors.dart';
 import '../utils/globals.dart';
 
 class ConcertsScreen extends StatefulWidget {
+  late TagsUpdater tags;
+
+  ConcertsScreen(this.tags);
+
   @override
   _ConcertsState createState() => _ConcertsState();
 }
@@ -16,7 +21,7 @@ class _ConcertsState extends State<ConcertsScreen> {
   @override
   void initState() {
     super.initState();
-    done = getConcertList('');
+    done = getConcertList();
   }
 
   List<Concert> searchResults = [];
@@ -68,7 +73,8 @@ class _ConcertsState extends State<ConcertsScreen> {
                         onSubmitted: (query) {
                           if (oldQuery.isEmpty || oldQuery != query) {
                             oldQuery = query;
-                            getConcertList(query);
+                            //getConcertList(query);
+                            getConcertList();
                             setState(() {});
                           }
                         },
@@ -82,48 +88,73 @@ class _ConcertsState extends State<ConcertsScreen> {
                   ],
                 ),
               ),
-              FutureBuilder(
-                future: done,
-                builder: (BuildContext context, AsyncSnapshot snapshot) {
-                  switch (snapshot.connectionState) {
-                    case ConnectionState.none:
-                    case ConnectionState.active:
-                    case ConnectionState.waiting:
-                      return const CircularProgressIndicator();
-                    case ConnectionState.done:
-                      if (snapshot.hasError) {
-                        return Text('Error: $snapshot.error}');
-                      }
-                      return ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: searchResults.length,
-                        itemBuilder: (context, index) {
-                          return Container(
-                            margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                            padding: const EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                              color: accentColor,
-                            ),
-                            child: OutlinedButton(
-                              onPressed: () {
-                                Navigator.restorablePushNamed(context, '/concerts/concert', arguments: searchResults[index].title);
-                              },
-                              child: Align(
-                                alignment: Alignment.centerLeft,
-                                child: Text(
-                                  searchResults[index].title,
-                                  style: TextStyle(
-                                    fontSize: 24,
-                                    color: textColor,
-                                  ),
-                                  textAlign: TextAlign.left,
-                                ),
-                              ),
-                            ),
-                          );
-                        },
-                      );
+              ValueListenableBuilder<bool>(
+                valueListenable: widget.tags.changedNotifier,
+                builder: (_, value, __) {
+                  if (value) {
+                    //updateConcertList with tags included
                   }
+                  return FutureBuilder(
+                    future: done,
+                    builder: (BuildContext context, AsyncSnapshot snapshot) {
+                      switch (snapshot.connectionState) {
+                        case ConnectionState.none:
+                        case ConnectionState.active:
+                        case ConnectionState.waiting:
+                          return const CircularProgressIndicator();
+                        case ConnectionState.done:
+                          if (snapshot.hasError) {
+                            return Text('Error: $snapshot.error}');
+                          }
+                          return ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: searchResults.length,
+                            itemBuilder: (context, index) {
+                              bool selected = false;
+                              return Container(
+                                width: double.infinity,
+                                margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                                padding: const EdgeInsets.all(10),
+                                color: selected ? mainSchemeColor : accentColor,
+                                child: OutlinedButton(
+                                  onPressed: () {
+                                    setState(() => selected = true);
+                                    Navigator.restorablePushNamed(context, '/concerts/concert', arguments: searchResults[index].id);
+                                  },
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: <Widget>[
+                                      Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: Text(
+                                          searchResults[index].title,
+                                          style: TextStyle(
+                                            fontSize: 24,
+                                            color: textColor,
+                                          ),
+                                          textAlign: TextAlign.left,
+                                        ),
+                                      ),
+                                      Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: Text(
+                                          searchResults[index].maestro,
+                                          style: TextStyle(
+                                            fontSize: infoFontSize,
+                                            color: textColor,
+                                          ),
+                                          textAlign: TextAlign.left,
+                                        )
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                      }
+                    },
+                  );
                 },
               ),
             ],
@@ -132,7 +163,7 @@ class _ConcertsState extends State<ConcertsScreen> {
     );
   }
 
-  Future<bool> getConcertList(String searchQuery) async {
+  /*Future<bool> getConcertList(String searchQuery) async {
     searchResults = [];
 
     final res = await Concerts.searchSongs();
@@ -151,6 +182,18 @@ class _ConcertsState extends State<ConcertsScreen> {
         searchResults.add(Concert(title: map['Title'], id: map['ID']));
       }
     }
+    return true;
+  }*/
+
+  Future<bool> getConcertList() async {
+    searchResults = [];
+    var data = ConcertsAPI.searchSongs;
+    for (var map in data['searchResults']) {
+      if (map.containsKey('title') && map.containsKey('id') && map.containsKey('maestro')) {
+        searchResults.add(Concert(title: map['title'], id: map['id'], maestro: map['maestro']));
+      }
+    }
+
     return true;
   }
 }

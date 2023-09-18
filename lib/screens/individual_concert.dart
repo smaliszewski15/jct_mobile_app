@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
+import '../APIfunctions/concertAPI.dart';
+import '../utils/concert.dart';
+import '../utils/concert_player.dart';
 import '../utils/colors.dart';
 import '../utils/globals.dart';
-import '../utils/concert_player.dart';
+
 
 class ConcertPage extends StatefulWidget {
-  late final String name;
+  late final int id;
 
-  ConcertPage(this.name);
+  ConcertPage(this.id);
 
   @override
   _ConcertPageState createState() => _ConcertPageState();
@@ -15,11 +18,13 @@ class ConcertPage extends StatefulWidget {
 
 class _ConcertPageState extends State<ConcertPage> {
   late final ConcertPlayer _pageManager;
+  late Concert concert;
 
   @override
   void initState() {
     super.initState();
-    _pageManager = ConcertPlayer();
+    _pageManager = ConcertPlayer(widget.id);
+    concert = getConcert(widget.id);
   }
 
   @override
@@ -59,7 +64,7 @@ class _ConcertPageState extends State<ConcertPage> {
                     child: Container(
                       margin: const EdgeInsets.symmetric(vertical: 50),
                       child: Text(
-                        widget.name,
+                        concert.title,
                         style: TextStyle(
                           fontSize: titleFontSize,
                           color: textColor,
@@ -68,35 +73,83 @@ class _ConcertPageState extends State<ConcertPage> {
                       ),
                     ),
                   ),
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Container(
-                      margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 30),
-                      child: Text(
-                        'Recording Date: ',
-                        style: TextStyle(
-                          fontSize: infoFontSize,
-                          color: textColor,
+                  Container(
+                    width: double.infinity,
+                    margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          'Group Leader: ',
+                          style: TextStyle(
+                            fontSize: infoFontSize,
+                            color: textColor,
+                          ),
+                          textAlign: TextAlign.left,
                         ),
-                        textAlign: TextAlign.left,
-                      ),
+                        Text(
+                          concert.maestro,
+                          style: TextStyle(
+                            fontSize: infoFontSize,
+                            color: textColor,
+                          ),
+                          textAlign: TextAlign.left,
+                        ),
+                      ],
                     ),
                   ),
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Container(
-                      margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 30),
-                      child: Text(
-                        'Tags: ',
-                        style: TextStyle(
-                          fontSize: infoFontSize,
-                          color: textColor,
+                  Container(
+                    width: double.infinity,
+                    margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          'Recording Date: ',
+                          style: TextStyle(
+                            fontSize: infoFontSize,
+                            color: textColor,
+                          ),
+                          textAlign: TextAlign.left,
                         ),
-                        textAlign: TextAlign.left,
-                      ),
+                        Expanded(
+                          child: Text(
+                            concert.date,
+                            style: TextStyle(
+                              fontSize: infoFontSize,
+                              color: textColor,
+                            ),
+                            textAlign: TextAlign.left,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  const Spacer(),
+                  Container(
+                    width: double.infinity,
+                    margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          'Tags: ',
+                          style: TextStyle(
+                            fontSize: infoFontSize,
+                            color: textColor,
+                          ),
+                          textAlign: TextAlign.left,
+                        ),
+                        Text(
+                          concert.tags.toString(),
+                          style: TextStyle(
+                            fontSize: infoFontSize,
+                            color: textColor,
+                          ),
+                          textAlign: TextAlign.left,
+                        ),
+                      ],
+                    ),
+                  ),
                   ValueListenableBuilder<ButtonState>(
                       valueListenable: _pageManager.buttonNotifier,
                       builder: (_, value, __) {
@@ -124,6 +177,7 @@ class _ConcertPageState extends State<ConcertPage> {
                       }
                   ),
                   Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 10),
                     padding: const EdgeInsets.all(10),
                     child: ValueListenableBuilder<ProgressBarState>(
                       valueListenable: _pageManager.progressNotifier,
@@ -150,7 +204,7 @@ class _ConcertPageState extends State<ConcertPage> {
                         child: Text(
                           'Download',
                           style: TextStyle(
-                            fontSize: titleFontSize,
+                            fontSize: bigButtonFontSize,
                             color: buttonTextColor,
                           ),
                           textAlign: TextAlign.center,
@@ -176,5 +230,9 @@ class _ConcertPageState extends State<ConcertPage> {
             )
         )
     );
+  }
+
+  Concert getConcert(int ID) {
+    return Concert.songFromJson(ConcertsAPI.getSong);
   }
 }

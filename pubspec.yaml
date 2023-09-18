@@ -32,20 +32,18 @@ dependencies:
   flutter:
     sdk: flutter
 
-  cupertino_icons: ^1.0.5
-  audio_video_progress_bar: ^1.0.1
-  http: ^0.13.5
-  intl: ^0.17.0
-  just_audio: ^0.9.34
-  mic_stream: ^0.6.5
-  flutter_riverpod: ^2.3.6
-  shared_preferences: ^2.2.0
+  cupertino_icons: ^1.0.6
+  audio_video_progress_bar: ^2.0.0
+  http: ^1.1.0
+  intl: ^0.18.1
+  just_audio: ^0.9.35
+  shared_preferences: ^2.2.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  flutter_lints: ^2.0.2
+  flutter_lints: ^2.0.3
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

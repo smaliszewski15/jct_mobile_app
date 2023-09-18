@@ -3,7 +3,6 @@ import 'dart:math';
 import 'dart:core';
 
 import 'package:flutter/material.dart';
-import 'package:mic_stream/mic_stream.dart';
 
 import '../utils/colors.dart';
 import '../utils/globals.dart';
@@ -13,7 +12,6 @@ enum Command {
   start,stop,change,
 }
 
-const AUDIO_FORMAT = AudioFormat.ENCODING_PCM_16BIT;
 
 class TestScreen extends StatefulWidget {
 
@@ -36,7 +34,6 @@ class _TestScreenState extends State<TestScreen> with SingleTickerProviderStateM
 
   @override
   void initState() {
-    print("Init application");
     super.initState();
     WidgetsBinding.instance!.addObserver(this);
   }
@@ -58,18 +55,8 @@ class _TestScreenState extends State<TestScreen> with SingleTickerProviderStateM
   Future<bool> _changeListening() async => !isRecording ? await _startListening() : _stopListening();
 
   Future<bool> _startListening() async {
-    print("START LISTENING");
     if (isRecording) return false;
 
-    print("wait for stream");
-
-    MicStream.shouldRequestPermission(true);
-    stream = await MicStream.microphone(
-      audioSource: AudioSource.DEFAULT,
-      sampleRate: 48000,
-      channelConfig: ChannelConfig.CHANNEL_IN_MONO,
-      audioFormat: AUDIO_FORMAT
-    );
 
     setState(() {
       isRecording = true;

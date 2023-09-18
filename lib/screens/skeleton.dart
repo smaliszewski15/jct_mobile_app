@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'concerts_screen.dart';
@@ -6,6 +5,7 @@ import 'home_screen.dart';
 import 'test_screen.dart';
 import 'schedule_screen.dart';
 import '../components/concert_filter.dart';
+import '../components/concert_tags_manager.dart';
 import '../components/profile_drawer.dart';
 import '../components/nav_bar_manager.dart';
 import '../utils/colors.dart';
@@ -19,12 +19,14 @@ class Skeleton extends StatefulWidget {
 
 class _SkeletonState extends State<Skeleton> {
   late final NavStateManager _navManager;
+  late final TagsUpdater _tagManager;
   Future<bool>? done;
 
   @override
   void initState() {
     super.initState();
     _navManager = NavStateManager();
+    _tagManager = TagsUpdater();
     done = getUser();
   }
 
@@ -91,7 +93,7 @@ class _SkeletonState extends State<Skeleton> {
               ),
               drawer: HomeDrawer(),
               endDrawer: _navManager.buttonNotifier.value == NavState.concert ?
-              TagFilterDrawer() : null,
+              TagFilterDrawer(_tagManager) : null,
               body: Builder(
                 builder: (context) {
                   return GestureDetector(
@@ -140,7 +142,7 @@ class _SkeletonState extends State<Skeleton> {
                           case NavState.home:
                             return HomeScreen();
                           case NavState.concert:
-                            return ConcertsScreen();
+                            return ConcertsScreen(_tagManager);
                           case NavState.test:
                             return TestScreen();
                           case NavState.schedule:
