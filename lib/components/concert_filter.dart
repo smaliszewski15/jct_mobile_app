@@ -16,14 +16,11 @@ class TagFilterDrawer extends StatefulWidget {
 }
 
 class _TagFilterDrawerState extends State<TagFilterDrawer> {
-  late List<String> tags;
-  List<String> filteredTags = [];
   bool wasChanged = false;
 
   @override
   void initState() {
     super.initState();
-    tags = getTags();
   }
 
   @override
@@ -63,9 +60,9 @@ class _TagFilterDrawerState extends State<TagFilterDrawer> {
                   }
               ),*/
               Wrap(
-                children: tags.map((entry) => Container(
+                children: widget.tags.tags.map((entry) => Container(
                     decoration: BoxDecoration(
-                      color: !filteredTags.contains(entry) ? white : mainSchemeColor,
+                      color: !widget.tags.filteredTags.contains(entry) ? white : mainSchemeColor,
                       border: Border.all(color: black, width: 2),
                       borderRadius: const BorderRadius.all(Radius.circular(roundedCorners)),
                     ),
@@ -73,10 +70,10 @@ class _TagFilterDrawerState extends State<TagFilterDrawer> {
                     margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
                     child: TextButton(
                       onPressed: () {
-                        if (filteredTags.contains(entry)) {
-                          filteredTags.remove(entry);
+                        if (widget.tags.filteredTags.contains(entry)) {
+                          widget.tags.filteredTags.remove(entry);
                         } else {
-                          filteredTags.add(entry);
+                          widget.tags.filteredTags.add(entry);
                         }
                         if (!wasChanged) {
                           wasChanged = true;
@@ -115,7 +112,7 @@ class _TagFilterDrawerState extends State<TagFilterDrawer> {
                     ),
                     TextButton(
                         onPressed: () {
-                          filteredTags = [];
+                          widget.tags.removeAllFilteredTags();
                           Navigator.pop(context);
                         },
                         child: const Text(
@@ -134,15 +131,6 @@ class _TagFilterDrawerState extends State<TagFilterDrawer> {
         ],
       ),
     );
-  }
-
-  List<String> getTags() {
-    List<String> toRet = [];
-    for(var entry in ConcertsAPI.getTags['tags']) {
-      toRet.add(entry);
-    }
-
-    return toRet;
   }
 }
 
