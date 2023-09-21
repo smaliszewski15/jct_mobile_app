@@ -21,7 +21,7 @@ class _ConcertsState extends State<ConcertsScreen> {
   @override
   void initState() {
     super.initState();
-    done = getConcertList();
+    done = getConcertList('');
   }
 
   List<Concert> searchResults = [];
@@ -73,8 +73,8 @@ class _ConcertsState extends State<ConcertsScreen> {
                         onSubmitted: (query) {
                           if (oldQuery.isEmpty || oldQuery != query) {
                             oldQuery = query;
-                            //getConcertList(query);
-                            getConcertList();
+                            getConcertList(query);
+                            //getConcertList();
                             setState(() {});
                           }
                         },
@@ -163,10 +163,14 @@ class _ConcertsState extends State<ConcertsScreen> {
     );
   }
 
-  /*Future<bool> getConcertList(String searchQuery) async {
+  Future<bool> getConcertList(String searchQuery) async {
     searchResults = [];
 
-    final res = await Concerts.searchSongs();
+    Map<String,dynamic> queries = {
+      'query': searchQuery,
+    };
+
+    final res = await ConcertsAPI.searchSongs(queries);
 
     if (res.statusCode != 200) {
       return false;
@@ -178,14 +182,14 @@ class _ConcertsState extends State<ConcertsScreen> {
     }
 
     for (var map in data['searchResults']) {
-      if (map.containsKey('Title') && map.containsKey('ID')) {
-        searchResults.add(Concert(title: map['Title'], id: map['ID']));
+      if (map.containsKey('title') && map.containsKey('id') && map.containsKey('maestro')) {
+        searchResults.add(Concert(title: map['title'], id: map['id'], maestro: map['maestro']));
       }
     }
     return true;
-  }*/
+  }
 
-  Future<bool> getConcertList() async {
+  /*Future<bool> getConcertList() async {
     searchResults = [];
     var data = ConcertsAPI.searchSongs;
     for (var map in data['searchResults']) {
@@ -195,5 +199,5 @@ class _ConcertsState extends State<ConcertsScreen> {
     }
 
     return true;
-  }
+  }*/
 }

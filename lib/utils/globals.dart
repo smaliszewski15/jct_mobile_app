@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'colors.dart';
 
 const double titleFontSize = 40;
+const double headingFontSize = 28;
 const double infoFontSize = 20;
 const double bioTextSize = 18;
 const double navBarTextSize = 10;

@@ -4,27 +4,13 @@ import 'package:http/http.dart' as http;
 import 'api_globals.dart';
 
 class ConcertsAPI {
-  final String apiRoute = '';
+  static const String apiRoute = '/api/concerts';
 
-  /*static Future<http.Response> searchSongs() async {//Map<String, dynamic> queries) async {
+  static Future<http.Response> searchSongs(Map<String, dynamic> queries) async {
     http.Response response;
 
     try {
-      response = await http.post(Uri.https(API_PREFIX, '/api/searchSongs'),//, queries),
-          headers: baseHeader);
-    } catch (e) {
-      print(e.toString());
-      throw Exception('Could not connect to server');
-    }
-
-    return response;
-  }*/
-
-  static Future<http.Response> searchSongss() async {//Map<String, dynamic> queries) async {
-    http.Response response;
-
-    try {
-      response = await http.get(Uri.https(API_PREFIX, '/api/concerts/searchSongs'),//, queries),
+      response = await http.get(Uri.https(API_PREFIX, '${apiRoute}/searchSongs', queries),
           headers: baseHeader);
     } catch (e) {
       print(e.toString());
@@ -34,11 +20,12 @@ class ConcertsAPI {
     return response;
   }
 
-  static Future<http.Response> getSongData(int id) async {
+  static Future<http.Response> getSongData(Map<String, dynamic> query) async {
     http.Response response;
+    print(query);
 
     try {
-      response = await http.get(Uri.https(API_PREFIX, '/api/concerts/getSongData?id=$id'),
+      response = await http.get(Uri.https(API_PREFIX, '${apiRoute}/getSongData', query),
           headers: baseHeader);
     } catch (e) {
       print(e.toString());
@@ -48,11 +35,11 @@ class ConcertsAPI {
     return response;
   }
 
-  static Future<http.Response> getTagss() async {
+  static Future<http.Response> getTags() async {
     http.Response response;
 
     try {
-      response = await http.get(Uri.https(API_PREFIX, '/api/concerts/getTags'),
+      response = await http.get(Uri.https(API_PREFIX, '${apiRoute}/getTags'),
           headers: baseHeader);
     } catch (e) {
       print(e.toString());
@@ -62,7 +49,7 @@ class ConcertsAPI {
     return response;
   }
 
-  static Map<String, dynamic> searchSongs = {
+  /*static Map<String, dynamic> searchSongs = {
     'searchResults': [
       {
         'id': 1,
@@ -116,5 +103,5 @@ class ConcertsAPI {
       'quiet',
       'loud',
     ]
-  };
+  };*/
 }

@@ -43,22 +43,6 @@ class _TagFilterDrawerState extends State<TagFilterDrawer> {
                   textAlign: TextAlign.center,
                 ),
               ),
-              /*ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: tags.length,
-                  scrollDirection: Axis.horizontal,
-                  itemBuilder: (BuildContext context, int index) {
-                    return Container(
-                      child: OutlinedButton(
-                        onPressed: null,
-                        child: Text(
-                          tags[index].capitalize(),
-                          style: defaultTextStyle,
-                        ),
-                      ),
-                    );
-                  }
-              ),*/
               Wrap(
                 children: widget.tags.tags.map((entry) => Container(
                     decoration: BoxDecoration(
