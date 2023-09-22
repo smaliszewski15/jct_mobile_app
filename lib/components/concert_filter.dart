@@ -79,22 +79,6 @@ class _TagFilterDrawerState extends State<TagFilterDrawer> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     TextButton(
-                      onPressed: () {
-                        if(wasChanged) {
-                          widget.tags.doUpdate();
-                        }
-                        widget.tags.finUpdate();
-                        Navigator.pop(context);
-                      },
-                      child: const Text(
-                        'Apply',
-                        style: TextStyle(
-                          color: Colors.lightBlue,
-                          fontSize: 20,
-                        ),
-                      )
-                    ),
-                    TextButton(
                         onPressed: () {
                           widget.tags.removeAllFilteredTags();
                           Navigator.pop(context);

@@ -6,6 +6,7 @@ class TagsUpdater {
 
   late List<String> tags;
   late List<String> filteredTags;
+  late List<String> prevFilter;
   final changedNotifier = ValueNotifier<bool>(false);
 
   TagsUpdater() {
@@ -15,6 +16,7 @@ class TagsUpdater {
   _init() async {
     tags = await getTags();
     filteredTags = [];
+    prevFilter = [];
   }
 
   void addFilteredTag(String entry) {
@@ -31,6 +33,7 @@ class TagsUpdater {
   }
 
   void doUpdate() {
+    prevFilter = filteredTags.toList();
     changedNotifier.value = true;
   }
 

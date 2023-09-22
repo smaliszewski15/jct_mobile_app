@@ -22,12 +22,22 @@ class _ConcertsState extends State<ConcertsScreen> {
   void initState() {
     super.initState();
     done = getConcertList('');
+    searchFocus = FocusNode();
+    searchFocus.addListener(() => searchLostFocus());
   }
 
   List<Concert> searchResults = [];
   String oldQuery = '';
   final _search = TextEditingController();
   Future<bool>? done;
+  late FocusNode searchFocus;
+
+  void searchLostFocus() {
+    if (!searchFocus.hasFocus && _search.value.text != oldQuery) {
+      done = getConcertList(_search.value.text);
+      setState(() {});
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,6 +66,7 @@ class _ConcertsState extends State<ConcertsScreen> {
                       flex: 9,
                       child: TextField(
                         maxLines: 1,
+                        focusNode: searchFocus,
                         controller: _search,
                         decoration: InputDecoration.collapsed(
                           hintText: 'Search...',
@@ -70,10 +81,11 @@ class _ConcertsState extends State<ConcertsScreen> {
                           fontSize: 18,
                         ),
                         textInputAction: TextInputAction.done,
-                        onSubmitted: (query) {
+                        onEditingComplete: () {
+                          String query = _search.value.text;
                           if (oldQuery.isEmpty || oldQuery != query) {
                             oldQuery = query;
-                            getConcertList(query);
+                            done = getConcertList(query);
                             //getConcertList();
                             setState(() {});
                           }
@@ -92,7 +104,8 @@ class _ConcertsState extends State<ConcertsScreen> {
                 valueListenable: widget.tags.changedNotifier,
                 builder: (_, value, __) {
                   if (value) {
-                    //updateConcertList with tags included
+                    done = getConcertList(_search.value.text);
+                    widget.tags.finUpdate();
                   }
                   return FutureBuilder(
                     future: done,
@@ -166,9 +179,22 @@ class _ConcertsState extends State<ConcertsScreen> {
   Future<bool> getConcertList(String searchQuery) async {
     searchResults = [];
 
-    Map<String,dynamic> queries = {
-      'query': searchQuery,
-    };
+    Map<String,dynamic> queries = {};
+
+    if (searchQuery.isNotEmpty) {
+      queries['query'] = searchQuery;
+    }
+
+
+    if (widget.tags.filteredTags.isNotEmpty) {
+      int count = 1;
+      for (var tag in widget.tags.filteredTags) {
+        queries['tag$count'] = tag;
+        count++;
+      }
+    }
+
+    print(queries);
 
     final res = await ConcertsAPI.searchSongs(queries);
 

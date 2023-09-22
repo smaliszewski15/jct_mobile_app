@@ -94,6 +94,15 @@ class _SkeletonState extends State<Skeleton> {
               drawer: HomeDrawer(),
               endDrawer: _navManager.buttonNotifier.value == NavState.concert ?
               TagFilterDrawer(_tagManager) : null,
+              onEndDrawerChanged: (isOpened) {
+                if (!isOpened) {
+                  if (_navManager.buttonNotifier.value == NavState.concert) {
+                    if (_tagManager.prevFilter != _tagManager.filteredTags) {
+                      _tagManager.doUpdate();
+                    }
+                  }
+                }
+              },
               body: Builder(
                 builder: (context) {
                   return GestureDetector(
