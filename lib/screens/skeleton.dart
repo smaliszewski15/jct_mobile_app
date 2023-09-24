@@ -246,7 +246,7 @@ class _SkeletonState extends State<Skeleton> {
                             ),
                           ),
                         ),
-                        /*Expanded(
+                        Expanded(
                               flex: 2,
                               child: OutlinedButton(
                               onPressed: () {
@@ -263,20 +263,22 @@ class _SkeletonState extends State<Skeleton> {
                                   Icon(
                                     Icons.remove_done,
                                     size: bottomIconSize,
-                                    color: mainSchemeColor,
+                                    color: _navManager.buttonNotifier.value ==
+                                        NavState.test ? mainSchemeColor : white,
                                   ),
                                   Text(
                                     'Test',
                                     style: TextStyle(
                                       fontSize: navBarTextSize,
-                                      color: mainSchemeColor,
+                                      color: _navManager.buttonNotifier.value ==
+                                          NavState.test ? mainSchemeColor : white,
                                     ),
                                     textAlign: TextAlign.center,
                                   )
                                 ],
                               ),
                               ),
-                            ),*/
+                            ),
                         Expanded(
                           flex: 2,
                           child: Container(

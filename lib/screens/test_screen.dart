@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:audio_session/audio_session.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
@@ -12,7 +11,8 @@ import '../APIFunctions/api_globals.dart';
 import '../utils/colors.dart';
 import '../utils/globals.dart';
 
-const int tSampleRate = 41000;
+const int tRSampleRate = 41000;
+const int tPSampleRate = 41000;
 
 class TestScreen extends StatefulWidget {
 
@@ -22,13 +22,29 @@ class TestScreen extends StatefulWidget {
 
 class _TestScreenState extends State<TestScreen> with SingleTickerProviderStateMixin, WidgetsBindingObserver{
   final buttonNotifier = ValueNotifier<bool>(false);
-  late WebSocketChannel socket;
+  late WebSocketChannel? socket;
+
+  void disconnect() {
+    socket!.sink.add('disconnect');
+    socket!.sink.close();
+    socket = null;
+    buttonNotifier.value = false;
+  }
+
+  void connect() {
+    socket = WebSocketChannel.connect(Uri.parse('ws://$API_PREFIX:8080'));
+    socket!.stream.listen((data) {
+      _mPlayer!.foodSink!.add(FoodData(data));
+    },
+    onError: (error) => print(error),
+    );
+  }
 
   FlutterSoundRecorder? _mRecorder = FlutterSoundRecorder();
+  FlutterSoundPlayer? _mPlayer = FlutterSoundPlayer();
   bool _mRecorderIsInited = false;
-  String? _mPath;
-  StreamSubscription? _mRecordingDataSubscription;
   StreamSubscription? _recorderSubscription;
+  StreamSubscription? _mRecordingDataSubscription;
 
   bool audioDetected = false;
 
@@ -38,6 +54,7 @@ class _TestScreenState extends State<TestScreen> with SingleTickerProviderStateM
       throw RecordingPermissionException('Microphone permission not granted');
     }
     await _mRecorder!.openRecorder();
+    await _mPlayer!.openPlayer();
 
     final session = await AudioSession.instance;
     await session.configure(AudioSessionConfiguration(
@@ -57,56 +74,75 @@ class _TestScreenState extends State<TestScreen> with SingleTickerProviderStateM
       androidAudioFocusGainType: AndroidAudioFocusGainType.gain,
       androidWillPauseWhenDucked: true,
     ));
-
-    setState(() {
-      _mRecorderIsInited = true;
-    });
   }
 
   @override
   void initState() {
     super.initState();
     connect();
-    _openRecorder();
+    _openRecorder().then((value) {
+      setState(() {
+        _mRecorderIsInited = true;
+      });
+    });
   }
 
   @override
   void dispose() {
-
-    stopRecorder();
-    _mRecorder!.closeRecorder();
-    _mRecorder = null;
+    release();
     super.dispose();
   }
 
-  void disconnect() {
-    socket.sink.add('disconnect');
-    socket.sink.close();
-    buttonNotifier.value = false;
+  Future<void> release() async {
+    await stopPlayer();
+    await _mPlayer!.closePlayer();
+    _mPlayer = null;
+
+    await stopRecorder();
+    await _mRecorder!.closeRecorder();
+    _mRecorder = null;
   }
 
-  void connect() {
-    socket = WebSocketChannel.connect(Uri.parse('ws://$API_PREFIX:8080'));
-    socket.stream.listen(
-          (data) {
-        print(data);
-        buttonNotifier.value = true;
-      },
-      onError: (error) => print(error),
-    );
+  Future<void>? stopRecorder() async {
+    await _mRecorder!.stopRecorder();
+    if (_recorderSubscription != null) {
+      await _recorderSubscription!.cancel();
+      _recorderSubscription = null;
+    }
+    audioDetected = false;
+    if (_mRecordingDataSubscription != null) {
+      await _mRecordingDataSubscription!.cancel();
+    _mRecordingDataSubscription = null;
+    }
+    return null;
+  }
+
+  Future<void>? stopPlayer() {
+    if (_mPlayer != null) {
+      return _mPlayer!.stopPlayer();
+    }
+    return null;
   }
 
   Future<void> record() async {
-    assert(_mRecorderIsInited);
+    connect();
+    await _mPlayer!.startPlayerFromStream(
+      codec: Codec.pcm16,
+      numChannels: 1,
+      sampleRate: tPSampleRate,
+    );
 
     var recordingDataController = StreamController<Food>();
+    //_mRecorder!.setSubscriptionDuration(const Duration(milliseconds: 100));
     _mRecordingDataSubscription =
         recordingDataController.stream.listen((buffer) {
           if (buffer is FoodData) {
-            socket.sink.add(buffer.data!);
+            if (buffer.data != null) {
+              socket!.sink.add(buffer.data!);
+            }
           }
         });
-    _mRecorder!.setSubscriptionDuration(const Duration(milliseconds: 100));
+    var audioListener = StreamController<Food>();
     _recorderSubscription = _mRecorder!.onProgress!.listen((e) {
       if (e.decibels! > 20 && !audioDetected) {
         setState(() => audioDetected = true);
@@ -114,43 +150,41 @@ class _TestScreenState extends State<TestScreen> with SingleTickerProviderStateM
         setState(() => audioDetected = false);
       }
     });
+
     await _mRecorder!.startRecorder(
-      toStream: recordingDataController.sink,
       codec: Codec.pcm16,
+      toStream: recordingDataController.sink,
+      sampleRate: tRSampleRate,
       numChannels: 1,
-      sampleRate: tSampleRate,
     );
     setState(() {});
   }
 
-  Future<void> stopRecorder() async {
-    await _mRecorder!.stopRecorder();
-    if (_mRecordingDataSubscription != null) {
-      await _mRecordingDataSubscription!.cancel();
-      _mRecordingDataSubscription = null;
+  Future<void> stop() async {
+    disconnect();
+    if (_mRecorder != null) {
+      await _mRecorder!.stopRecorder();
     }
-    if (_recorderSubscription != null) {
-      await _recorderSubscription!.cancel();
-      _recorderSubscription = null;
+    if (_mPlayer != null) {
+      await _mPlayer!.stopPlayer();
     }
+    setState(() {});
   }
 
-  Function()? getRecorderFn() {
+  Function()? getRecFn() {
     if (!_mRecorderIsInited) {
+      audioDetected = false;
       return null;
     }
-    return _mRecorder!.isStopped
-        ? record
-        : () {
-      stopRecorder().then((value) => setState(() {}));
-    };
+    return _mRecorder!.isRecording ? stop : record;
   }
 
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-
+        disconnect();
+        return true;
       },
       child: Container(
         width: MediaQuery.of(context).size.width,
@@ -168,8 +202,8 @@ class _TestScreenState extends State<TestScreen> with SingleTickerProviderStateM
                   color: audioDetected ? Colors.green : white,
                   shape: BoxShape.circle,
                 ),
-                child: TextButton(
-                  onPressed: getRecorderFn(),
+                child: OutlinedButton(
+                  onPressed: getRecFn(),
                   style: ButtonStyle(
                     shape: MaterialStateProperty.all(
                         RoundedRectangleBorder(
