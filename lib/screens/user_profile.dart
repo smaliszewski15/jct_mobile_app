@@ -113,269 +113,274 @@ class _ProfileState extends State<Profile> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.height,
-      decoration: BoxDecoration(color: backgroundColor),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          Container(
-            width: 200,
-            height: 200,
-            margin: const EdgeInsets.only(top: 40),
-            decoration: BoxDecoration(
-              color: backgroundColor,
-            ),
-            child: Container(
-              decoration: const BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage('assets/images/default-profile-image.jpg'),
-                  fit: BoxFit.cover,
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: black,
+      ),
+      body: Container(
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
+        decoration: BoxDecoration(color: backgroundColor),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Container(
+              width: 200,
+              height: 200,
+              margin: const EdgeInsets.only(top: 40),
+              decoration: BoxDecoration(
+                color: backgroundColor,
+              ),
+              child: Container(
+                decoration: const BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage('assets/images/default-profile-image.jpg'),
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
             ),
-          ),
-          Container(
-            margin: const EdgeInsets.only(top: 60),
-            alignment: Alignment.topCenter,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Expanded(
-                      flex: 5,
-                      child: Column(
-                        children: <Widget>[
-                          Text(
-                            'First Name',
-                            style: TextStyle(
-                              fontSize: bioTextSize,
-                              color: textColor,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                          Container(
-                            width: 150,
-                            margin: const EdgeInsets.only(left: 10),
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 10, horizontal: 7),
-                            decoration: BoxDecoration(
-                              color: textFieldBackingColor,
-                              borderRadius: const BorderRadius.all(
-                                  Radius.circular(roundedCorners)),
-                            ),
-                            child: Text(
-                              user!.firstName == '' ? 'No First Name' : user!.firstName,
+            Container(
+              margin: const EdgeInsets.only(top: 60),
+              alignment: Alignment.topCenter,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Expanded(
+                        flex: 5,
+                        child: Column(
+                          children: <Widget>[
+                            Text(
+                              'First Name',
                               style: TextStyle(
                                 fontSize: bioTextSize,
-                                color: buttonTextColor,
+                                color: textColor,
                               ),
-                              textAlign: TextAlign.left,
+                              textAlign: TextAlign.center,
                             ),
-                          ),
-                        ],
+                            Container(
+                              width: 150,
+                              margin: const EdgeInsets.only(left: 10),
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 7),
+                              decoration: BoxDecoration(
+                                color: textFieldBackingColor,
+                                borderRadius: const BorderRadius.all(
+                                    Radius.circular(roundedCorners)),
+                              ),
+                              child: Text(
+                                user!.firstName == '' ? 'No First Name' : user!.firstName,
+                                style: TextStyle(
+                                  fontSize: bioTextSize,
+                                  color: buttonTextColor,
+                                ),
+                                textAlign: TextAlign.left,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    Expanded(
-                      flex: 5,
-                      child: Column(
-                        children: <Widget>[
-                          Text(
-                            'Last Name',
-                            style: TextStyle(
-                              fontSize: bioTextSize,
-                              color: textColor,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                          Container(
-                            width: 150,
-                            margin: const EdgeInsets.only(right: 10),
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 10, horizontal: 5),
-                            decoration: BoxDecoration(
-                              color: textFieldBackingColor,
-                              borderRadius: const BorderRadius.all(
-                                  Radius.circular(roundedCorners)),
-                            ),
-                            child: Text(
-                              user!.lastName == '' ? 'No Last Name' : user!.lastName,
+                      Expanded(
+                        flex: 5,
+                        child: Column(
+                          children: <Widget>[
+                            Text(
+                              'Last Name',
                               style: TextStyle(
                                 fontSize: bioTextSize,
-                                color: buttonTextColor,
+                                color: textColor,
                               ),
-                              textAlign: TextAlign.left,
+                              textAlign: TextAlign.center,
                             ),
+                            Container(
+                              width: 150,
+                              margin: const EdgeInsets.only(right: 10),
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 5),
+                              decoration: BoxDecoration(
+                                color: textFieldBackingColor,
+                                borderRadius: const BorderRadius.all(
+                                    Radius.circular(roundedCorners)),
+                              ),
+                              child: Text(
+                                user!.lastName == '' ? 'No Last Name' : user!.lastName,
+                                style: TextStyle(
+                                  fontSize: bioTextSize,
+                                  color: buttonTextColor,
+                                ),
+                                textAlign: TextAlign.left,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  Column(
+                    children: <Widget>[
+                      Container(
+                        margin: const EdgeInsets.only(top: 20),
+                        child: Text(
+                          'Username',
+                          style: TextStyle(
+                            fontSize: bioTextSize,
+                            color: textColor,
                           ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                Column(
-                  children: <Widget>[
-                    Container(
-                      margin: const EdgeInsets.only(top: 20),
-                      child: Text(
-                        'Username',
-                        style: TextStyle(
-                          fontSize: bioTextSize,
-                          color: textColor,
+                          textAlign: TextAlign.center,
                         ),
-                        textAlign: TextAlign.center,
                       ),
-                    ),
-                    Container(
-                      width: MediaQuery.of(context).size.width / 1.2,
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 10, horizontal: 5),
-                      decoration: BoxDecoration(
-                        color: textFieldBackingColor,
-                        borderRadius: const BorderRadius.all(
-                            Radius.circular(roundedCorners)),
-                      ),
-                      child: Text(
-                        user!.username == '' ? 'No User Name' : user!.username,
-                        style: TextStyle(
-                          fontSize: bioTextSize,
-                          color: buttonTextColor,
-                        ),
-                        textAlign: TextAlign.left,
-                      ),
-                    ),
-                  ],
-                ),
-                Column(
-                  children: <Widget>[
-                    Container(
-                      margin: const EdgeInsets.only(top: 20),
-                      child: Text(
-                        'Email',
-                        style: TextStyle(
-                          fontSize: bioTextSize,
-                          color: textColor,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                    Container(
-                      width: MediaQuery.of(context).size.width / 1.2,
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 10, horizontal: 5),
-                      decoration: BoxDecoration(
-                        color: textFieldBackingColor,
-                        borderRadius: const BorderRadius.all(
-                            Radius.circular(roundedCorners)),
-                      ),
-                      child: Text(
-                        user!.email == '' ? 'No Email' : user!.email,
-                        style: TextStyle(
-                          fontSize: bioTextSize,
-                          color: buttonTextColor,
-                        ),
-                        textAlign: TextAlign.left,
-                      ),
-                    ),
-                  ],
-                ),
-                Column(
-                  children: <Widget>[
-                    Container(
-                      margin: const EdgeInsets.only(top: 20),
-                      child: Text(
-                        'Phone Number',
-                        style: TextStyle(
-                          fontSize: bioTextSize,
-                          color: textColor,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                    Container(
-                      width: MediaQuery.of(context).size.width / 1.2,
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 10, horizontal: 5),
-                      margin: const EdgeInsets.only(bottom: 5),
-                      decoration: BoxDecoration(
-                        color: textFieldBackingColor,
-                        borderRadius: const BorderRadius.all(
-                            Radius.circular(roundedCorners)),
-                      ),
-                      child: Text(
-                        user!.phoneNumber == '' ? 'No Phone Number' : user!.phoneNumber,
-                        style: TextStyle(
-                          fontSize: bioTextSize,
-                          color: buttonTextColor,
-                        ),
-                        textAlign: TextAlign.left,
-                      ),
-                    ),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Expanded(
-                      flex: 5,
-                      child: Container(
-                        margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                        padding: const EdgeInsets.all(5),
+                      Container(
+                        width: MediaQuery.of(context).size.width / 1.2,
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 10, horizontal: 5),
                         decoration: BoxDecoration(
-                          color: gold,
-                          border: Border.all(color: black, width: 3),
+                          color: textFieldBackingColor,
+                          borderRadius: const BorderRadius.all(
+                              Radius.circular(roundedCorners)),
                         ),
-                        child: OutlinedButton(
-                          onPressed: () {
-                            Navigator.pushNamed(context, '/profile/edit/information');
-                          },
-                          child: Text(
-                            'Edit Information',
-                            style: TextStyle(
-                              fontSize: infoFontSize,
-                              color: buttonTextColor,
-                              fontWeight: FontWeight.w400,
-                            ),
-                            textAlign: TextAlign.center,
+                        child: Text(
+                          user!.username == '' ? 'No User Name' : user!.username,
+                          style: TextStyle(
+                            fontSize: bioTextSize,
+                            color: buttonTextColor,
                           ),
+                          textAlign: TextAlign.left,
                         ),
                       ),
-                    ),
-                    Expanded(
-                      flex: 5,
-                      child: Container(
-                        margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                        padding: const EdgeInsets.all(5),
+                    ],
+                  ),
+                  Column(
+                    children: <Widget>[
+                      Container(
+                        margin: const EdgeInsets.only(top: 20),
+                        child: Text(
+                          'Email',
+                          style: TextStyle(
+                            fontSize: bioTextSize,
+                            color: textColor,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      Container(
+                        width: MediaQuery.of(context).size.width / 1.2,
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 10, horizontal: 5),
                         decoration: BoxDecoration(
-                          color: gold,
-                          border: Border.all(color: black, width: 3),
+                          color: textFieldBackingColor,
+                          borderRadius: const BorderRadius.all(
+                              Radius.circular(roundedCorners)),
                         ),
-                        child: OutlinedButton(
-                          onPressed: () {
-                            Navigator.restorablePushNamed(
-                                context, '/profile/edit/password');
-                          },
-                          child: Text(
-                            'Change Password',
-                            style: TextStyle(
-                              fontSize: infoFontSize,
-                              color: buttonTextColor,
-                              fontWeight: FontWeight.w400,
+                        child: Text(
+                          user!.email == '' ? 'No Email' : user!.email,
+                          style: TextStyle(
+                            fontSize: bioTextSize,
+                            color: buttonTextColor,
+                          ),
+                          textAlign: TextAlign.left,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Column(
+                    children: <Widget>[
+                      Container(
+                        margin: const EdgeInsets.only(top: 20),
+                        child: Text(
+                          'Phone Number',
+                          style: TextStyle(
+                            fontSize: bioTextSize,
+                            color: textColor,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      Container(
+                        width: MediaQuery.of(context).size.width / 1.2,
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 10, horizontal: 5),
+                        margin: const EdgeInsets.only(bottom: 5),
+                        decoration: BoxDecoration(
+                          color: textFieldBackingColor,
+                          borderRadius: const BorderRadius.all(
+                              Radius.circular(roundedCorners)),
+                        ),
+                        child: Text(
+                          user!.phoneNumber == '' ? 'No Phone Number' : user!.phoneNumber,
+                          style: TextStyle(
+                            fontSize: bioTextSize,
+                            color: buttonTextColor,
+                          ),
+                          textAlign: TextAlign.left,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Expanded(
+                        flex: 5,
+                        child: Container(
+                          margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                          padding: const EdgeInsets.all(5),
+                          decoration: BoxDecoration(
+                            color: gold,
+                            border: Border.all(color: black, width: 3),
+                          ),
+                          child: OutlinedButton(
+                            onPressed: () {
+                              Navigator.pushNamed(context, '/profile/edit/information');
+                            },
+                            child: Text(
+                              'Edit Information',
+                              style: TextStyle(
+                                fontSize: infoFontSize,
+                                color: buttonTextColor,
+                                fontWeight: FontWeight.w400,
+                              ),
+                              textAlign: TextAlign.center,
                             ),
-                            textAlign: TextAlign.center,
                           ),
                         ),
                       ),
-                    ),
-                  ],
-                )
-              ],
+                      Expanded(
+                        flex: 5,
+                        child: Container(
+                          margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                          padding: const EdgeInsets.all(5),
+                          decoration: BoxDecoration(
+                            color: gold,
+                            border: Border.all(color: black, width: 3),
+                          ),
+                          child: OutlinedButton(
+                            onPressed: () {
+                              Navigator.restorablePushNamed(
+                                  context, '/profile/edit/password');
+                            },
+                            child: Text(
+                              'Change Password',
+                              style: TextStyle(
+                                fontSize: infoFontSize,
+                                color: buttonTextColor,
+                                fontWeight: FontWeight.w400,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
+                ],
+              ),
             ),
-          ),
-        ],
-      ),
+          ],
+        ),
+      )
     );
   }
 }

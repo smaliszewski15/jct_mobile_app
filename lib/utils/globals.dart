@@ -30,12 +30,6 @@ final defaultTextStyle = TextStyle(
   color: textColor,
 );
 
-final BoxDecoration lit = BoxDecoration(
-  color: backgroundColor,
-  border: Border.all(color: white),
-  borderRadius: const BorderRadius.all(Radius.circular(20)),
-);
-
 TextStyle errorTextStyle = TextStyle(fontSize: 10, color: invalidColor);
 
 final globalDecoration = InputDecoration(

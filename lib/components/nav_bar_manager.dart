@@ -10,11 +10,11 @@ class NavStateManager {
   }
 
   void _init() async {
-    title = 'A Tribute to John Cage';
+    title = 'Home';
   }
 
   void home() {
-    title = 'A Tribute to John Cage';
+    title = 'Home';
     buttonNotifier.value = NavState.home;
   }
 
@@ -23,22 +23,22 @@ class NavStateManager {
     buttonNotifier.value = NavState.concert;
   }
 
-  void groups() {
-    title = 'Groups';
-    buttonNotifier.value = NavState.group;
-  }
-
-  void profile() {
-    title = 'My Profile';
-    buttonNotifier.value = NavState.profile;
+  void schedule() {
+    title = 'Schedule';
+    buttonNotifier.value = NavState.schedule;
   }
 
   void testing() {
     title = 'Current Test Features';
     buttonNotifier.value = NavState.test;
   }
+
+  void admin() {
+    title = 'Admin Page';
+    buttonNotifier.value = NavState.admin;
+  }
 }
 
 enum NavState{
-  home, concert, group, profile, admin, test
+  home, concert, schedule, admin, test
 }
