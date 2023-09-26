@@ -1,12 +1,13 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import '../APIfunctions/concertAPI.dart';
+import '../utils/concert.dart';
 
 class TagsUpdater {
 
-  late List<String> tags;
-  late List<String> filteredTags;
-  late List<String> prevFilter;
+  late List<Tag> tags;
+  List<Tag> filteredTags = [];
+  List<Tag> prevFilter = [];
   final changedNotifier = ValueNotifier<bool>(false);
 
   TagsUpdater() {
@@ -15,15 +16,16 @@ class TagsUpdater {
 
   _init() async {
     tags = await getTags();
-    filteredTags = [];
-    prevFilter = [];
   }
 
-  void addFilteredTag(String entry) {
+  void addFilteredTag(Tag entry) {
+    if (filteredTags.length == 3) {
+      filteredTags.removeAt(0);
+    }
     filteredTags.add(entry);
   }
 
-  void removeFilteredTag(String entry) {
+  void removeFilteredTag(Tag entry) {
     filteredTags.remove(entry);
   }
 
@@ -41,8 +43,8 @@ class TagsUpdater {
     changedNotifier.value = false;
   }
 
-  Future<List<String>> getTags() async {
-    List<String> toRet = [];
+  Future<List<Tag>> getTags() async {
+    List<Tag> toRet = [];
 
     var res = await ConcertsAPI.getTags();
 
@@ -50,15 +52,16 @@ class TagsUpdater {
       return [];
     }
     var data = json.decode(res.body);
+    print(data);
 
     for(var entry in data['tags']) {
-      toRet.add(entry);
+      toRet.add(Tag(entry['idTags'], entry['Tags']));
     }
 
     return toRet;
   }
 
-  /*List<String> getTags() {
+/*List<String> getTags() {
     List<String> toRet = [];
     for(var entry in ConcertsAPI.getTags['tags']) {
       toRet.add(entry);

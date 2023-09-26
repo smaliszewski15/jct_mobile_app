@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:john_cage_tribute/components/concert_tags_manager.dart';
-import '../APIfunctions/concertAPI.dart';
 import '../utils/colors.dart';
 import '../utils/globals.dart';
 
@@ -65,7 +64,7 @@ class _TagFilterDrawerState extends State<TagFilterDrawer> {
                         setState(() {});
                       },
                       child: Text(
-                        entry.capitalize(),
+                        entry.tagName.capitalize(),
                         style: const TextStyle(
                           fontSize: infoFontSize,
                           color: black,

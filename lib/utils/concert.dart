@@ -1,5 +1,3 @@
-import '../utils/globals.dart';
-
 class Concert {
   late String title;
   late int id;
@@ -36,5 +34,54 @@ class Concert {
   String toString() {
     String concert = 'Title: ${this.title}\nID: ${this.id}\nPerformers: ${this.performers}\nTags: ${this.tags}\nDescription: ${this.description}\nDate: ${this.date}';
     return concert;
+  }
+}
+
+class Tag {
+  late int tagID;
+  late String tagName;
+
+  Tag(this.tagID, this.tagName);
+
+  static equals(Tag? a, Tag? b) {
+    if (a == null || b == null) {
+      return false;
+    }
+
+    if (a.tagID != b.tagID) {
+      return false;
+    }
+
+    if (a.tagName != b.tagName) {
+      return false;
+    }
+
+    return true;
+  }
+
+  static ListEquals(List<Tag>? a, List<Tag>? b) {
+    if (a == null || b == null) {
+      return false;
+    }
+    if (a.isEmpty) {
+      return false;
+    }
+    if (b.isEmpty) {
+      return false;
+    }
+    if (a.length != b.length) {
+      return false;
+    }
+
+    for (int i = 0; i < a.length || i < b.length; i++) {
+      if (a[i].tagID != b[i].tagID) {
+        return false;
+      }
+      if (a[i].tagName != b[i].tagName) {
+        return false;
+      }
+    }
+
+    return true;
   }
 }

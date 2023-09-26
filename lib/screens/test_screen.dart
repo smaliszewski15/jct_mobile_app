@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 import 'package:audio_session/audio_session.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
@@ -25,6 +24,9 @@ class _TestScreenState extends State<TestScreen> with SingleTickerProviderStateM
   late WebSocketChannel? socket;
 
   void disconnect() {
+    if (socket == null) {
+      return;
+    }
     socket!.sink.add('disconnect');
     socket!.sink.close();
     socket = null;
@@ -33,10 +35,11 @@ class _TestScreenState extends State<TestScreen> with SingleTickerProviderStateM
 
   void connect() {
     socket = WebSocketChannel.connect(Uri.parse('ws://$API_PREFIX:8080'));
-    socket!.stream.listen((data) {
-      _mPlayer!.foodSink!.add(FoodData(data));
-    },
-    onError: (error) => print(error),
+    socket!.stream.listen(
+          (data) {
+        _mPlayer!.foodSink!.add(FoodData(data));
+      },
+      onError: (error) => print(error),
     );
   }
 
@@ -90,6 +93,7 @@ class _TestScreenState extends State<TestScreen> with SingleTickerProviderStateM
   @override
   void dispose() {
     release();
+    disconnect();
     super.dispose();
   }
 
@@ -109,10 +113,9 @@ class _TestScreenState extends State<TestScreen> with SingleTickerProviderStateM
       await _recorderSubscription!.cancel();
       _recorderSubscription = null;
     }
-    audioDetected = false;
     if (_mRecordingDataSubscription != null) {
       await _mRecordingDataSubscription!.cancel();
-    _mRecordingDataSubscription = null;
+      _mRecordingDataSubscription = null;
     }
     return null;
   }
@@ -125,7 +128,6 @@ class _TestScreenState extends State<TestScreen> with SingleTickerProviderStateM
   }
 
   Future<void> record() async {
-    connect();
     await _mPlayer!.startPlayerFromStream(
       codec: Codec.pcm16,
       numChannels: 1,
@@ -133,16 +135,16 @@ class _TestScreenState extends State<TestScreen> with SingleTickerProviderStateM
     );
 
     var recordingDataController = StreamController<Food>();
-    //_mRecorder!.setSubscriptionDuration(const Duration(milliseconds: 100));
+    _mRecorder!.setSubscriptionDuration(const Duration(milliseconds: 100));
     _mRecordingDataSubscription =
         recordingDataController.stream.listen((buffer) {
           if (buffer is FoodData) {
             if (buffer.data != null) {
+              print(buffer.data.runtimeType);
               socket!.sink.add(buffer.data!);
             }
           }
         });
-    var audioListener = StreamController<Food>();
     _recorderSubscription = _mRecorder!.onProgress!.listen((e) {
       if (e.decibels! > 20 && !audioDetected) {
         setState(() => audioDetected = true);
@@ -161,14 +163,14 @@ class _TestScreenState extends State<TestScreen> with SingleTickerProviderStateM
   }
 
   Future<void> stop() async {
-    disconnect();
     if (_mRecorder != null) {
       await _mRecorder!.stopRecorder();
     }
     if (_mPlayer != null) {
       await _mPlayer!.stopPlayer();
     }
-    setState(() {});
+    disconnect();
+    setState(() => audioDetected = false);
   }
 
   Function()? getRecFn() {

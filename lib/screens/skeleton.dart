@@ -9,6 +9,7 @@ import '../components/concert_tags_manager.dart';
 import '../components/profile_drawer.dart';
 import '../components/nav_bar_manager.dart';
 import '../utils/colors.dart';
+import '../utils/concert.dart';
 import '../utils/globals.dart';
 import '../utils/user.dart';
 
@@ -97,7 +98,7 @@ class _SkeletonState extends State<Skeleton> {
               onEndDrawerChanged: (isOpened) {
                 if (!isOpened) {
                   if (_navManager.buttonNotifier.value == NavState.concert) {
-                    if (_tagManager.prevFilter != _tagManager.filteredTags) {
+                    if (!Tag.ListEquals(_tagManager.prevFilter, _tagManager.filteredTags)) {
                       _tagManager.doUpdate();
                     }
                   }
@@ -168,9 +169,9 @@ class _SkeletonState extends State<Skeleton> {
                 color: black,
                 child: SizedBox(
                   height: 80,
-                    child: Center(
-                      child: Row(
-                        children: <Widget>[
+                  child: Center(
+                    child: Row(
+                      children: <Widget>[
                         Expanded(
                           flex: 2,
                           child: Container(
@@ -247,38 +248,38 @@ class _SkeletonState extends State<Skeleton> {
                           ),
                         ),
                         Expanded(
-                              flex: 2,
-                              child: OutlinedButton(
-                              onPressed: () {
-                                if (_navManager.buttonNotifier.value !=
-                                    NavState.test) {
-                                  _navManager.testing();
-                                  setState(() {});
-                                }
-                              },
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment
-                                    .center,
-                                children: <Widget>[
-                                  Icon(
-                                    Icons.remove_done,
-                                    size: bottomIconSize,
+                          flex: 2,
+                          child: OutlinedButton(
+                            onPressed: () {
+                              if (_navManager.buttonNotifier.value !=
+                                  NavState.test) {
+                                _navManager.testing();
+                                setState(() {});
+                              }
+                            },
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment
+                                  .center,
+                              children: <Widget>[
+                                Icon(
+                                  Icons.remove_done,
+                                  size: bottomIconSize,
+                                  color: _navManager.buttonNotifier.value ==
+                                      NavState.test ? mainSchemeColor : white,
+                                ),
+                                Text(
+                                  'Test',
+                                  style: TextStyle(
+                                    fontSize: navBarTextSize,
                                     color: _navManager.buttonNotifier.value ==
                                         NavState.test ? mainSchemeColor : white,
                                   ),
-                                  Text(
-                                    'Test',
-                                    style: TextStyle(
-                                      fontSize: navBarTextSize,
-                                      color: _navManager.buttonNotifier.value ==
-                                          NavState.test ? mainSchemeColor : white,
-                                    ),
-                                    textAlign: TextAlign.center,
-                                  )
-                                ],
-                              ),
-                              ),
+                                  textAlign: TextAlign.center,
+                                )
+                              ],
                             ),
+                          ),
+                        ),
                         Expanded(
                           flex: 2,
                           child: Container(
