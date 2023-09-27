@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:typed_data';
 import 'package:audio_session/audio_session.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
@@ -10,8 +11,9 @@ import '../APIFunctions/api_globals.dart';
 import '../utils/colors.dart';
 import '../utils/globals.dart';
 
-const int tRSampleRate = 41000;
-const int tPSampleRate = 41000;
+const int tRSampleRate = 32000;
+const int tPSampleRate = 32000;
+final Uint8List silence = Uint8List.fromList(List.filled(5000,0));
 
 class TestScreen extends StatefulWidget {
 
@@ -19,7 +21,7 @@ class TestScreen extends StatefulWidget {
   _TestScreenState createState() => _TestScreenState();
 }
 
-class _TestScreenState extends State<TestScreen> with SingleTickerProviderStateMixin, WidgetsBindingObserver{
+class _TestScreenState extends State<TestScreen> {
   final buttonNotifier = ValueNotifier<bool>(false);
   late WebSocketChannel? socket;
 
@@ -33,13 +35,14 @@ class _TestScreenState extends State<TestScreen> with SingleTickerProviderStateM
     buttonNotifier.value = false;
   }
 
-  void connect() {
+  Future<void> connect() async {
     socket = WebSocketChannel.connect(Uri.parse('ws://$API_PREFIX:8080'));
     socket!.stream.listen(
           (data) {
         _mPlayer!.foodSink!.add(FoodData(data));
       },
       onError: (error) => print(error),
+      onDone: () => stop(),
     );
   }
 
@@ -128,11 +131,9 @@ class _TestScreenState extends State<TestScreen> with SingleTickerProviderStateM
   }
 
   Future<void> record() async {
-    await _mPlayer!.startPlayerFromStream(
-      codec: Codec.pcm16,
-      numChannels: 1,
-      sampleRate: tPSampleRate,
-    );
+    if (socket == null) {
+      await connect();
+    }
 
     var recordingDataController = StreamController<Food>();
     _mRecorder!.setSubscriptionDuration(const Duration(milliseconds: 100));
@@ -140,7 +141,6 @@ class _TestScreenState extends State<TestScreen> with SingleTickerProviderStateM
         recordingDataController.stream.listen((buffer) {
           if (buffer is FoodData) {
             if (buffer.data != null) {
-              print(buffer.data.runtimeType);
               socket!.sink.add(buffer.data!);
             }
           }
@@ -159,6 +159,15 @@ class _TestScreenState extends State<TestScreen> with SingleTickerProviderStateM
       sampleRate: tRSampleRate,
       numChannels: 1,
     );
+
+    await _mPlayer!.startPlayerFromStream(
+      codec: Codec.pcm16,
+      numChannels: 1,
+      sampleRate: tPSampleRate,
+    );
+
+    _mPlayer!.foodSink!.add(FoodData(silence));
+
     setState(() {});
   }
 
