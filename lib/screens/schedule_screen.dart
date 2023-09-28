@@ -37,6 +37,16 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
 
   Future<void> connect() async {
     socket = WebSocketChannel.connect(Uri.parse('ws://$API_PREFIX:8080'));
+    _playbackSub = socket!.stream.listen(
+          (data) {
+            print('here');
+        if (_isListening) {
+          print('here1');
+          _mPlayer!.foodSink!.add(FoodData(data));
+        }
+      },
+      onError: (error) => print(error),
+    );
   }
 
   FlutterSoundRecorder? _mRecorder = FlutterSoundRecorder();
@@ -126,11 +136,13 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
   }
 
   Future<void> record() async {
+    await stopPlayer();
     if (socket == null) {
       await connect();
     }
     if (_playbackSub != null) {
-      _playbackSub!.cancel();
+      await _playbackSub!.cancel();
+      _playbackSub = null;
     }
 
     var recordingDataController = StreamController<Food>();
@@ -139,7 +151,6 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
         recordingDataController.stream.listen((buffer) {
           if (buffer is FoodData) {
             if (buffer.data != null) {
-              print(buffer.data);
               socket!.sink.add(buffer.data!);
             }
           }
@@ -160,18 +171,11 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
       numChannels: 1,
     );
 
-    await _mPlayer!.startPlayerFromStream(
-      codec: Codec.pcm16,
-      numChannels: 1,
-      sampleRate: tPSampleRate,
-    );
-
-    _mPlayer!.foodSink!.add(FoodData(silence));
-
     setState(() {});
   }
 
   Future<void> stop() async {
+    setState(() => audioDetected = false);
     if (_mRecorder != null) {
       await _mRecorder!.stopRecorder();
     }
@@ -179,19 +183,6 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
       await _mPlayer!.stopPlayer();
     }
     disconnect();
-    setState(() => audioDetected = false);
-  }
-
-  Function()? getRecFn() {
-    if (!_mRecorderIsInited) {
-      audioDetected = false;
-      return null;
-    }
-    return _mRecorder!.isRecording ? stop : listOrRec;
-  }
-
-  Function()? listOrRec() {
-    return _isListening ? listen : record;
   }
 
   Future<void> listen() async {
@@ -204,21 +195,15 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
     if (socket == null) {
       await connect();
     }
-    _playbackSub = socket!.stream.listen(
-          (data) {
-        print(data);
-        _mPlayer!.foodSink!.add(FoodData(data));
-      },
-      onError: (error) => print(error),
-      onDone: () => stop(),
-    );
+
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        stop();
+        await stop();
         return true;
       },
       child: Container(
@@ -238,7 +223,25 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                   shape: BoxShape.circle,
                 ),
                 child: OutlinedButton(
-                  onPressed: getRecFn(),
+                  onPressed: () async {
+                    if (!_mRecorderIsInited) {
+                      audioDetected = false;
+                      return;
+                    }
+                    if (_mRecorder!.isRecording || _mPlayer!.isPlaying) {
+                      print('here');
+                      await stop();
+                      setState((){});
+                      return;
+                    } else {
+                      if (_isListening) {
+                        await listen();
+                      } else {
+                        await record();
+                      }
+                    }
+
+                  },
                   style: ButtonStyle(
                     shape: MaterialStateProperty.all(
                         RoundedRectangleBorder(
@@ -254,7 +257,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                 ),
               ),
               Text(
-                  _mRecorder!.isRecording ? 'Stop' : 'Connect',
+                  _mRecorder!.isRecording || _mPlayer!.isPlaying ? 'Stop' : 'Connect',
                   style: TextStyle(
                     color: buttonTextColor,
                     fontSize: titleFontSize,
@@ -263,9 +266,15 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
               Container(
                   margin: const EdgeInsets.all(15),
                   child: OutlinedButton(
-                    onPressed: () {
+                    onPressed: () async {
                       setState(() => _isListening = !_isListening);
-                      listOrRec();
+                      if (_mRecorder!.isRecording || _mPlayer!.isPlaying) {
+                        if (_isListening) {
+                          await listen();
+                        } else {
+                          await record();
+                        }
+                      }
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
