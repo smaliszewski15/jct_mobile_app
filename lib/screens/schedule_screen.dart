@@ -23,7 +23,7 @@ class ScheduleScreen extends StatefulWidget {
 
 class _ScheduleScreenState extends State<ScheduleScreen> {
   final buttonNotifier = ValueNotifier<bool>(false);
-  late WebSocketChannel? socket;
+  WebSocketChannel? socket = null;
 
   void disconnect() {
     if (socket == null) {
@@ -37,13 +37,16 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
 
   Future<void> connect() async {
     socket = WebSocketChannel.connect(Uri.parse('ws://$API_PREFIX:8080'));
-    _playbackSub = socket!.stream.listen(
+    socket!.stream.listen(
           (data) {
-            print('here');
+            print(data);
         if (_isListening) {
           print('here1');
           _mPlayer!.foodSink!.add(FoodData(data));
         }
+      },
+      onDone: () {
+        print('done');
       },
       onError: (error) => print(error),
     );
@@ -54,7 +57,6 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
   bool _mRecorderIsInited = false;
   StreamSubscription? _audioDetectedSubscription;
   StreamSubscription? _mRecordingDataSubscription;
-  StreamSubscription? _playbackSub;
   bool _isListening = false;
 
   bool audioDetected = false;
@@ -90,7 +92,6 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
   @override
   void initState() {
     super.initState();
-    connect();
     _openRecorder().then((value) {
       setState(() {
         _mRecorderIsInited = true;
@@ -125,24 +126,25 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
       await _mRecordingDataSubscription!.cancel();
       _mRecordingDataSubscription = null;
     }
-    return null;
+    audioDetected = false;
+    return;
   }
 
   Future<void>? stopPlayer() {
     if (_mPlayer != null) {
       return _mPlayer!.stopPlayer();
     }
+    disconnect();
     return null;
   }
 
   Future<void> record() async {
-    await stopPlayer();
+    if (_mPlayer!.isPlaying) {
+      await stopPlayer();
+    }
+
     if (socket == null) {
       await connect();
-    }
-    if (_playbackSub != null) {
-      await _playbackSub!.cancel();
-      _playbackSub = null;
     }
 
     var recordingDataController = StreamController<Food>();
@@ -182,11 +184,13 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
     if (_mPlayer != null) {
       await _mPlayer!.stopPlayer();
     }
-    disconnect();
   }
 
   Future<void> listen() async {
-    await stopRecorder();
+    if (_mRecorder!.isRecording) {
+      await stopRecorder();
+    }
+
     await _mPlayer!.startPlayerFromStream(
       codec: Codec.pcm16,
       numChannels: 1,
@@ -229,18 +233,15 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                       return;
                     }
                     if (_mRecorder!.isRecording || _mPlayer!.isPlaying) {
-                      print('here');
                       await stop();
                       setState((){});
                       return;
-                    } else {
-                      if (_isListening) {
-                        await listen();
-                      } else {
-                        await record();
-                      }
                     }
-
+                    if (_isListening) {
+                      await listen();
+                    } else {
+                      await record();
+                    }
                   },
                   style: ButtonStyle(
                     shape: MaterialStateProperty.all(
