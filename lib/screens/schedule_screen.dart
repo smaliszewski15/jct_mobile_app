@@ -1,19 +1,7 @@
-import 'dart:async';
-import 'dart:typed_data';
-import 'package:audio_session/audio_session.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_sound/flutter_sound.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:web_socket_channel/web_socket_channel.dart';
-
-import '../APIFunctions/api_globals.dart';
-//import '../components/socket_listener.dart';
+import 'package:intl/intl.dart';
 import '../utils/colors.dart';
 import '../utils/globals.dart';
-
-const int tRSampleRate = 32000;
-const int tPSampleRate = 32000;
-final Uint8List silence = Uint8List.fromList(List.filled(5000,0));
 
 class ScheduleScreen extends StatefulWidget {
 
@@ -22,287 +10,200 @@ class ScheduleScreen extends StatefulWidget {
 }
 
 class _ScheduleScreenState extends State<ScheduleScreen> {
-  final buttonNotifier = ValueNotifier<bool>(false);
-  late WebSocketChannel? socket;
-
-  void disconnect() {
-    if (socket == null) {
-      return;
-    }
-    socket!.sink.add('disconnect');
-    socket!.sink.close();
-    socket = null;
-    buttonNotifier.value = false;
-  }
-
-  Future<void> connect() async {
-    socket = WebSocketChannel.connect(Uri.parse('ws://$API_PREFIX:8080'));
-  }
-
-  FlutterSoundRecorder? _mRecorder = FlutterSoundRecorder();
-  FlutterSoundPlayer? _mPlayer = FlutterSoundPlayer();
-  bool _mRecorderIsInited = false;
-  StreamSubscription? _audioDetectedSubscription;
-  StreamSubscription? _mRecordingDataSubscription;
-  StreamSubscription? _playbackSub;
-  bool _isListening = false;
-
-  bool audioDetected = false;
-
-  Future<void> _openRecorder() async {
-    var status = await Permission.microphone.request();
-    if (status != PermissionStatus.granted) {
-      throw RecordingPermissionException('Microphone permission not granted');
-    }
-    await _mRecorder!.openRecorder();
-    await _mPlayer!.openPlayer();
-
-    final session = await AudioSession.instance;
-    await session.configure(AudioSessionConfiguration(
-      avAudioSessionCategory: AVAudioSessionCategory.playAndRecord,
-      avAudioSessionCategoryOptions:
-      AVAudioSessionCategoryOptions.allowBluetooth |
-      AVAudioSessionCategoryOptions.defaultToSpeaker,
-      avAudioSessionMode: AVAudioSessionMode.spokenAudio,
-      avAudioSessionRouteSharingPolicy:
-      AVAudioSessionRouteSharingPolicy.defaultPolicy,
-      avAudioSessionSetActiveOptions: AVAudioSessionSetActiveOptions.none,
-      androidAudioAttributes: const AndroidAudioAttributes(
-        contentType: AndroidAudioContentType.speech,
-        flags: AndroidAudioFlags.none,
-        usage: AndroidAudioUsage.voiceCommunication,
-      ),
-      androidAudioFocusGainType: AndroidAudioFocusGainType.gain,
-      androidWillPauseWhenDucked: true,
-    ));
-  }
+  bool _createToggle = false;
+  late List<DateTime> tempList;
+  late int currentMonth;
+  late int currentDay;
 
   @override
   void initState() {
+    tempList = dateList();
+    currentMonth = DateTime.now().month;
+    currentDay = DateTime.now().day;
     super.initState();
-    connect();
-    _openRecorder().then((value) {
-      setState(() {
-        _mRecorderIsInited = true;
-      });
-    });
   }
 
-  @override
-  void dispose() {
-    release();
-    disconnect();
-    super.dispose();
-  }
-
-  Future<void> release() async {
-    await stopPlayer();
-    await _mPlayer!.closePlayer();
-    _mPlayer = null;
-
-    await stopRecorder();
-    await _mRecorder!.closeRecorder();
-    _mRecorder = null;
-  }
-
-  Future<void>? stopRecorder() async {
-    await _mRecorder!.stopRecorder();
-    if (_audioDetectedSubscription != null) {
-      await _audioDetectedSubscription!.cancel();
-      _audioDetectedSubscription = null;
-    }
-    if (_mRecordingDataSubscription != null) {
-      await _mRecordingDataSubscription!.cancel();
-      _mRecordingDataSubscription = null;
-    }
-    return null;
-  }
-
-  Future<void>? stopPlayer() {
-    if (_mPlayer != null) {
-      return _mPlayer!.stopPlayer();
-    }
-    return null;
-  }
-
-  Future<void> record() async {
-    if (socket == null) {
-      await connect();
-    }
-    if (_playbackSub != null) {
-      _playbackSub!.cancel();
+  List<DateTime> dateList() {
+    List<DateTime> toRet = [];
+    DateTime now = DateTime.now();
+    if (now.minute % 20 != 0) {
+      now = now.add(Duration(minutes: 20 - (now.minute % 20))) ;
+      print(now);
     }
 
-    var recordingDataController = StreamController<Food>();
-    _mRecorder!.setSubscriptionDuration(const Duration(milliseconds: 100));
-    _mRecordingDataSubscription =
-        recordingDataController.stream.listen((buffer) {
-          if (buffer is FoodData) {
-            if (buffer.data != null) {
-              print(buffer.data);
-              socket!.sink.add(buffer.data!);
-            }
-          }
-        });
-
-    _audioDetectedSubscription = _mRecorder!.onProgress!.listen((e) {
-      if (e.decibels! > 20 && !audioDetected) {
-        setState(() => audioDetected = true);
-      } else if (e.decibels! < 20 && audioDetected) {
-        setState(() => audioDetected = false);
-      }
-    });
-
-    await _mRecorder!.startRecorder(
-      codec: Codec.pcm16,
-      toStream: recordingDataController.sink,
-      sampleRate: tRSampleRate,
-      numChannels: 1,
-    );
-
-    await _mPlayer!.startPlayerFromStream(
-      codec: Codec.pcm16,
-      numChannels: 1,
-      sampleRate: tPSampleRate,
-    );
-
-    _mPlayer!.foodSink!.add(FoodData(silence));
-
-    setState(() {});
-  }
-
-  Future<void> stop() async {
-    if (_mRecorder != null) {
-      await _mRecorder!.stopRecorder();
+    for (; now.day != DateTime.now().day - 1; now = now.add(const Duration(minutes: 20))) {
+      toRet.add(now);
     }
-    if (_mPlayer != null) {
-      await _mPlayer!.stopPlayer();
-    }
-    disconnect();
-    setState(() => audioDetected = false);
-  }
-
-  Function()? getRecFn() {
-    if (!_mRecorderIsInited) {
-      audioDetected = false;
-      return null;
-    }
-    return _mRecorder!.isRecording ? stop : listOrRec;
-  }
-
-  Function()? listOrRec() {
-    return _isListening ? listen : record;
-  }
-
-  Future<void> listen() async {
-    await stopRecorder();
-    await _mPlayer!.startPlayerFromStream(
-      codec: Codec.pcm16,
-      numChannels: 1,
-      sampleRate: tPSampleRate,
-    );
-    if (socket == null) {
-      await connect();
-    }
-    _playbackSub = socket!.stream.listen(
-          (data) {
-        print(data);
-        _mPlayer!.foodSink!.add(FoodData(data));
-      },
-      onError: (error) => print(error),
-      onDone: () => stop(),
-    );
+    return toRet;
   }
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        stop();
-        return true;
-      },
-      child: Container(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
-        color: backgroundColor,
-        child: Align(
-          alignment: Alignment.center,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Container(
-                width: 100,
-                height: 100,
-                decoration: BoxDecoration(
-                  color: audioDetected ? Colors.green : white,
-                  shape: BoxShape.circle,
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      height: MediaQuery.of(context).size.height,
+      color: backgroundColor,
+      child: Column(
+        children: <Widget>[
+          SizedBox(
+            width: MediaQuery.of(context).size.width,
+            child: Row(
+              children: <Widget>[
+                Text(
+                  'I would like to...',
+                  style: defaultTextStyle,
                 ),
-                child: OutlinedButton(
-                  onPressed: getRecFn(),
-                  style: ButtonStyle(
-                    shape: MaterialStateProperty.all(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(25),
-                        )
-                    ),
-                  ),
-                  child: const Icon(
-                    Icons.mic_rounded,
-                    color: black,
-                    size: bottomIconSize,
+                TextButton(
+                  onPressed: () {
+                    setState(() => _createToggle = !_createToggle);
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Container(
+                        width: 75,
+                        padding: const EdgeInsets.all(5),
+                        color: _createToggle ? black : mainSchemeColor,
+                        child: Text(
+                          'Create',
+                          style: TextStyle(
+                            color: _createToggle ? white : black,
+                            fontSize: infoFontSize,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      Container(
+                        width: 75,
+                        padding: const EdgeInsets.all(5),
+                        color: _createToggle ? mainSchemeColor : black,
+                        child: Text(
+                          'Join',
+                          style: TextStyle(
+                            color: _createToggle ? black : white,
+                            fontSize: infoFontSize,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              ),
-              Text(
-                  _mRecorder!.isRecording ? 'Stop' : 'Connect',
-                  style: TextStyle(
-                    color: buttonTextColor,
-                    fontSize: titleFontSize,
-                  )
-              ),
-              Container(
-                  margin: const EdgeInsets.all(15),
-                  child: OutlinedButton(
-                    onPressed: () {
-                      setState(() => _isListening = !_isListening);
-                      listOrRec();
-                    },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Container(
-                          width: 150,
-                          padding: const EdgeInsets.all(5),
-                          color: _isListening ? black : mainSchemeColor,
-                          child: Text(
-                            'Record',
-                            style: TextStyle(
-                              color: _isListening ? white : black,
-                              fontSize: 40,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                        Container(
-                          width: 150,
-                          padding: const EdgeInsets.all(5),
-                          color: _isListening ? mainSchemeColor : black,
-                          child: Text(
-                            'Listen',
-                            style: TextStyle(
-                              color: _isListening ? black : white,
-                              fontSize: 40,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      ],
-                    ),
-                  )
-              ),
-            ],
+                Text(
+                  'a group.',
+                  style: defaultTextStyle,
+                ),
+              ],
+            ),
           ),
-        ),
+          SizedBox(
+            height: MediaQuery.of(context).size.height - 98 - AppBar().preferredSize.height - navBarHeight,
+            child: ListView.builder(
+              addAutomaticKeepAlives: true,
+              itemCount: tempList.length,
+              itemBuilder: (context, index) {
+                if (tempList[index].day != currentDay) {
+                  currentDay = tempList[index].day;
+                  if (tempList[index].month != currentMonth) {
+                    currentMonth = tempList[index].month;
+                    return Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 5),
+                      child: Column(
+                        children: <Widget>[
+                          SizedBox(
+                            width: double.infinity,
+                            child: Text(
+                              DateFormat('MMMM').format(DateTime(0, currentMonth)),
+                              style: TextStyle(
+                                fontSize: 32,
+                                color: textColor,
+                              ),
+                              textAlign: TextAlign.left,
+                            ),
+                          ),
+                          const Divider(
+                            height: 5,
+                            thickness: 1,
+                            color: black,
+                          ),
+                          SizedBox(
+                            width: double.infinity,
+                            child: Text(
+                              DateFormat('dd').format(DateTime(0, 0, currentDay)),
+                              style: TextStyle(
+                                fontSize: 24,
+                                color: textColor,
+                              ),
+                              textAlign: TextAlign.left,
+                            ),
+                          ),
+                          const Divider(
+                            height: 5,
+                            thickness: 1,
+                            color: black,
+                          ),
+                          Container(
+                            width: double.infinity,
+                            color: accentColor,
+                            child: Text(
+                              DateFormat('jm').format(tempList[index]),
+                              style: defaultTextStyle,
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }else {
+                    return Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 5),
+                      child: Column(
+                        children: <Widget>[
+                          SizedBox(
+                            width: double.infinity,
+                            child: Text(
+                              DateFormat('dd').format(DateTime(0, 0, currentDay)),
+                              style: TextStyle(
+                                fontSize: 24,
+                                color: textColor,
+                              ),
+                              textAlign: TextAlign.left,
+                            ),
+                          ),
+                          const Divider(
+                            height: 5,
+                            thickness: 1,
+                            color: black,
+                          ),
+                          Container(
+                            width: double.infinity,
+                            margin: const EdgeInsets.symmetric(vertical: 5),
+                            padding: const EdgeInsets.symmetric(vertical: 5),
+                            color: accentColor,
+                            child: Text(
+                              DateFormat('jm').format(tempList[index]),
+                              style: defaultTextStyle,
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+                }
+
+                return Container(
+                  width: double.infinity,
+                  margin: const EdgeInsets.symmetric(vertical: 5),
+                  padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+                  color: accentColor,
+                  child: Text(
+                    DateFormat('jm').format(tempList[index]),
+                    style: defaultTextStyle,
+                  )
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }

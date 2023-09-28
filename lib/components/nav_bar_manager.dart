@@ -33,6 +33,11 @@ class NavStateManager {
     buttonNotifier.value = NavState.test;
   }
 
+  void testing2() {
+    title = 'Current Test2 Features';
+    buttonNotifier.value = NavState.test2;
+  }
+
   void admin() {
     title = 'Admin Page';
     buttonNotifier.value = NavState.admin;
@@ -40,5 +45,5 @@ class NavStateManager {
 }
 
 enum NavState{
-  home, concert, schedule, admin, test
+  home, concert, schedule, admin, test, test2
 }

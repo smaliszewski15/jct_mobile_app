@@ -5,9 +5,11 @@ const double titleFontSize = 40;
 const double headingFontSize = 28;
 const double infoFontSize = 20;
 const double bioTextSize = 18;
+const double smallerNavBarTextSize = 8;
 const double navBarTextSize = 10;
 const double bottomIconSize = 40;
 const double bigButtonFontSize = 48;
+const double navBarHeight = 80;
 
 const double maxTextLength = 25;
 

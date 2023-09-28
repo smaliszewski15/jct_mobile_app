@@ -4,6 +4,7 @@ import 'concerts_screen.dart';
 import 'home_screen.dart';
 import 'test_screen.dart';
 import 'schedule_screen.dart';
+import 'socket_recording_toggle.dart';
 import '../components/concert_filter.dart';
 import '../components/concert_tags_manager.dart';
 import '../components/profile_drawer.dart';
@@ -155,6 +156,8 @@ class _SkeletonState extends State<Skeleton> {
                             return ConcertsScreen(_tagManager);
                           case NavState.test:
                             return TestScreen();
+                          case NavState.test2:
+                            return SocketScreen();
                           case NavState.schedule:
                             return ScheduleScreen();
                           case NavState.admin:
@@ -168,82 +171,72 @@ class _SkeletonState extends State<Skeleton> {
               bottomNavigationBar: BottomAppBar(
                 color: black,
                 child: SizedBox(
-                  height: 80,
+                  height: navBarHeight,
                   child: Center(
                     child: Row(
                       children: <Widget>[
                         Expanded(
                           flex: 2,
-                          child: Container(
-                            width: MediaQuery.of(context).size.width,
-                            height: MediaQuery.of(context).size.height,
-                            padding: const EdgeInsets.all(10),
-                            child: OutlinedButton(
-                              onPressed: () {
-                                if (_navManager.buttonNotifier.value !=
-                                    NavState.home) {
-                                  _navManager.home();
-                                  setState(() {});
-                                }
-                              },
-                              child: Column(
-                                mainAxisAlignment:
-                                MainAxisAlignment.center,
-                                children: <Widget>[
-                                  Icon(
-                                    Icons.home,
-                                    size: bottomIconSize,
+                          child: OutlinedButton(
+                            onPressed: () {
+                              if (_navManager.buttonNotifier.value !=
+                                  NavState.home) {
+                                _navManager.home();
+                                setState(() {});
+                              }
+                            },
+                            child: Column(
+                              mainAxisAlignment:
+                              MainAxisAlignment.center,
+                              children: <Widget>[
+                                Icon(
+                                  Icons.home,
+                                  size: bottomIconSize,
+                                  color: _navManager.buttonNotifier.value ==
+                                      NavState.home ? mainSchemeColor : white,
+                                ),
+                                Text(
+                                  'Home',
+                                  style: TextStyle(
+                                    fontSize: smallerNavBarTextSize,//navBarTextSize,
                                     color: _navManager.buttonNotifier.value ==
                                         NavState.home ? mainSchemeColor : white,
                                   ),
-                                  Text(
-                                    'Home',
-                                    style: TextStyle(
-                                      fontSize: navBarTextSize,
-                                      color: _navManager.buttonNotifier.value ==
-                                          NavState.home ? mainSchemeColor : white,
-                                    ),
-                                    textAlign: TextAlign.center,
-                                  )
-                                ],
-                              ),
+                                  textAlign: TextAlign.center,
+                                )
+                              ],
                             ),
                           ),
                         ),
                         Expanded(
                           flex: 2,
-                          child: Container(
-                            width: MediaQuery.of(context).size.width,
-                            height: MediaQuery.of(context).size.height,
-                            padding: const EdgeInsets.all(10),
-                            child: OutlinedButton(
-                              onPressed: () {
-                                if (_navManager.buttonNotifier.value !=
-                                    NavState.concert) {
-                                  _navManager.concert();
-                                  setState(() {});
-                                }
-                              },
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  Icon(
-                                    Icons.mic_external_on,
-                                    size: bottomIconSize,
+                          child: OutlinedButton(
+                            onPressed: () {
+                              if (_navManager.buttonNotifier.value !=
+                                  NavState.concert) {
+                                _navManager.concert();
+                                setState(() {});
+                              }
+                            },
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Icon(
+                                  Icons.mic_external_on,
+                                  size: bottomIconSize,
+                                  color: _navManager.buttonNotifier.value ==
+                                      NavState.concert ? mainSchemeColor : white,
+                                ),
+                                Text(
+                                  'Concerts',
+                                  style: TextStyle(
+                                    fontSize: smallerNavBarTextSize,//navBarTextSize,
                                     color: _navManager.buttonNotifier.value ==
                                         NavState.concert ? mainSchemeColor : white,
                                   ),
-                                  Text(
-                                    'Concerts',
-                                    style: TextStyle(
-                                      fontSize: navBarTextSize,
-                                      color: _navManager.buttonNotifier.value ==
-                                          NavState.concert ? mainSchemeColor : white,
-                                    ),
-                                    textAlign: TextAlign.center,
-                                  )
-                                ],
-                              ),
+                                  textAlign: TextAlign.center,
+                                )
+                              ],
                             ),
                           ),
                         ),
@@ -270,7 +263,7 @@ class _SkeletonState extends State<Skeleton> {
                                 Text(
                                   'Test',
                                   style: TextStyle(
-                                    fontSize: navBarTextSize,
+                                    fontSize: smallerNavBarTextSize,//navBarTextSize,
                                     color: _navManager.buttonNotifier.value ==
                                         NavState.test ? mainSchemeColor : white,
                                   ),
@@ -282,71 +275,94 @@ class _SkeletonState extends State<Skeleton> {
                         ),
                         Expanded(
                           flex: 2,
-                          child: Container(
-                            width: MediaQuery.of(context).size.width,
-                            height: MediaQuery.of(context).size.height,
-                            padding: const EdgeInsets.all(10),
-                            child: OutlinedButton(
-                              onPressed: () {
-                                if (_navManager.buttonNotifier.value !=
-                                    NavState.schedule) {
-                                  _navManager.schedule();
-                                  setState(() {});
-                                }
-                              },
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  Icon(
-                                    Icons.groups,
-                                    size: bottomIconSize,
+                          child: OutlinedButton(
+                            onPressed: () {
+                              if (_navManager.buttonNotifier.value !=
+                                  NavState.test2) {
+                                _navManager.testing2();
+                                setState(() {});
+                              }
+                            },
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment
+                                  .center,
+                              children: <Widget>[
+                                Icon(
+                                  Icons.remove_circle,
+                                  size: bottomIconSize,
+                                  color: _navManager.buttonNotifier.value ==
+                                      NavState.test2 ? mainSchemeColor : white,
+                                ),
+                                Text(
+                                  'Test2',
+                                  style: TextStyle(
+                                    fontSize: smallerNavBarTextSize,//navBarTextSize,
+                                    color: _navManager.buttonNotifier.value ==
+                                        NavState.test2 ? mainSchemeColor : white,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          flex: 2,
+                          child: OutlinedButton(
+                            onPressed: () {
+                              if (_navManager.buttonNotifier.value !=
+                                  NavState.schedule) {
+                                _navManager.schedule();
+                                setState(() {});
+                              }
+                            },
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Icon(
+                                  Icons.groups,
+                                  size: bottomIconSize,
+                                  color: _navManager.buttonNotifier.value ==
+                                      NavState.schedule ? mainSchemeColor : white,
+                                ),
+                                Text(
+                                  'Schedule',
+                                  style: TextStyle(
+                                    fontSize: smallerNavBarTextSize,//user.isAdmin ? navBarTextSize,
                                     color: _navManager.buttonNotifier.value ==
                                         NavState.schedule ? mainSchemeColor : white,
                                   ),
-                                  Text(
-                                    'Schedule',
-                                    style: TextStyle(
-                                      fontSize: navBarTextSize,
-                                      color: _navManager.buttonNotifier.value ==
-                                          NavState.schedule ? mainSchemeColor : white,
-                                    ),
-                                    textAlign: TextAlign.center,
-                                  )
-                                ],
-                              ),
+                                  textAlign: TextAlign.center,
+                                )
+                              ],
                             ),
                           ),
                         ),
                         if (user!.isAdmin)
                           Expanded(
                             flex: 2,
-                            child: Container(
-                              width: MediaQuery.of(context).size.width,
-                              height: MediaQuery.of(context).size.height,
-                              padding: const EdgeInsets.all(10),
-                              child: OutlinedButton(
-                                onPressed: null,
-                                child: Column(
-                                  mainAxisAlignment:
-                                  MainAxisAlignment.center,
-                                  children: <Widget>[
-                                    Icon(
-                                      Icons.construction,
-                                      size: bottomIconSize,
+                            child: OutlinedButton(
+                              onPressed: null,
+                              child: Column(
+                                mainAxisAlignment:
+                                MainAxisAlignment.center,
+                                children: <Widget>[
+                                  Icon(
+                                    Icons.construction,
+                                    size: bottomIconSize,
+                                    color: _navManager.buttonNotifier.value ==
+                                        NavState.admin ? mainSchemeColor : white,
+                                  ),
+                                  Text(
+                                    'Admin',
+                                    style: TextStyle(
+                                      fontSize: smallerNavBarTextSize,//user.isAdmin ? navBarTextSize,
                                       color: _navManager.buttonNotifier.value ==
                                           NavState.admin ? mainSchemeColor : white,
                                     ),
-                                    Text(
-                                      'Admin',
-                                      style: TextStyle(
-                                        fontSize: navBarTextSize,
-                                        color: _navManager.buttonNotifier.value ==
-                                            NavState.admin ? mainSchemeColor : white,
-                                      ),
-                                      textAlign: TextAlign.center,
-                                    )
-                                  ],
-                                ),
+                                    textAlign: TextAlign.center,
+                                  )
+                                ],
                               ),
                             ),
                           ),
