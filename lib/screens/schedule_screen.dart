@@ -24,7 +24,6 @@ class ScheduleScreen extends StatefulWidget {
 class _ScheduleScreenState extends State<ScheduleScreen> {
   final buttonNotifier = ValueNotifier<bool>(false);
   WebSocketChannel? socket = null;
-  Timer? sendSilence = null;
 
   void disconnect() {
     if (socket == null) {
@@ -36,8 +35,12 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
     buttonNotifier.value = false;
   }
 
-  Future<void> connect() async {
-    socket = WebSocketChannel.connect(Uri.parse('ws://$API_PREFIX:8080'));
+  Future<void> connectForRecording() async {
+    socket = WebSocketChannel.connect(Uri.parse('ws://$API_PREFIX:8080/concert/performer'));
+  }
+
+  Future<void> connectForListening() async {
+    socket = WebSocketChannel.connect(Uri.parse('ws://$API_PREFIX:8080/concert/audience'));
     socket!.stream.listen(
           (data) {
             print(data);
@@ -102,9 +105,6 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
 
   @override
   void dispose() {
-    if (sendSilence != null) {
-      sendSilence!.cancel();
-    }
     release();
     disconnect();
     super.dispose();
@@ -146,15 +146,10 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
     if (_mPlayer!.isPlaying) {
       await stopPlayer();
     }
-
-    if (socket == null) {
-      await connect();
+    if (socket != null) {
+      disconnect();
     }
-
-    if (sendSilence != null) {
-      sendSilence!.cancel();
-      sendSilence = null;
-    }
+    await connectForRecording();
 
     var recordingDataController = StreamController<Food>();
     _mRecorder!.setSubscriptionDuration(const Duration(milliseconds: 100));
@@ -193,10 +188,6 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
     if (_mPlayer != null) {
       await _mPlayer!.stopPlayer();
     }
-    if (sendSilence != null) {
-      sendSilence!.cancel();
-      sendSilence = null;
-    }
     disconnect();
   }
 
@@ -210,12 +201,10 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
       numChannels: 1,
       sampleRate: tPSampleRate,
     );
-    if (socket == null) {
-      await connect();
+    if (socket != null) {
+      disconnect();
     }
-    sendSilence = Timer.periodic(const Duration(milliseconds: 1), (Timer t) {
-      socket!.sink.add(silence);
-    });
+    await connectForListening();
 
     setState(() {});
   }

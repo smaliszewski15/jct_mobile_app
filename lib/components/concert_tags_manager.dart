@@ -55,7 +55,7 @@ class TagsUpdater {
     print(data);
 
     for(var entry in data['tags']) {
-      toRet.add(Tag(entry['idTags'], entry['Tags']));
+      toRet.add(Tag(entry['idTags'], entry['Tag']));
     }
 
     return toRet;
