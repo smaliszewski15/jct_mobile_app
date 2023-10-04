@@ -35,7 +35,8 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
 
   List<DateTime> dateList() {
     List<DateTime> toRet = [];
-    for (DateTime start = widget.filter.start; start != widget.filter.end; start = start.add(const Duration(minutes: 20))) {
+    DateTime end = widget.filter.end.add(const Duration(days: 1));
+    for (DateTime start = widget.filter.start; start != end; start = start.add(const Duration(minutes: 20))) {
       toRet.add(start);
     }
     return toRet;

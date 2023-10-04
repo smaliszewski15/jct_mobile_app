@@ -19,8 +19,8 @@ class _FilterDrawerState extends State<FilterDrawer> {
   @override
   void initState() {
     super.initState();
-    _startDateCon.text = DateFormat('E, MMM dd, yyyy').format(widget.filter.start);
-    _endDateCon.text = DateFormat('E, MMM dd, yyyy').format(widget.filter.end);
+    _startDateCon.text = DateFormat('E, MMM dd, yyyy').format(widget.filter.toChangeStart);
+    _endDateCon.text = DateFormat('E, MMM dd, yyyy').format(widget.filter.toChangeEnd);
   }
 
   final _startDateCon = TextEditingController();
@@ -92,7 +92,11 @@ class _FilterDrawerState extends State<FilterDrawer> {
                 ),
                 onTap: () async {
                   await widget.filter.selectStartDate(context);
-
+                  if (widget.filter.isStartChanged()) {
+                    _startDateCon.text = DateFormat('E, MMM dd, yyyy').format(
+                        widget.filter.toChangeStart);
+                    setState(() {});
+                  }
                 },
                 onChanged: null,
               ),
@@ -117,6 +121,10 @@ class _FilterDrawerState extends State<FilterDrawer> {
                 ),
                 onTap: () async {
                   await widget.filter.selectEndDate(context);
+                  if (widget.filter.isEndChanged()) {
+                    _endDateCon.text = DateFormat('E, MMM dd, yyyy').format(widget.filter.toChangeEnd);
+                    setState(() {});
+                  }
                 },
                 onChanged: null,
               ),

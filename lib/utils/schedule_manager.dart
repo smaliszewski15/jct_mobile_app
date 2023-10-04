@@ -21,8 +21,6 @@ class ScheduleManager {
     end = start.add(const Duration(days: 30));
     toChangeStart = start;
     toChangeEnd = end;
-    print(start);
-    print(end);
   }
 
   void setStart() {
@@ -30,7 +28,6 @@ class ScheduleManager {
     start = DateTime(now.year, now.month, now.day, now.hour, now.minute);
     if (start.minute % 20 != 0) {
       start = start.add(Duration(minutes: 20 - (start.minute % 20)));
-      print(start);
     }
   }
 
@@ -60,7 +57,7 @@ class ScheduleManager {
     var furthestDate = DateTime(currentDate.year + 1, currentDate.month, currentDate.day);
     DateTime? newSelectedDate = await showDatePicker(
         context: context,
-        initialDate: start,
+        initialDate: toChangeStart,
         firstDate: currentDate,
         lastDate: furthestDate,
         builder: (BuildContext context, Widget? child) {
@@ -91,8 +88,8 @@ class ScheduleManager {
     var furthestDate = DateTime(currentDate.year + 1, currentDate.month, currentDate.day);
     DateTime? newSelectedDate = await showDatePicker(
         context: context,
-        initialDate: end,
-        firstDate: start,
+        initialDate: toChangeEnd,
+        firstDate: toChangeStart,
         lastDate: furthestDate,
         builder: (BuildContext context, Widget? child) {
           return Theme(
@@ -124,8 +121,6 @@ class ScheduleManager {
 
   void doUpdate() {
     updateDates();
-    print(start);
-    print(end);
     changedNotifier.value = true;
   }
 
