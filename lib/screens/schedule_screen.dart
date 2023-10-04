@@ -6,14 +6,14 @@ import 'package:flutter_sound/flutter_sound.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
-import '../APIFunctions/api_globals.dart';
+import '../APIfunctions/api_globals.dart';
 //import '../components/socket_listener.dart';
 import '../utils/colors.dart';
 import '../utils/globals.dart';
 
 const int tRSampleRate = 32000;
 const int tPSampleRate = 32000;
-final Uint8List silence = Uint8List.fromList(List.filled(5000,0));
+final Uint8List silence = Uint8List(5000);
 
 class ScheduleScreen extends StatefulWidget {
 
@@ -24,6 +24,16 @@ class ScheduleScreen extends StatefulWidget {
 class _ScheduleScreenState extends State<ScheduleScreen> {
   final buttonNotifier = ValueNotifier<bool>(false);
   WebSocketChannel? socket = null;
+
+
+  Uint8List concatHeader(Uint8List bytes) {
+    var b = BytesBuilder();
+    b.add(music);
+    b.add(bytes);
+    bytes = b.toBytes();
+    print(bytes);
+    return bytes;
+  }
 
   void disconnect() {
     if (socket == null) {
@@ -157,7 +167,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
         recordingDataController.stream.listen((buffer) {
           if (buffer is FoodData) {
             if (buffer.data != null) {
-              socket!.sink.add(buffer.data!);
+              socket!.sink.add(concatHeader(buffer.data!));
             }
           }
         });
