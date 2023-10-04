@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:john_cage_tribute/components/concert_tags_manager.dart';
+import 'package:john_cage_tribute/utils/concert_tags_manager.dart';
 import '../APIfunctions/concertAPI.dart';
 import '../utils/concert.dart';
 import '../utils/colors.dart';
@@ -122,7 +122,6 @@ class _ConcertsState extends State<ConcertsScreen> {
                           shrinkWrap: true,
                           itemCount: searchResults.length,
                           itemBuilder: (context, index) {
-                            bool selected = false;
                             return Container(
                               width: double.infinity,
                               margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
@@ -130,7 +129,6 @@ class _ConcertsState extends State<ConcertsScreen> {
                               color: accentColor,
                               child: OutlinedButton(
                                 onPressed: () {
-                                  setState(() => selected = true);
                                   Navigator.restorablePushNamed(context, '/concerts/concert', arguments: searchResults[index].id);
                                 },
                                 child: Column(

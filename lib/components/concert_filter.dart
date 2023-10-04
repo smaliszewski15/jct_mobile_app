@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
-import 'package:john_cage_tribute/components/concert_tags_manager.dart';
+import 'package:john_cage_tribute/utils/concert_tags_manager.dart';
 import '../utils/colors.dart';
 import '../utils/globals.dart';
 

@@ -2,8 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../utils/colors.dart';
 import '../utils/globals.dart';
+import '../utils/schedule_manager.dart';
 
 class ScheduleScreen extends StatefulWidget {
+  late ScheduleManager filter;
+
+  ScheduleScreen(this.filter);
 
   @override
   _ScheduleScreenState createState() => _ScheduleScreenState();
@@ -14,25 +18,25 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
   late List<DateTime> tempList;
   late int currentMonth;
   late int currentDay;
+  Future<bool>? done;
 
   @override
   void initState() {
-    tempList = dateList();
+    done = getDateList();
     currentMonth = DateTime.now().month;
     currentDay = DateTime.now().day;
     super.initState();
   }
 
+  Future<bool> getDateList() async {
+    tempList = dateList();
+    return true;
+  }
+
   List<DateTime> dateList() {
     List<DateTime> toRet = [];
-    DateTime now = DateTime.now();
-    if (now.minute % 20 != 0) {
-      now = now.add(Duration(minutes: 20 - (now.minute % 20))) ;
-      print(now);
-    }
-
-    for (; now.day != DateTime.now().day - 1; now = now.add(const Duration(minutes: 20))) {
-      toRet.add(now);
+    for (DateTime start = widget.filter.start; start != widget.filter.end; start = start.add(const Duration(minutes: 20))) {
+      toRet.add(start);
     }
     return toRet;
   }
@@ -98,109 +102,145 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
           ),
           SizedBox(
             height: MediaQuery.of(context).size.height - 98 - AppBar().preferredSize.height - navBarHeight,
-            child: ListView.builder(
-              addAutomaticKeepAlives: true,
-              itemCount: tempList.length,
-              itemBuilder: (context, index) {
-                if (tempList[index].day != currentDay) {
-                  currentDay = tempList[index].day;
-                  if (tempList[index].month != currentMonth) {
-                    currentMonth = tempList[index].month;
-                    return Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 5),
-                      child: Column(
-                        children: <Widget>[
-                          SizedBox(
-                            width: double.infinity,
-                            child: Text(
-                              DateFormat('MMMM').format(DateTime(0, currentMonth)),
-                              style: TextStyle(
-                                fontSize: 32,
-                                color: textColor,
-                              ),
-                              textAlign: TextAlign.left,
-                            ),
-                          ),
-                          const Divider(
-                            height: 5,
-                            thickness: 1,
-                            color: black,
-                          ),
-                          SizedBox(
-                            width: double.infinity,
-                            child: Text(
-                              DateFormat('dd').format(DateTime(0, 0, currentDay)),
-                              style: TextStyle(
-                                fontSize: 24,
-                                color: textColor,
-                              ),
-                              textAlign: TextAlign.left,
-                            ),
-                          ),
-                          const Divider(
-                            height: 5,
-                            thickness: 1,
-                            color: black,
-                          ),
-                          Container(
-                            width: double.infinity,
-                            color: accentColor,
-                            child: Text(
-                              DateFormat('jm').format(tempList[index]),
-                              style: defaultTextStyle,
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  }else {
-                    return Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 5),
-                      child: Column(
-                        children: <Widget>[
-                          SizedBox(
-                            width: double.infinity,
-                            child: Text(
-                              DateFormat('dd').format(DateTime(0, 0, currentDay)),
-                              style: TextStyle(
-                                fontSize: 24,
-                                color: textColor,
-                              ),
-                              textAlign: TextAlign.left,
-                            ),
-                          ),
-                          const Divider(
-                            height: 5,
-                            thickness: 1,
-                            color: black,
-                          ),
-                          Container(
-                            width: double.infinity,
-                            margin: const EdgeInsets.symmetric(vertical: 5),
-                            padding: const EdgeInsets.symmetric(vertical: 5),
-                            color: accentColor,
-                            child: Text(
-                              DateFormat('jm').format(tempList[index]),
-                              style: defaultTextStyle,
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  }
+            child: ValueListenableBuilder<bool>(
+              valueListenable: widget.filter.changedNotifier,
+              builder: (_, value, __) {
+                if (value) {
+                  done = getDateList();
+                  widget.filter.finUpdate();
                 }
+                return FutureBuilder(
+                    future: done,
+                    builder: (BuildContext context, AsyncSnapshot snapshot) {
+                      switch (snapshot.connectionState) {
+                        case ConnectionState.none:
+                        case ConnectionState.active:
+                        case ConnectionState.waiting:
+                          return const CircularProgressIndicator();
+                        case ConnectionState.done:
+                          if (snapshot.hasError) {
+                            return Text('Error: $snapshot.error}');
+                          }
+                          return ListView.builder(
+                            addAutomaticKeepAlives: true,
+                            itemCount: tempList.length,
+                            itemBuilder: (context, index) {
+                              if (tempList[index].day != currentDay) {
+                                currentDay = tempList[index].day;
+                                if (tempList[index].month != currentMonth) {
+                                  currentMonth = tempList[index].month;
+                                  return Column(
+                                    children: <Widget>[
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 5),
+                                        width: double.infinity,
+                                        child: Text(
+                                          DateFormat('MMMM').format(
+                                              DateTime(0, currentMonth)),
+                                          style: TextStyle(
+                                            fontSize: 32,
+                                            color: textColor,
+                                          ),
+                                          textAlign: TextAlign.left,
+                                        ),
+                                      ),
+                                      const Divider(
+                                        height: 5,
+                                        thickness: 1,
+                                        color: black,
+                                      ),
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 5),
+                                        width: double.infinity,
+                                        child: Text(
+                                          DateFormat('dd').format(
+                                              DateTime(0, 0, currentDay)),
+                                          style: TextStyle(
+                                            fontSize: 24,
+                                            color: textColor,
+                                          ),
+                                          textAlign: TextAlign.left,
+                                        ),
+                                      ),
+                                      const Divider(
+                                        height: 5,
+                                        thickness: 1,
+                                        color: black,
+                                      ),
+                                      Container(
+                                        width: double.infinity,
+                                        margin: const EdgeInsets.symmetric(
+                                            vertical: 5),
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 5, vertical: 5),
+                                        color: accentColor,
+                                        child: Text(
+                                          DateFormat('jm').format(tempList[index]),
+                                          style: defaultTextStyle,
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                } else {
+                                  return Column(
+                                    children: <Widget>[
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 5),
+                                        width: double.infinity,
+                                        child: Text(
+                                          DateFormat('dd').format(
+                                              DateTime(0, 0, currentDay)),
+                                          style: TextStyle(
+                                            fontSize: 24,
+                                            color: textColor,
+                                          ),
+                                          textAlign: TextAlign.left,
+                                        ),
+                                      ),
+                                      const Divider(
+                                        height: 5,
+                                        thickness: 1,
+                                        color: black,
+                                      ),
+                                      Container(
+                                        width: double.infinity,
+                                        margin: const EdgeInsets.symmetric(
+                                            vertical: 5),
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 5, vertical: 5),
+                                        color: accentColor,
+                                        child: Text(
+                                          DateFormat('jm').format(tempList[index]),
+                                          style: defaultTextStyle,
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                }
+                              }
 
-                return Container(
-                  width: double.infinity,
-                  margin: const EdgeInsets.symmetric(vertical: 5),
-                  padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-                  color: accentColor,
-                  child: Text(
-                    DateFormat('jm').format(tempList[index]),
-                    style: defaultTextStyle,
-                  )
+                              return Container(
+                                width: double.infinity,
+                                margin: const EdgeInsets.symmetric(
+                                    vertical: 5),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 5, vertical: 5),
+                                color: accentColor,
+                                child: Text(
+                                  DateFormat('jm').format(tempList[index]),
+                                  style: defaultTextStyle,
+                                ),
+                              );
+                            },
+                          );
+                      }
+                    }
+
                 );
-              },
+              }
             ),
           ),
         ],
