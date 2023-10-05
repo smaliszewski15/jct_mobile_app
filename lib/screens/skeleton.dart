@@ -115,18 +115,20 @@ class _SkeletonState extends State<Skeleton> {
                 automaticallyImplyLeading: false,
               ),
               drawer: HomeDrawer(),
-              endDrawer: _navManager.buttonNotifier.value == NavState.concert
-                  ? TagFilterDrawer(_tagManager)
-                  : _navManager.buttonNotifier.value == NavState.schedule
+              endDrawer:
+              // endDrawer: _navManager.buttonNotifier.value == NavState.concert
+              //     ? TagFilterDrawer(_tagManager)
+              //     :
+              _navManager.buttonNotifier.value == NavState.schedule
                   ? FilterDrawer(_scheduleManager) : null,
               onEndDrawerChanged: (isOpened) {
                 if (!isOpened) {
-                  if (_navManager.buttonNotifier.value == NavState.concert) {
-                    if (!Tag.ListEquals(
-                        _tagManager.prevFilter, _tagManager.filteredTags)) {
-                      _tagManager.doUpdate();
-                    }
-                  }
+                  // if (_navManager.buttonNotifier.value == NavState.concert) {
+                  //   if (!Tag.ListEquals(
+                  //       _tagManager.prevFilter, _tagManager.filteredTags)) {
+                  //     _tagManager.doUpdate();
+                  //   }
+                  // }
                   if (_navManager.buttonNotifier.value == NavState.schedule) {
                     if (_scheduleManager.isChanged()) {
                       _scheduleManager.doUpdate();
@@ -175,24 +177,29 @@ class _SkeletonState extends State<Skeleton> {
                         }
                       }
                     },
-                    child: ValueListenableBuilder<NavState>(
-                      valueListenable: _navManager.buttonNotifier,
-                      builder: (_, value, __) {
-                        switch (value) {
-                          case NavState.home:
-                            return HomeScreen();
-                          case NavState.concert:
-                            return ConcertsScreen(_tagManager);
-                          case NavState.test:
-                            return TestScreen();
-                          case NavState.test2:
-                            return SocketScreen();
-                          case NavState.schedule:
-                            return ScheduleScreen(_scheduleManager);
-                          case NavState.admin:
-                            return Container();
-                        }
-                      },
+                    child: Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.height,
+                      color: backgroundColor,
+                      child: ValueListenableBuilder<NavState>(
+                        valueListenable: _navManager.buttonNotifier,
+                        builder: (_, value, __) {
+                          switch (value) {
+                            case NavState.home:
+                              return HomeScreen();
+                            case NavState.concert:
+                              return ConcertsScreen(_tagManager);
+                            case NavState.test:
+                              return TestScreen();
+                            case NavState.test2:
+                              return SocketScreen();
+                            case NavState.schedule:
+                              return ScheduleScreen(_scheduleManager);
+                            case NavState.admin:
+                              return Container();
+                          }
+                        },
+                      ),
                     ),
                   );
                 },
