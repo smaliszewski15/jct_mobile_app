@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'concerts_screen.dart';
 import 'home_screen.dart';
+import 'maestro_screen.dart';
 import 'test_screen.dart';
-import 'schedule_screen.dart';
 import '../components/concert_filter.dart';
 import '../components/concert_tags_manager.dart';
 import '../components/profile_drawer.dart';
@@ -154,9 +154,9 @@ class _SkeletonState extends State<Skeleton> {
                           case NavState.concert:
                             return ConcertsScreen(_tagManager);
                           case NavState.test:
-                            return TestScreen();
+                            return MaestroScreen();
                           case NavState.schedule:
-                            return ScheduleScreen();
+                            return TestScreen();
                           case NavState.admin:
                             return Container();
                         }

@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'dart:typed_data';
+import 'package:audio_session/audio_session.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import '../APIfunctions/api_globals.dart';
 import '../components/player.dart';
@@ -10,23 +12,19 @@ import '../components/socket_listener.dart';
 import '../utils/colors.dart';
 import '../utils/globals.dart';
 
-final Uint8List silence = Uint8List(5000);
-
-class TestScreen extends StatefulWidget {
+class MaestroScreen extends StatefulWidget {
 
   @override
-  _TestScreenState createState() => _TestScreenState();
+  _MaestroScreenState createState() => _MaestroScreenState();
 }
 
-class _TestScreenState extends State<TestScreen> {
+class _MaestroScreenState extends State<MaestroScreen> {
   final buttonNotifier = ValueNotifier<bool>(false);
   SocketConnect? socket;
 
-  final Player _mPlayer = Player();
   final Recorder _mRecorder = Recorder();
   StreamSubscription? _audioDetectedSubscription;
   StreamSubscription? _mRecordingDataSubscription;
-  bool _isListening = false;
   bool audioDetected = false;
 
   @override
@@ -43,7 +41,6 @@ class _TestScreenState extends State<TestScreen> {
 
   Future<void> release() async {
     _mRecorder.release();
-    _mPlayer.release();
   }
 
   Future<void>? stopRecorder() async {
@@ -60,25 +57,8 @@ class _TestScreenState extends State<TestScreen> {
     return;
   }
 
-  Future<void> stopPlayer() async {
-    await _mPlayer.stopPlayer();
-    return;
-  }
-
   Future<void> record() async {
-    if (_mPlayer.isPlaying) {
-      stopPlayer();
-    }
-    socket = SocketConnect(SocketType.performer);
-    socket!.socket.stream.listen(
-          (data) {
-      },
-      onDone: () {
-        socket = null;
-        print('done');
-      },
-      onError: (error) => print(error),
-    );
+    socket = SocketConnect(SocketType.maestro);
 
     var recordingDataController = StreamController<Food>();
     _mRecorder.mRecorder!.setSubscriptionDuration(const Duration(milliseconds: 100));
@@ -99,26 +79,7 @@ class _TestScreenState extends State<TestScreen> {
       }
     });
     _mRecorder.record(recordingDataController);
-    setState(() {});
-  }
-
-  Future<void> listen() async {
-    if (_mRecorder.isRecording) {
-      stopRecorder();
-    }
-    socket = SocketConnect(SocketType.listener);
-    _mPlayer.listen();
-    socket!.socket.stream.listen(
-          (data) {
-        _mPlayer.mPlayer!.foodSink!.add(FoodData(data));
-      },
-      onDone: () {
-          socket = null;
-        print('done');
-      },
-      onError: (error) => print(error),
-    );
-    _mPlayer.mPlayer!.foodSink!.add(FoodData(silence));
+    socket!.socket.sink.add(start);
     setState(() {});
   }
 
@@ -126,8 +87,7 @@ class _TestScreenState extends State<TestScreen> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        await _mRecorder.stopRecorder();
-        await _mPlayer.stopPlayer();
+        await stopRecorder();
         return true;
       },
       child: Container(
@@ -152,17 +112,12 @@ class _TestScreenState extends State<TestScreen> {
                       audioDetected = false;
                       return;
                     }
-                    if (_mRecorder.isRecording || _mPlayer.isPlaying) {
-                      await _mRecorder.stopRecorder();
-                      await _mPlayer.stopPlayer();
+                    if (_mRecorder.isRecording) {
+                      await stopRecorder();
                       setState((){});
                       return;
                     }
-                    if (_isListening) {
-                      await _mPlayer.listen();
-                    } else {
-                      await record();
-                    }
+                    await record();
                   },
                   style: ButtonStyle(
                     shape: MaterialStateProperty.all(
@@ -179,56 +134,10 @@ class _TestScreenState extends State<TestScreen> {
                 ),
               ),
               Text(
-                  _mRecorder.isRecording || _mPlayer.isPlaying ? 'Stop' : 'Connect',
+                  _mRecorder.isRecording ? 'Stop' : 'Connect',
                   style: TextStyle(
                     color: buttonTextColor,
                     fontSize: titleFontSize,
-                  )
-              ),
-              Container(
-                  margin: const EdgeInsets.all(15),
-                  child: OutlinedButton(
-                    onPressed: () async {
-                      setState(() => _isListening = !_isListening);
-                      if (_mRecorder.isRecording || _mPlayer.isPlaying) {
-                        if (_isListening) {
-                          await listen();
-                        } else {
-                          await record();
-                        }
-                      }
-                    },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Container(
-                          width: 150,
-                          padding: const EdgeInsets.all(5),
-                          color: _isListening ? black : mainSchemeColor,
-                          child: Text(
-                            'Record',
-                            style: TextStyle(
-                              color: _isListening ? white : black,
-                              fontSize: 40,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                        Container(
-                          width: 150,
-                          padding: const EdgeInsets.all(5),
-                          color: _isListening ? mainSchemeColor : black,
-                          child: Text(
-                            'Listen',
-                            style: TextStyle(
-                              color: _isListening ? black : white,
-                              fontSize: 40,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      ],
-                    ),
                   )
               ),
             ],
