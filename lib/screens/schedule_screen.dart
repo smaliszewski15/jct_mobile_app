@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import '../APIfunctions/groupsAPI.dart';
+import '../components/group_card.dart';
 import '../utils/colors.dart';
 import '../utils/globals.dart';
+import '../utils/group.dart';
 import '../utils/schedule_manager.dart';
 
 class ScheduleScreen extends StatefulWidget {
@@ -19,12 +22,15 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
   late int currentMonth;
   late int currentDay;
   Future<bool>? done;
+  List<Group> groups = [];
+  double totalHeight = 60;
 
   @override
   void initState() {
     done = getDateList();
     currentMonth = DateTime.now().month;
     currentDay = DateTime.now().day;
+    groups = ParseGroups();
     super.initState();
   }
 
@@ -60,6 +66,11 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                 ),
                 TextButton(
                   onPressed: () {
+                    if (totalHeight == 60) {
+                      totalHeight = 120;
+                    } else {
+                      totalHeight = 60;
+                    }
                     setState(() => _createToggle = !_createToggle);
                   },
                   child: Row(
@@ -122,6 +133,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                           if (snapshot.hasError) {
                             return Text('Error: $snapshot.error}');
                           }
+                          int groupsList = 0;
                           return ListView.builder(
                             addAutomaticKeepAlives: true,
                             itemCount: tempList.length,
@@ -170,18 +182,8 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                                         thickness: 1,
                                         color: black,
                                       ),
-                                      Container(
-                                        width: double.infinity,
-                                        margin: const EdgeInsets.symmetric(
-                                            vertical: 5),
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 5, vertical: 5),
-                                        color: accentColor,
-                                        child: Text(
-                                          DateFormat('jm').format(tempList[index]),
-                                          style: defaultTextStyle,
-                                        ),
-                                      ),
+                                      groupsList < groups.length && groupsList >= 0 && tempList[index] == groups[groupsList].date ?
+                                      GroupCard(group: groups[groupsList++], height: totalHeight) : GroupCard(date: tempList[index], height: totalHeight),
                                     ],
                                   );
                                 } else {
@@ -206,35 +208,19 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                                         thickness: 1,
                                         color: black,
                                       ),
-                                      Container(
-                                        width: double.infinity,
-                                        margin: const EdgeInsets.symmetric(
-                                            vertical: 5),
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 5, vertical: 5),
-                                        color: accentColor,
-                                        child: Text(
-                                          DateFormat('jm').format(tempList[index]),
-                                          style: defaultTextStyle,
-                                        ),
-                                      ),
+                                      groupsList < groups.length && groupsList >= 0 && tempList[index] == groups[groupsList].date
+                              ?         GroupCard(group: groups[groupsList++], height: totalHeight) : GroupCard(date: tempList[index], height: totalHeight),
                                     ],
                                   );
                                 }
                               }
+                              if (groupsList < groups.length && groupsList >= 0 && tempList[index] == groups[groupsList].date) {
+                                groupsList++;
+                                return GroupCard(group: groups[groupsList - 1], height: totalHeight);
+                              } else {
+                                return GroupCard(date: tempList[index], height: totalHeight);
+                              }
 
-                              return Container(
-                                width: double.infinity,
-                                margin: const EdgeInsets.symmetric(
-                                    vertical: 5),
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 5, vertical: 5),
-                                color: accentColor,
-                                child: Text(
-                                  DateFormat('jm').format(tempList[index]),
-                                  style: defaultTextStyle,
-                                ),
-                              );
                             },
                           );
                       }
@@ -247,5 +233,29 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
         ],
       ),
     );
+  }
+
+  List<Group> ParseGroups() {
+    Map<String, dynamic> groupsJSON = GroupsAPI.getGroups;
+    if (!groupsJSON.containsKey('groupsData')) {
+      return [];
+    }
+    List<Group> toRet = [];
+
+    for (var data in groupsJSON['groupsData']) {
+      Group newGroup = Group.fromJson(data);
+      if (toRet.isNotEmpty) {
+        int place = 0;
+        for (int i = 0; i < toRet.length; i++) {
+          if (newGroup.date!.isAfter(toRet[i].date!)) {
+            break;
+          }
+        }
+        toRet.insert(place, newGroup);
+      } else {
+        toRet.add(newGroup);
+      }
+    }
+    return toRet;
   }
 }
