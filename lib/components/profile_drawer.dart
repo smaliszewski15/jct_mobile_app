@@ -145,6 +145,33 @@ class _HomeDrawerState extends State<HomeDrawer> {
             ),
           ),
         ),
+        Text(
+          "If you do not have an account, you can create one!",
+          style: defaultTextStyle,
+          textAlign: TextAlign.center,
+        ),
+        Container(
+          margin: const EdgeInsets.all(10),
+          //padding: const EdgeInsets.all(5),
+          decoration: BoxDecoration(
+            color: gold,
+            border: Border.all(color: black, width: 3),
+          ),
+          child: OutlinedButton(
+            onPressed: () {
+              Navigator.pushNamed(context, '/register');
+            },
+            child: Text(
+              'Register',
+              style: TextStyle(
+                fontSize: bioTextSize,
+                color: buttonTextColor,
+                fontWeight: FontWeight.w400,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ),
       ],
     );
   }

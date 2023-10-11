@@ -1,14 +1,15 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'concerts_screen.dart';
 import 'home_screen.dart';
-import 'test_screen.dart';
-import 'schedule_screen.dart';
+import 'maestro_screen.dart';
+import 'performerlistener_screen.dart';
 import '../components/concert_filter.dart';
+import '../components/concert_tags_manager.dart';
 import '../components/profile_drawer.dart';
 import '../components/nav_bar_manager.dart';
 import '../utils/colors.dart';
+import '../utils/concert.dart';
 import '../utils/globals.dart';
 import '../utils/user.dart';
 
@@ -19,12 +20,14 @@ class Skeleton extends StatefulWidget {
 
 class _SkeletonState extends State<Skeleton> {
   late final NavStateManager _navManager;
+  late final TagsUpdater _tagManager;
   Future<bool>? done;
 
   @override
   void initState() {
     super.initState();
     _navManager = NavStateManager();
+    _tagManager = TagsUpdater();
     done = getUser();
   }
 
@@ -91,7 +94,16 @@ class _SkeletonState extends State<Skeleton> {
               ),
               drawer: HomeDrawer(),
               endDrawer: _navManager.buttonNotifier.value == NavState.concert ?
-              TagFilterDrawer() : null,
+              TagFilterDrawer(_tagManager) : null,
+              onEndDrawerChanged: (isOpened) {
+                if (!isOpened) {
+                  if (_navManager.buttonNotifier.value == NavState.concert) {
+                    if (!Tag.ListEquals(_tagManager.prevFilter, _tagManager.filteredTags)) {
+                      _tagManager.doUpdate();
+                    }
+                  }
+                }
+              },
               body: Builder(
                 builder: (context) {
                   return GestureDetector(
@@ -140,11 +152,11 @@ class _SkeletonState extends State<Skeleton> {
                           case NavState.home:
                             return HomeScreen();
                           case NavState.concert:
-                            return ConcertsScreen();
+                            return ConcertsScreen(_tagManager);
                           case NavState.test:
-                            return TestScreen();
+                            return MaestroScreen();
                           case NavState.schedule:
-                            return ScheduleScreen();
+                            return TestScreen();
                           case NavState.admin:
                             return Container();
                         }
@@ -157,9 +169,9 @@ class _SkeletonState extends State<Skeleton> {
                 color: black,
                 child: SizedBox(
                   height: 80,
-                    child: Center(
-                      child: Row(
-                        children: <Widget>[
+                  child: Center(
+                    child: Row(
+                      children: <Widget>[
                         Expanded(
                           flex: 2,
                           child: Container(
@@ -235,37 +247,39 @@ class _SkeletonState extends State<Skeleton> {
                             ),
                           ),
                         ),
-                        /*Expanded(
-                              flex: 2,
-                              child: OutlinedButton(
-                              onPressed: () {
-                                if (_navManager.buttonNotifier.value !=
-                                    NavState.test) {
-                                  _navManager.testing();
-                                  setState(() {});
-                                }
-                              },
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment
-                                    .center,
-                                children: <Widget>[
-                                  Icon(
-                                    Icons.remove_done,
-                                    size: bottomIconSize,
-                                    color: mainSchemeColor,
+                        Expanded(
+                          flex: 2,
+                          child: OutlinedButton(
+                            onPressed: () {
+                              if (_navManager.buttonNotifier.value !=
+                                  NavState.test) {
+                                _navManager.testing();
+                                setState(() {});
+                              }
+                            },
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment
+                                  .center,
+                              children: <Widget>[
+                                Icon(
+                                  Icons.remove_done,
+                                  size: bottomIconSize,
+                                  color: _navManager.buttonNotifier.value ==
+                                      NavState.test ? mainSchemeColor : white,
+                                ),
+                                Text(
+                                  'Test',
+                                  style: TextStyle(
+                                    fontSize: navBarTextSize,
+                                    color: _navManager.buttonNotifier.value ==
+                                        NavState.test ? mainSchemeColor : white,
                                   ),
-                                  Text(
-                                    'Test',
-                                    style: TextStyle(
-                                      fontSize: navBarTextSize,
-                                      color: mainSchemeColor,
-                                    ),
-                                    textAlign: TextAlign.center,
-                                  )
-                                ],
-                              ),
-                              ),
-                            ),*/
+                                  textAlign: TextAlign.center,
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
                         Expanded(
                           flex: 2,
                           child: Container(

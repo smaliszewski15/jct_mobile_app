@@ -13,10 +13,12 @@ class ConcertPlayer {
   final buttonNotifier = ValueNotifier<ButtonState>(ButtonState.paused);
 
   //static const url = 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3';
-  static const url = 'https://johncagetribute.org/api/getSong?id=242432';
+  late String url;
   late AudioPlayer _audioPlayer;
+  late int id;
 
-  ConcertPlayer() {
+  ConcertPlayer(this.id) {
+    url = 'https://johncagetribute.org/api/concerts/getSongFile?id=$id';
     _init();
   }
 

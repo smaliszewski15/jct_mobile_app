@@ -36,7 +36,7 @@ class Routes {
     switch (settings.name) {
       case concertPage:
         var arguments = settings.arguments;
-        if (arguments is String) {
+        if (arguments is int) {
           return MaterialPageRoute(builder: (context) => ConcertPage(arguments));
         }
         else {
