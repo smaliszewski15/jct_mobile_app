@@ -5,9 +5,9 @@ import '../utils/colors.dart';
 import '../utils/globals.dart';
 
 class GroupCard extends StatefulWidget {
-  late Group? group;
+  late final Group? group;
   late double height;
-  late DateTime? date;
+  late final DateTime? date;
   final buttonNotifier = ValueNotifier<double>(25);
 
   GroupCard({this.group, this.height = 60, this.date}) {
@@ -34,7 +34,11 @@ class _GroupCardState extends State<GroupCard>
                 margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
                 color: widget.height == 60 ? accentColor : mainSchemeColor,
                 child: TextButton(
-                  onPressed: null,
+                  onPressed: () {
+                    if (widget.height == 120) {
+                      Navigator.pushNamed(context, '/group/group', arguments: DateFormat('yyyy-MM-dd hh:mm').format(widget.group!.date!));
+                    }
+                  },
                   style: null,
                   child: Column(
                     children: <Widget>[
@@ -130,7 +134,11 @@ class _GroupCardState extends State<GroupCard>
                 margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
                 color: widget.height == 60 ? mainSchemeColor : accentColor,
                 child: TextButton(
-                  onPressed: null,
+                  onPressed: () {
+                    if (widget.height == 60) {
+                      Navigator.pushNamed(context, '/group/add', arguments: DateFormat('E, MMM dd, yyyy - hh:mm').format(widget.date!));
+                    }
+                  },
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[

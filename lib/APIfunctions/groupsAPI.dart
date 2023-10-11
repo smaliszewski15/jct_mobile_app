@@ -8,7 +8,7 @@ class GroupsAPI {
         'title': 'Title 1',
         'maestro': 'Paul',
         'tags': 'soft`loud',
-        'date': '2023-9-10',
+        'date': '2023-10-10',
         'time': '22:40',
         'members': [
           'Stephen',
@@ -20,8 +20,8 @@ class GroupsAPI {
         'title': 'Title 2',
         'maestro': 'Stephen',
         'tags': 'jazz`rock',
-        'date': '2023-9-10',
-        'time': '20:40',
+        'date': '2023-10-10',
+        'time': '21:20',
         'members': [
           'Stephen',
           'Paul',
@@ -32,8 +32,8 @@ class GroupsAPI {
         'title': 'Title 3',
         'maestro': 'Rayyan',
         'tags': 'soft`loud',
-        'date': '2023-9-10',
-        'time': '19:40',
+        'date': '2023-10-10',
+        'time': '23:40',
         'members': [
           'Stephen',
           'Paul',
@@ -44,8 +44,8 @@ class GroupsAPI {
         'title': 'Title 4',
         'maestro': 'Himil',
         'tags': 'soft`loud',
-        'date': '2023-9-10',
-        'time': '18:00',
+        'date': '2023-10-10',
+        'time': '22:00',
         'members': [
           'Stephen',
           'Paul',
@@ -53,5 +53,21 @@ class GroupsAPI {
         ],
       },
     ]
+  };
+
+  static Map<String, dynamic> getGroup = {
+    'group': {
+      'title': 'Title 1',
+      'maestro': 'Paul',
+      'tags': 'soft`loud',
+      'date': '2023-9-10',
+      'time': '22:40',
+      'members': [
+        'Stephen',
+        'Paul',
+        'Kyle',
+      ],
+      'description': 'This is a description of the group and what will be the concert ig',
+    },
   };
 }
