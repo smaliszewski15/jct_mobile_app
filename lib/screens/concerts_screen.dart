@@ -22,12 +22,10 @@ class _ConcertsState extends State<ConcertsScreen> {
     super.initState();
     done = getConcertList('');
     searchFocus.addListener(() => searchLostFocus());
-    listScroll.addListener(_scrollListener);
   }
 
   @override
   void dispose() {
-    listScroll.removeListener(_scrollListener);
     searchFocus.removeListener(searchLostFocus);
     super.dispose();
   }
@@ -38,14 +36,8 @@ class _ConcertsState extends State<ConcertsScreen> {
   Future<bool>? done;
   FocusNode searchFocus = FocusNode();
   int page = 0;
-  ScrollController listScroll = ScrollController();
-
-  void _scrollListener() {
-    if (listScroll.position.extentAfter < 500) {
-      getConcertList(_search.value.text);
-      setState(() {});
-    }
-  }
+  int totalPages = 50;
+  bool hadMore = true;
 
   void searchLostFocus() {
     if (!searchFocus.hasFocus && _search.value.text != oldQuery) {
@@ -97,7 +89,6 @@ class _ConcertsState extends State<ConcertsScreen> {
                       if (oldQuery.isEmpty || oldQuery != query) {
                         done = getConcertList(query);
                         oldQuery = query;
-                        //getConcertList();
                         setState(() {});
                       }
                     },
@@ -113,7 +104,7 @@ class _ConcertsState extends State<ConcertsScreen> {
           ),
           SizedBox(
               width: double.infinity,
-              height: 600,
+              height: 610,
               child: ValueListenableBuilder<bool>(
                 valueListenable: widget.tags.changedNotifier,
                 builder: (_, value, __) {
@@ -136,7 +127,6 @@ class _ConcertsState extends State<ConcertsScreen> {
                           return ListView.builder(
                             key: ValueKey(page),
                             shrinkWrap: true,
-                            controller: listScroll,
                             physics: const AlwaysScrollableScrollPhysics(),
                             itemCount: searchResults.length,
                             itemBuilder: (context, index) {
@@ -188,6 +178,40 @@ class _ConcertsState extends State<ConcertsScreen> {
                 },
               ),
           ),
+          SizedBox(
+            width: double.infinity,
+            child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  if (page != 0)
+                    ElevatedButton(
+                      onPressed: (){
+                        page--;
+                        done = getConcertList(oldQuery);
+                        setState(() {});
+                      },
+                      child: Text(
+                        'Prev',
+                        style: defaultTextStyle,
+                      ),
+                    ),
+                  PageCounter(),
+                  if (hadMore || page != totalPages)
+                    ElevatedButton(
+                      onPressed: () async {
+                        page++;
+                        (done = getConcertList(oldQuery)).then((entry) => {
+                          setState(() {})
+                        });
+                      },
+                      child: Text(
+                        'Next',
+                        style: defaultTextStyle,
+                      ),
+                    ),
+                ]
+            ),
+          ),
         ],
       ),
     );
@@ -217,20 +241,97 @@ class _ConcertsState extends State<ConcertsScreen> {
     }
 
     if (searchQuery != oldQuery) {
-      searchResults = [];
-    } else {
-      page++;
+      page = 0;
     }
+    searchResults = [];
 
     var data = json.decode(res.body);
     if (!data.containsKey('searchResults')) {
       return false;
     }
 
+    if (data['searchResults'].isEmpty) {
+      hadMore = false;
+      page--;
+      totalPages = page;
+      _showSnack(context);
+      return getConcertList(oldQuery);
+    }
+
     for (var map in data['searchResults']) {
       searchResults.add(Concert.searchedSong(map));
     }
     return true;
+  }
+
+  Widget PageCounter() {
+    if (page == 0) {
+      if (totalPages + 1 == 1) {
+        return Text(
+          ' 1',
+          style: defaultTextStyle,
+        );
+      }
+      return Text(
+        ' 1,... ',
+        style: defaultTextStyle,
+      );
+    }
+    if (page == totalPages) {
+      if (totalPages == 1) {
+        return Text(
+          ' 1,2 ',
+          style: defaultTextStyle,
+        );
+      }
+      return Text(
+        ' 1,...,${totalPages+1} ',
+        style: defaultTextStyle,
+      );
+    }
+    if (page == 1) {
+      if (totalPages - page == 1) {
+        return Text(
+          ' 1,2,3 ',
+          style: defaultTextStyle,
+        );
+      }
+      return Text(
+        ' 1,2,... ',
+        style: defaultTextStyle,
+      );
+    }
+    if (totalPages - page == 1) {
+      if (totalPages - page == 1) {
+        return Text(
+          ' 1,2,3 ',
+          style: defaultTextStyle,
+        );
+      }
+      return Text(
+        ' 1,...,${page+1},${totalPages+1} ',
+        style: defaultTextStyle,
+      );
+    }
+    return Text(
+      ' 1,...,${page+1},...,${totalPages+1} ',
+      style: defaultTextStyle,
+    );
+  }
+
+  void _showSnack(BuildContext context) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: WillPopScope(
+          onWillPop: () async {
+            ScaffoldMessenger.of(context).removeCurrentSnackBar();
+            return true;
+          },
+          child: const Text('No more concerts to view'),
+        ),
+        duration: Duration(seconds: 3),
+      ),
+    );
   }
 
 /*Future<bool> getConcertList() async {
