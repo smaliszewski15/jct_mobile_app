@@ -74,6 +74,14 @@ class _ConcertsState extends State<ConcertsScreen> {
                           decoration: TextDecoration.underline,
                           fontSize: 18,
                         ),
+                        textInputAction: TextInputAction.done,
+                        onSubmitted: (query) {
+                          if (oldQuery.isEmpty || oldQuery != query) {
+                            oldQuery = query;
+                            done = getConcertList();
+                            setState(() {});
+                          }
+                        },
                       ),
                       style: TextStyle(
                         color: buttonTextColor,
