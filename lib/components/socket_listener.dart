@@ -41,7 +41,7 @@ class SocketConnect {
   }
 
   Future<void> connectForListening() async {
-    socket = WebSocketChannel.connect(Uri.parse('ws://$API_PREFIX:8080/concert/audience'));
+    socket = WebSocketChannel.connect(Uri.parse('ws://$API_PREFIX:8080/concert/listener'));
     _isConnected = true;
   }
 }

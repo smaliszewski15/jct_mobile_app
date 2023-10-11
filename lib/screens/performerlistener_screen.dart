@@ -57,11 +57,13 @@ class _TestScreenState extends State<TestScreen> {
       _mRecordingDataSubscription = null;
     }
     audioDetected = false;
+    _mRecorder.isRecording = false;
     return;
   }
 
   Future<void> stopPlayer() async {
     await _mPlayer.stopPlayer();
+    _mPlayer.isPlaying = false;
     return;
   }
 
@@ -98,7 +100,8 @@ class _TestScreenState extends State<TestScreen> {
         setState(() => audioDetected = false);
       }
     });
-    _mRecorder.record(recordingDataController);
+    await _mRecorder.record(recordingDataController);
+    _mRecorder.isRecording = true;
     setState(() {});
   }
 
@@ -110,6 +113,7 @@ class _TestScreenState extends State<TestScreen> {
     _mPlayer.listen();
     socket!.socket.stream.listen(
           (data) {
+            print(data);
         _mPlayer.mPlayer!.foodSink!.add(FoodData(data));
       },
       onDone: () {
@@ -118,7 +122,9 @@ class _TestScreenState extends State<TestScreen> {
       },
       onError: (error) => print(error),
     );
+    await _mPlayer.listen();
     _mPlayer.mPlayer!.foodSink!.add(FoodData(silence));
+    _mPlayer.isPlaying = true;
     setState(() {});
   }
 
@@ -153,14 +159,15 @@ class _TestScreenState extends State<TestScreen> {
                       return;
                     }
                     if (_mRecorder.isRecording || _mPlayer.isPlaying) {
-                      await _mRecorder.stopRecorder();
-                      await _mPlayer.stopPlayer();
+                      await stopRecorder();
+                      await stopPlayer();
                       setState((){});
                       return;
                     }
                     if (_isListening) {
-                      await _mPlayer.listen();
+                      await listen();
                     } else {
+                      print('going to record');
                       await record();
                     }
                   },

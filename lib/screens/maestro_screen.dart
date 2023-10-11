@@ -1,12 +1,9 @@
 import 'dart:async';
-import 'dart:typed_data';
 import 'package:audio_session/audio_session.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:permission_handler/permission_handler.dart';
-
 import '../APIfunctions/api_globals.dart';
-import '../components/player.dart';
 import '../components/recorder.dart';
 import '../components/socket_listener.dart';
 import '../utils/colors.dart';
@@ -54,6 +51,7 @@ class _MaestroScreenState extends State<MaestroScreen> {
       _mRecordingDataSubscription = null;
     }
     audioDetected = false;
+    _mRecorder.isRecording = false;
     return;
   }
 
@@ -78,8 +76,9 @@ class _MaestroScreenState extends State<MaestroScreen> {
         setState(() => audioDetected = false);
       }
     });
-    _mRecorder.record(recordingDataController);
+    await _mRecorder.record(recordingDataController);
     socket!.socket.sink.add(start);
+    _mRecorder.isRecording = true;
     setState(() {});
   }
 

@@ -39,7 +39,9 @@ class Recorder {
   }
 
   Future<void>? stopRecorder() async {
-    await mRecorder!.stopRecorder();
+    if (mRecorder != null) {
+      await mRecorder!.stopRecorder();
+    }
     return;
   }
 

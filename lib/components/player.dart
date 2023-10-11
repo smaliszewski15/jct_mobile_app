@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:flutter_sound/flutter_sound.dart';
-import '../components/socket_listener.dart';
 
 const int tPSampleRate = 32000;
 
@@ -14,7 +13,7 @@ class Player {
     if (mPlayer != null) {
       return mPlayer!.stopPlayer();
     }
-    isPlaying = false;
+    print('stopping player');
     return null;
   }
 
@@ -34,7 +33,6 @@ class Player {
   }
 
   Future<void> listen() async {
-    isPlaying = true;
     await mPlayer!.startPlayerFromStream(
       codec: Codec.pcm16,
       numChannels: 1,
