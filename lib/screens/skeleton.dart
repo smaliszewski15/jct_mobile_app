@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'concerts_screen.dart';
 import 'home_screen.dart';
 import 'test_screen.dart';
 import 'schedule_screen.dart';
 import 'socket_recording_toggle.dart';
-import '../components/concert_filter.dart';
+//import '../components/concert_filter.dart';
 import '../components/group_filter.dart';
 import '../components/profile_drawer.dart';
 import '../utils/concert_tags_manager.dart';
 import '../utils/colors.dart';
-import '../utils/concert.dart';
+//import '../utils/concert.dart';
 import '../utils/globals.dart';
 import '../utils/schedule_manager.dart';
 import '../utils/nav_bar_manager.dart';
@@ -60,7 +59,7 @@ class _SkeletonState extends State<Skeleton> {
                     color: textColor,
                   ),
                 ),
-                actions: _navManager.buttonNotifier.value == NavState.concert
+                actions: /*_navManager.buttonNotifier.value == NavState.concert
                     ? <Widget>[
                         Builder(
                           builder: (context) {
@@ -76,7 +75,7 @@ class _SkeletonState extends State<Skeleton> {
                           },
                         ),
                       ]
-                    : _navManager.buttonNotifier.value == NavState.schedule
+                    : */_navManager.buttonNotifier.value == NavState.schedule
                         ? <Widget>[
                             Builder(
                               builder: (context) {

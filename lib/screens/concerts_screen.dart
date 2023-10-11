@@ -212,7 +212,7 @@ class _ConcertsState extends State<ConcertsScreen> {
     final res = await ConcertsAPI.searchSongs(queries);
 
     if (res.statusCode != 200) {
-      print(res);
+      print(res.body);
       return false;
     }
 

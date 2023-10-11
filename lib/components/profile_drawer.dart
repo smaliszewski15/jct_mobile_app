@@ -133,7 +133,9 @@ class _HomeDrawerState extends State<HomeDrawer> {
           ),
           child: OutlinedButton(
             onPressed: () {
-              Navigator.pushNamed(context, '/login');
+              Navigator.pushNamed(context, '/login').then((entry) => {
+                setState(() {})
+              });
             },
             child: Text(
               'Log in',

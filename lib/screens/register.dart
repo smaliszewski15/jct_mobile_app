@@ -1,5 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import '../APIfunctions/userAPI.dart';
 import '../components/tooltips.dart';
 import '../components/textfields.dart';
 import '../utils/colors.dart';
@@ -17,8 +19,7 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   void initState() {
     fields = {
-      'firstName': CustomTextField(maxLength: 24, fieldName: 'First Name', fieldEntry: '', tooltipKey: GlobalKey<TooltipState>()),
-      'lastName' : CustomTextField(maxLength: 24, fieldName: 'Last Name', fieldEntry: '', tooltipKey: GlobalKey<TooltipState>()),
+      'name': CustomTextField(maxLength: 100, fieldName: 'Name', fieldEntry: '', tooltipKey: GlobalKey<TooltipState>()),
       'username' : CustomTextField(maxLength: 255, fieldName: 'Username', fieldEntry: '', tooltipKey: GlobalKey<TooltipState>()),
       'email' : CustomTextField(maxLength: 255, fieldName: 'Email', fieldEntry: '', tooltipKey: GlobalKey<TooltipState>()),
       'phone_number' : CustomTextField(maxLength: 10, fieldName: 'Phone Number', fieldEntry: '', tooltipKey: GlobalKey<TooltipState>(), keyboardType: TextInputType.phone),
@@ -137,47 +138,24 @@ class _RegisterPageState extends State<RegisterPage> {
                                     Row(
                                       children: <Widget>[
                                         Text(
-                                          'First Name',
+                                          'Name*',
                                           style: TextStyle(
                                             fontSize: bioTextSize,
                                             color: textColor,
                                           ),
                                           textAlign: TextAlign.left,
                                         ),
-                                        BasicTooltip(message: "First Names must be\n0-24 characters long and\ncan only contain\nASCII characters", tooltipkey: fields['firstName']!.tooltipKey),
+                                        BasicTooltip(message: "Names must be\n0-100 characters long and\ncan only contain\nASCII characters", tooltipkey: fields['name']!.tooltipKey),
                                       ]
                                     ),
                                     Container(
-                                      width: MediaQuery.of(context).size.width / 2,
+                                      width: MediaQuery.of(context).size.width,
                                       height: 40,
                                       margin: const EdgeInsets.only(bottom: 5),
-                                      child: fields['firstName']!,
+                                      child: fields['name']!,
                                     ),
                                   ],
                                 ),
-                                Column(
-                                  children: <Widget>[
-                                    Row(
-                                      children: <Widget>[
-                                        Text(
-                                          'Last Name',
-                                          style: TextStyle(
-                                            fontSize: bioTextSize,
-                                            color: textColor,
-                                          ),
-                                          textAlign: TextAlign.left,
-                                        ),
-                                        BasicTooltip(message: "Last Names must be\n0-24 characters long and\ncan only contain\nASCII characters", tooltipkey: fields['lastName']!.tooltipKey),
-                                      ],
-                                    ),
-                                    Container(
-                                      width: MediaQuery.of(context).size.width / 2,
-                                      height: 40,
-                                      margin: const EdgeInsets.only(bottom: 5),
-                                      child: fields['lastName']!,
-                                    ),
-                                  ]
-                                )
                               ],
                             ),
                             Row(
@@ -188,7 +166,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                     Row(
                                       children: <Widget>[
                                         Text(
-                                          'Username',
+                                          'Username*',
                                           style: TextStyle(
                                             fontSize: bioTextSize,
                                             color: textColor,
@@ -236,7 +214,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                 Row(
                                   children: <Widget>[
                                     Text(
-                                      'Email',
+                                      'Email*',
                                       style: TextStyle(
                                         fontSize: bioTextSize,
                                         color: textColor,
@@ -259,7 +237,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                 Row(
                                   children: <Widget>[
                                     Text(
-                                      'Password',
+                                      'Password*',
                                       style: TextStyle(
                                         fontSize: bioTextSize,
                                         color: textColor,
@@ -282,7 +260,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                 Row(
                                   children: <Widget>[
                                     Text(
-                                      'Confirm Password',
+                                      'Confirm Password*',
                                       style: TextStyle(
                                         fontSize: bioTextSize,
                                         color: textColor,
@@ -310,13 +288,16 @@ class _RegisterPageState extends State<RegisterPage> {
                               ),
                               child: OutlinedButton(
                                 onPressed: () async {
-                                  if (allRegisterFieldsValid()) {
-                                    await register();
-                                    user = await User().getUserFromStorage();
-                                    _showSnack(context);
-                                  } else {
+                                  if (!allRegisterFieldsValid()) {
                                     setState(() {});
+                                    return;
                                   }
+                                  bool success = await register();
+                                  if (!success) {
+                                    return;
+                                  }
+                                  //user = await User().getUserFromStorage();
+                                  _showSnack(context);
                                 },
                                 child: Text(
                                   'Register',
@@ -370,23 +351,27 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
-  Future<void> register() async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-
-      fields.forEach((key, value){
-        prefs.setString(key, value.editor.value.text);
-      });
-
-    } catch (e) {
-      print("Unable to open preferences");
+  Future<bool> register() async {
+    Map<String, dynamic> package = {
+      'Name': fields['name']!.editor.value.text,
+      'Username': fields['username']!.editor.value.text,
+      'Email': fields['Email']!.editor.value.text,
+      'Password': fields['Password']!.editor.value.text,
+    };
+    final res = await UserAPI.register(package);
+    if (res.statusCode != 200) {
+      return false;
     }
+
+    var data = json.decode(res.body);
+    user = User.userFromJson(data);
+    return true;
   }
 
   bool allRegisterFieldsValid() {
     bool toReturn = true;
     fields.forEach((key, value) {
-      if (toReturn) {
+      if (toReturn && key != 'phone_number') {
         toReturn = validateField(value);
       }
     });

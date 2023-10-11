@@ -124,6 +124,32 @@ class _ProfileState extends State<Profile> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
+            if (!user!.isVerified)
+              Row(
+                children: <Widget>[
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    child: Text(
+                      'You are not verified.',
+                      style: TextStyle(
+                        fontSize: bioTextSize,
+                        color: invalidColor,
+                      )
+                    )
+                  ),
+                  TextButton(
+                    onPressed: null,
+                    child: Text(
+                      'Click here to reverify!',
+                      style: TextStyle(
+                        fontSize: bioTextSize,
+                        decoration: TextDecoration.underline,
+                        color: invalidColor,
+                      )
+                    )
+                  )
+                ],
+              ),
             Container(
               width: 200,
               height: 200,
@@ -154,7 +180,7 @@ class _ProfileState extends State<Profile> {
                         child: Column(
                           children: <Widget>[
                             Text(
-                              'First Name',
+                              'Name',
                               style: TextStyle(
                                 fontSize: bioTextSize,
                                 color: textColor,
@@ -162,7 +188,7 @@ class _ProfileState extends State<Profile> {
                               textAlign: TextAlign.center,
                             ),
                             Container(
-                              width: 150,
+                              width: double.infinity,
                               margin: const EdgeInsets.only(left: 10),
                               padding: const EdgeInsets.symmetric(
                                   vertical: 10, horizontal: 7),
@@ -172,41 +198,7 @@ class _ProfileState extends State<Profile> {
                                     Radius.circular(roundedCorners)),
                               ),
                               child: Text(
-                                user!.firstName == '' ? 'No First Name' : user!.firstName,
-                                style: TextStyle(
-                                  fontSize: bioTextSize,
-                                  color: buttonTextColor,
-                                ),
-                                textAlign: TextAlign.left,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Expanded(
-                        flex: 5,
-                        child: Column(
-                          children: <Widget>[
-                            Text(
-                              'Last Name',
-                              style: TextStyle(
-                                fontSize: bioTextSize,
-                                color: textColor,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                            Container(
-                              width: 150,
-                              margin: const EdgeInsets.only(right: 10),
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 10, horizontal: 5),
-                              decoration: BoxDecoration(
-                                color: textFieldBackingColor,
-                                borderRadius: const BorderRadius.all(
-                                    Radius.circular(roundedCorners)),
-                              ),
-                              child: Text(
-                                user!.lastName == '' ? 'No Last Name' : user!.lastName,
+                                user!.name == '' ? 'No Name' : user!.name,
                                 style: TextStyle(
                                   fontSize: bioTextSize,
                                   color: buttonTextColor,
@@ -309,7 +301,7 @@ class _ProfileState extends State<Profile> {
                               Radius.circular(roundedCorners)),
                         ),
                         child: Text(
-                          user!.phoneNumber == '' ? 'No Phone Number' : user!.phoneNumber,
+                          user!.phoneNumber == '' || user!.phoneNumber == null? 'No Phone Number' : user!.phoneNumber!,
                           style: TextStyle(
                             fontSize: bioTextSize,
                             color: buttonTextColor,

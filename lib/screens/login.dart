@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import '../APIfunctions/userAPI.dart';
 import '../components/tooltips.dart';
 import '../components/textfields.dart';
 import '../utils/colors.dart';
@@ -103,9 +106,9 @@ class _LogInPageState extends State<LogInPage> {
                                       Navigator.pop(context);
                                     });
                                   },
-                                  child: Row(
+                                  child: const Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
-                                    children: const <Widget>[
+                                    children: <Widget>[
                                       Icon(
                                         Icons.navigate_before,
                                       ),
@@ -184,7 +187,16 @@ class _LogInPageState extends State<LogInPage> {
                                   border: Border.all(color: black, width: 3),
                                 ),
                                 child: OutlinedButton(
-                                  onPressed: null,
+                                  onPressed: () async {
+                                    if (!allLoginFieldsValid()) {
+                                      setState(() {});
+                                      return;
+                                    }
+                                    bool success = await login();
+                                    if (success && context.mounted) {
+                                      Navigator.pop(context, true);
+                                    }
+                                  },
                                   child: Text(
                                     'Login',
                                     style: TextStyle(
@@ -213,8 +225,8 @@ class _LogInPageState extends State<LogInPage> {
                                           context, '/register');
                                     });
                                   },
-                                  child: Row(
-                                    children: const <Widget>[
+                                  child: const Row(
+                                    children: <Widget>[
                                       Flexible(
                                         child: Text(
                                             "Don't have an account? Create one now!"),
@@ -242,12 +254,31 @@ class _LogInPageState extends State<LogInPage> {
     bool toReturn = true;
     if (username.editor.value.text.isEmpty) {
       toReturn = false;
+      username.showToolTip();
       setState(() => username.unfilled = true);
     }
     if (password.editor.value.text.isEmpty) {
       toReturn = false;
+      password.showToolTip();
       setState(() => password.unfilled = true);
     }
     return toReturn;
+  }
+
+  Future<bool> login() async {
+    Map<String, dynamic> entries = {
+      'username': username.editor.value.text,
+      'password': password.editor.value.text,
+    };
+
+    final res = await UserAPI.login(entries);
+    if (res.statusCode != 200) {
+      print(res.body);
+      return false;
+    }
+
+    var data = json.decode(res.body);
+    user = User.userFromJson(data);
+    return true;
   }
 }
