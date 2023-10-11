@@ -28,6 +28,7 @@ class _TestScreenState extends State<TestScreen> {
   StreamSubscription? _mRecordingDataSubscription;
   bool _isListening = false;
   bool audioDetected = false;
+  bool connectedForListen = false;
 
   @override
   void initState() {
@@ -39,6 +40,63 @@ class _TestScreenState extends State<TestScreen> {
     release();
     socket!.disconnect();
     super.dispose();
+  }
+
+  Future<void> connectPerformSocket() async {
+    socket = SocketConnect(SocketType.performer);
+    socket!.socket.stream.listen(
+          (data) {
+        String s = String.fromCharCodes(data);
+        List<String> split = s.split(':');
+        if (split[0] == 'participants') {
+          print(s);
+        } else {
+          if (s == 'start') {
+            print(s);
+            record();
+          } else {
+            print(data);
+            Uint8List music = data;
+            _mPlayer.mPlayer!.foodSink!.add(FoodData(music.sublist(1)));
+          }
+        }
+      },
+      onDone: () {
+        print('done');
+      },
+      onError: (error) => print(error),
+    );
+    connectedForListen = false;
+    setState(() {});
+  }
+
+  Future<void> connectListenSocket() async {
+    socket = SocketConnect(SocketType.listener);
+    socket!.socket.stream.listen(
+          (data) {
+        String s = String.fromCharCodes(data);
+        if (s == 'start') {
+          print('start');
+        } else {
+          print(data);
+          _mPlayer.mPlayer!.foodSink!.add(FoodData(data));
+        }
+      },
+      onDone: () {
+        print('done');
+      },
+      onError: (error) => print(error),
+    );
+    connectedForListen = true;
+    setState(() {});
+  }
+
+  Future<void> disconnect() async {
+    if (socket != null) {
+      socket!.disconnect();
+    }
+    socket = null;
+    setState(() {});
   }
 
   Future<void> release() async {
@@ -68,19 +126,14 @@ class _TestScreenState extends State<TestScreen> {
   }
 
   Future<void> record() async {
+    /*if (connectedForListen) {
+      disconnect();
+      connectPerformSocket();
+      connectedForListen = false;
+    }
     if (_mPlayer.isPlaying) {
       stopPlayer();
-    }
-    socket = SocketConnect(SocketType.performer);
-    socket!.socket.stream.listen(
-          (data) {
-      },
-      onDone: () {
-        socket = null;
-        print('done');
-      },
-      onError: (error) => print(error),
-    );
+    }*/
 
     var recordingDataController = StreamController<Food>();
     _mRecorder.mRecorder!.setSubscriptionDuration(const Duration(milliseconds: 100));
@@ -102,26 +155,33 @@ class _TestScreenState extends State<TestScreen> {
     });
     await _mRecorder.record(recordingDataController);
     _mRecorder.isRecording = true;
+    listenForSink();
     setState(() {});
   }
 
-  Future<void> listen() async {
+  /*Future<void> listen() async {
+    if (!connectedForListen) {
+      disconnect();
+      connectListenSocket();
+      connectedForListen = true;
+    }
     if (_mRecorder.isRecording) {
       stopRecorder();
     }
-    socket = SocketConnect(SocketType.listener);
     _mPlayer.listen();
-    socket!.socket.stream.listen(
-          (data) {
-            print(data);
-        _mPlayer.mPlayer!.foodSink!.add(FoodData(data));
-      },
-      onDone: () {
-          socket = null;
-        print('done');
-      },
-      onError: (error) => print(error),
-    );
+
+    await _mPlayer.listen();
+    _mPlayer.mPlayer!.foodSink!.add(FoodData(silence));
+    _mPlayer.isPlaying = true;
+    setState(() {});
+  }*/
+
+  Future<void> listenForSink() async {
+    /*if (_mRecorder.isRecording) {
+      stopRecorder();
+    }*/
+    _mPlayer.listen();
+
     await _mPlayer.listen();
     _mPlayer.mPlayer!.foodSink!.add(FoodData(silence));
     _mPlayer.isPlaying = true;
@@ -161,14 +221,21 @@ class _TestScreenState extends State<TestScreen> {
                     if (_mRecorder.isRecording || _mPlayer.isPlaying) {
                       await stopRecorder();
                       await stopPlayer();
+                      disconnect();
                       setState((){});
                       return;
                     }
-                    if (_isListening) {
-                      await listen();
+                    if (socket == null) {
+                      print('connect socket');
+                      if (_isListening) {
+                        await connectListenSocket();
+                      } else {
+                        await connectPerformSocket();
+                      }
+
                     } else {
-                      print('going to record');
-                      await record();
+                      print('disconnect socket');
+                      await disconnect();
                     }
                   },
                   style: ButtonStyle(
@@ -186,57 +253,90 @@ class _TestScreenState extends State<TestScreen> {
                 ),
               ),
               Text(
-                  _mRecorder.isRecording || _mPlayer.isPlaying ? 'Stop' : 'Connect',
+                  socket != null ? 'Disconnect' : 'Connect',
                   style: TextStyle(
                     color: buttonTextColor,
                     fontSize: titleFontSize,
                   )
               ),
+              OutlinedButton(
+                onPressed: () async {
+                  if (!_mRecorder.mRecorderIsInited) {
+                    audioDetected = false;
+                    return;
+                  }
+                  if (_mRecorder.isRecording || _mPlayer.isPlaying) {
+                    await stopRecorder();
+                    await stopPlayer();
+                    setState((){});
+                    return;
+                  }
+                  if (_isListening) {
+                    //await listen();
+                  } else {
+                    print('going to record');
+                    await record();
+                    await listenForSink();
+                  }
+                },
+                style: ButtonStyle(
+                  shape: MaterialStateProperty.all(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(25),
+                      )
+                  ),
+                ),
+                child: Text(
+                  _mRecorder.isRecording || _mPlayer.isPlaying ? 'Stop' : 'Start',
+                  style: defaultTextStyle,
+                ),
+              ),
               Container(
-                  margin: const EdgeInsets.all(15),
-                  child: OutlinedButton(
-                    onPressed: () async {
-                      setState(() => _isListening = !_isListening);
-                      if (_mRecorder.isRecording || _mPlayer.isPlaying) {
-                        if (_isListening) {
-                          await listen();
-                        } else {
-                          await record();
-                        }
+                margin: const EdgeInsets.all(15),
+                child: OutlinedButton(
+                  onPressed: () async {
+                    setState(() => _isListening = !_isListening);
+                    if (_mRecorder.isRecording || _mPlayer.isPlaying) {
+                      if (_isListening) {
+                        //await listen();
+                      } else {
+                        await record();
+                        await listenForSink();
                       }
-                    },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Container(
-                          width: 150,
-                          padding: const EdgeInsets.all(5),
-                          color: _isListening ? black : mainSchemeColor,
-                          child: Text(
-                            'Record',
-                            style: TextStyle(
-                              color: _isListening ? white : black,
-                              fontSize: 40,
-                            ),
-                            textAlign: TextAlign.center,
+                    }
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Container(
+                        width: 150,
+                        padding: const EdgeInsets.all(5),
+                        color: _isListening ? black : mainSchemeColor,
+                        child: Text(
+                          'Record',
+                          style: TextStyle(
+                            color: _isListening ? white : black,
+                            fontSize: 40,
                           ),
+                          textAlign: TextAlign.center,
                         ),
-                        Container(
-                          width: 150,
-                          padding: const EdgeInsets.all(5),
-                          color: _isListening ? mainSchemeColor : black,
-                          child: Text(
-                            'Listen',
-                            style: TextStyle(
-                              color: _isListening ? black : white,
-                              fontSize: 40,
-                            ),
-                            textAlign: TextAlign.center,
+                      ),
+                      Container(
+                        width: 150,
+                        padding: const EdgeInsets.all(5),
+                        color: _isListening ? mainSchemeColor : black,
+                        child: Text(
+                          'Listen',
+                          style: TextStyle(
+                            color: _isListening ? black : white,
+                            fontSize: 40,
                           ),
+                          textAlign: TextAlign.center,
                         ),
-                      ],
-                    ),
-                  )
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ],
           ),

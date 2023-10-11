@@ -5,7 +5,7 @@ const String API_PREFIX = 'johncagetribute.org';
 final baseHeader = {HttpHeaders.contentTypeHeader: 'application/json'};
 
 //Headers for Sockets - TESTING
-Uint8List start = Uint8List.fromList([83,116,97,114,116,0]);
+Uint8List start = Uint8List.fromList([115,116,97,114,116,0]);
 
 Uint8List musicHeader(Uint8List music) {
   var b = BytesBuilder();

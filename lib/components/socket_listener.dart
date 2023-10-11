@@ -25,18 +25,19 @@ class SocketConnect {
   }
 
   void disconnect() {
-    socket.sink.add('disconnect');
+    socket.sink.add('close');
     socket.sink.close();
     buttonNotifier.value = false;
+    _isConnected = false;
   }
 
   Future<void> connectForMaestro() async {
-    socket = WebSocketChannel.connect(Uri.parse('ws://$API_PREFIX:8080/concert/performer/maestro'));
+    socket = WebSocketChannel.connect(Uri.parse('ws://$API_PREFIX:8080/concert/performer/maestro?name=john='));
     _isConnected = true;
   }
 
   Future<void> connectForRecording() async {
-    socket = WebSocketChannel.connect(Uri.parse('ws://$API_PREFIX:8080/concert/performer'));
+    socket = WebSocketChannel.connect(Uri.parse('ws://$API_PREFIX:8080/concert/performer?name=jeff='));
     _isConnected = true;
   }
 

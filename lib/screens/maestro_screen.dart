@@ -32,7 +32,7 @@ class _MaestroScreenState extends State<MaestroScreen> {
   @override
   void dispose() {
     release();
-    socket!.disconnect();
+    disconnect();
     super.dispose();
   }
 
@@ -55,9 +55,34 @@ class _MaestroScreenState extends State<MaestroScreen> {
     return;
   }
 
-  Future<void> record() async {
+  Future<void> connect() async {
     socket = SocketConnect(SocketType.maestro);
+    socket!.socket.stream.listen(
+          (data) {
+            print(data);
+        String s = String.fromCharCodes(data);
+        print(s);
+      },
+      onDone: () {
+        print('done');
+      },
+      onError: (error) => print(error),
+    );
+    setState(() {});
+  }
 
+  Future<void> disconnect() async {
+    if (socket != null) {
+      socket!.disconnect();
+    }
+    socket = null;
+    setState(() {});
+  }
+
+  Future<void> record() async {
+    if (socket == null) {
+      return;
+    }
     var recordingDataController = StreamController<Food>();
     _mRecorder.mRecorder!.setSubscriptionDuration(const Duration(milliseconds: 100));
     _mRecordingDataSubscription =
@@ -113,10 +138,17 @@ class _MaestroScreenState extends State<MaestroScreen> {
                     }
                     if (_mRecorder.isRecording) {
                       await stopRecorder();
+                      disconnect();
                       setState((){});
                       return;
                     }
-                    await record();
+                    if (socket == null) {
+                      print('connect socket');
+                      await connect();
+                    } else {
+                      print('disconnect socket');
+                      await disconnect();
+                    }
                   },
                   style: ButtonStyle(
                     shape: MaterialStateProperty.all(
@@ -133,11 +165,36 @@ class _MaestroScreenState extends State<MaestroScreen> {
                 ),
               ),
               Text(
-                  _mRecorder.isRecording ? 'Stop' : 'Connect',
+                  socket != null ? 'Disconnect' : 'Connect',
                   style: TextStyle(
                     color: buttonTextColor,
                     fontSize: titleFontSize,
                   )
+              ),
+              OutlinedButton(
+                onPressed: () async {
+                  if (!_mRecorder.mRecorderIsInited) {
+                    audioDetected = false;
+                    return;
+                  }
+                  if (_mRecorder.isRecording) {
+                    await stopRecorder();
+                    setState((){});
+                    return;
+                  }
+                  await record();
+                },
+                style: ButtonStyle(
+                  shape: MaterialStateProperty.all(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(25),
+                      )
+                  ),
+                ),
+                child: Text(
+                  _mRecorder.isRecording ? 'Stop' : 'Start',
+                  style: defaultTextStyle,
+                ),
               ),
             ],
           ),
