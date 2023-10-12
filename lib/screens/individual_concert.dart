@@ -65,10 +65,15 @@ class _ConcertPageState extends State<ConcertPage> {
                   return const CircularProgressIndicator();
                 case ConnectionState.done:
                   if (snapshot.hasError) {
+                    print('hereError');
                     return Text('Error: $snapshot.error}',
-                        style: defaultTextStyle);
+                        style: TextStyle(
+                          color: black,
+                          fontSize: bioTextSize,
+                        ));
                   }
                   if (concert.id == -1) {
+                    print('here');
                     return Text("Error: Concert could not be retrieved");
                   }
                   return SingleChildScrollView(
@@ -139,7 +144,7 @@ class _ConcertPageState extends State<ConcertPage> {
                               children: <Widget>[
                                 Expanded(
                                   child: Text(
-                                    concert.date,
+                                    concert.date != '' ? concert.date : 'No Date',
                                     style: TextStyle(
                                       fontSize: infoFontSize,
                                       color: textColor,
@@ -313,11 +318,11 @@ class _ConcertPageState extends State<ConcertPage> {
     }
 
     var data = json.decode(res.body);
-    if (!data.containsKey('songData')) {
+    if (!data.containsKey('group')) {
       return false;
     }
 
-    concert = Concert.songFromJson(data['songData']);
+    concert = Concert.songFromJson(data['group']);
 
     return true;
   }

@@ -31,28 +31,29 @@ class _HomeDrawerState extends State<HomeDrawer> {
             child: user!.logged == false ? UserLogin(context) : UserProfile(context)
           ),
           const Spacer(),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Container(
-              width: MediaQuery.of(context).size.width,
-              margin: const EdgeInsets.all(20),
-              padding: const EdgeInsets.symmetric(horizontal: 30),
-              decoration: BoxDecoration(
-                color: accentColor,
-                borderRadius: const BorderRadius.all(Radius.circular(roundedCorners)),
-              ),
-              child: TextButton(
-                onPressed: null,
-                child: Text(
-                    'Sign Out',
-                    style: TextStyle(
-                      fontSize: bioTextSize,
-                      color: invalidColor,
-                    )
+          if (user!.logged)
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Container(
+                width: MediaQuery.of(context).size.width,
+                margin: const EdgeInsets.all(20),
+                padding: const EdgeInsets.symmetric(horizontal: 30),
+                decoration: BoxDecoration(
+                  color: accentColor,
+                  borderRadius: const BorderRadius.all(Radius.circular(roundedCorners)),
+                ),
+                child: TextButton(
+                  onPressed: null,
+                  child: Text(
+                      'Sign Out',
+                      style: TextStyle(
+                        fontSize: bioTextSize,
+                        color: invalidColor,
+                      )
+                  ),
                 ),
               ),
             ),
-          ),
         ],
       ),
     );

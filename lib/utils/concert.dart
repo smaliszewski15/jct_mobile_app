@@ -3,32 +3,41 @@ class Concert {
   late int id;
   late String maestro;
   late List<String> performers;
-  late List<String> tags;
+  late String tags;
   late String description;
   late String date;
 
 
-  Concert({this.title = '', this.id = -1, this.maestro = '', this.performers = const [], this.tags = const [], this.description = '', this.date = '',});
+  Concert({this.title = '', this.id = -1, this.maestro = '', this.performers = const [], this.tags = '', this.description = '', this.date = '',});
+
+  factory Concert.searchedSong(Map json) {
+    if (json.containsKey('Title') && json.containsKey('GroupID') && json.containsKey('GroupLeaderName')) {
+      return Concert(title: json['Title'], id: json['GroupID'], maestro: json['GroupLeaderName']);
+    }
+    return Concert();
+  }
 
   static Concert songFromJson(Map<String, dynamic> json) {
-    String title = json.containsKey('title') ? json['title'] : '';
-    int id = json['id'];
-    String maestro = json.containsKey('maestro') ? json['maestro'] : '';
-
-    List<String> perfs = [];
-    if (json.containsKey('performers')) {
-      perfs = (json['performers'] as List).map((entry) => entry as String).toList();
-    }
-
-    List<String> tags = [];
-    if (json.containsKey('tags')) {
-      tags = (json['tags'] as List).map((entry) => entry as String).toList();
-    }
-
-    String description = json.containsKey('description') ? json['description'] : '';
-    String date = json.containsKey('date') ? json['date'] : '';
+    String title = json.containsKey('Title') ? json['Title'] : '';
+    int id = json['GroupID'];
+    String maestro = json.containsKey('GroupLeaderName') ? json['GroupLeaderName'] : '';
+    List<String> perfs = _getPerformers(json);
+    String tags = json['Tags'] ?? '';
+    String description = json.containsKey('Description') ? json['Description'] : '';
+    String date = json['Date'] ?? '';
     Concert newConcert = Concert(title: title, id: id, maestro: maestro, performers: perfs, tags: tags, description: description, date: date);
     return newConcert;
+  }
+
+  static List<String> _getPerformers(Map json) {
+    List<String> toRet = [];
+    for (int i = 1; i <= 4; i++) {
+      if (json.containsKey('User${i}Name')) {
+        toRet.add(json['User${i}Name']);
+        i++;
+      }
+    }
+    return toRet;
   }
 
   String toString() {

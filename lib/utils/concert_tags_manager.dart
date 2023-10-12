@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import '../APIfunctions/concertAPI.dart';
-import '../utils/concert.dart';
+import 'concert.dart';
 
 class TagsUpdater {
 

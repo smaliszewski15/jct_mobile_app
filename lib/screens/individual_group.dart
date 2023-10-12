@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import '../components/textfields.dart';
+import '../APIfunctions/groupsAPI.dart';
 import '../utils/colors.dart';
 import '../utils/globals.dart';
+import '../utils/group.dart';
 import '../utils/user.dart';
 
-class Group extends StatefulWidget {
-  late String groupName;
+class IndividualGroup extends StatefulWidget {
+  late final String date;
   final bool creator = true;
 
-  Group(this.groupName);
+  IndividualGroup(this.date);
 
   @override
-  _GroupState createState() => _GroupState();
+  _IndividualGroupState createState() => _IndividualGroupState();
 }
 
-class _GroupState extends State<Group> {
-  List<String> members = ['person 1', 'numero dos', 'trois', 'Greg'];
+class _IndividualGroupState extends State<IndividualGroup> {
   List<String> methods = ['Surprise Me', 'IChing', 'Spotlight'];
 
   bool isEditing = false;
@@ -25,17 +25,18 @@ class _GroupState extends State<Group> {
 
   @override
   void initState() {
-    method = methods.first;
     super.initState();
-    _concertDate.text = DateFormat('E, MMM dd, yyyy - hh:mm').format(_selectedDate);
-    _title.text = widget.groupName;
+    method = methods.first;
+    _concertDate.text = widget.date;
+    _title.text = '';
+    done = retrieveGroup();
   }
 
   final _concertDate = TextEditingController();
-  DateTime _selectedDate = DateTime.now();
-  DateTime _changedDate = DateTime.now();
   final _title = TextEditingController();
   bool titleUnfilled = false;
+  late Group group;
+  Future<bool>? done;
 
   @override
   Widget build(BuildContext context) {
@@ -87,8 +88,8 @@ class _GroupState extends State<Group> {
                       )
                     ],
                     content:
-                    Column(mainAxisSize: MainAxisSize.min,
-                      children: const <Widget>[
+                    const Column(mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
                         Flexible(
                             child: Text(
                                 'Are you sure you want to delete this group?')),
@@ -158,7 +159,7 @@ class _GroupState extends State<Group> {
                     textAlign: TextAlign.center,
                   ) :
                   Text(
-                    widget.groupName,
+                    DateFormat('E, MMM dd, yyyy - hh:mm').format(group.date!),
                     style: TextStyle(
                         fontSize: 30,
                         color: textColor
@@ -177,30 +178,10 @@ class _GroupState extends State<Group> {
                         style: defaultTextStyle,
                         textAlign: TextAlign.left,
                       ),
-                      Flexible(
-                        child: SizedBox(
-                          child: TextField(
-                            textAlign: TextAlign.center,
-                            focusNode: AlwaysDisabledFocusNode(),
-                            controller: _concertDate,
-                            style: isEditing ? defaultTextStyle.copyWith(color: black): defaultTextStyle,
-                            decoration: isEditing ? InputDecoration(
-                              contentPadding: const EdgeInsets.all(5),
-                              counterText: '',
-                              filled: true,
-                              fillColor: mainSchemeColor,
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(20),
-                                borderSide: const BorderSide(color: black),
-                              ),
-                            ) : null,
-                            onTap: () {
-                              if (isEditing) _selectDate(context);
-                            },
-                            onChanged: null,
-                          ),
-                        ),
-                      ),
+                      Text(
+                        DateFormat('E, MMM dd, yyyy - hh:mm').format(group.date!),
+                        style: defaultTextStyle,
+                      )
                     ],
                   ),
                 ),
@@ -262,7 +243,7 @@ class _GroupState extends State<Group> {
                     margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                     color: black,
                     child: Text(
-                      'Leader Person',
+                      group.groupLeader,
                       style: defaultTextStyle,
                     )
                 ),
@@ -277,7 +258,7 @@ class _GroupState extends State<Group> {
                 ListView.builder(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
-                    itemCount: members.length,
+                    itemCount: group.members.length,
                     itemBuilder: (BuildContext context, int index) {
                       return Container(
                           width: double.infinity,
@@ -285,14 +266,14 @@ class _GroupState extends State<Group> {
                           margin: const EdgeInsets.symmetric(vertical: 2, horizontal: 10),
                           color: black,
                           child: Text(
-                            members[index],
+                            group.members[index],
                             style: defaultTextStyle,
                           )
                       );
                     }
                 ),
                 const Spacer(),
-                if (!isEditing && _selectedDate.difference(DateTime.now()).inMinutes < 40 && members.contains(user!.username))
+                if (!widget.creator && group.date!.difference(DateTime.now()).inMinutes < 40 && group.members.contains(user!.username))
                   Container(
                     margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                     padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 67),
@@ -313,7 +294,7 @@ class _GroupState extends State<Group> {
                       ),
                     ),
                   ),
-                if (!widget.creator && user!.logged ? true : !members.contains(user!.username))
+                if (!isEditing && !widget.creator && !group.members.contains(user!.username))
                   Container(
                     margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                     padding: const EdgeInsets.all(5),
@@ -353,7 +334,7 @@ class _GroupState extends State<Group> {
                                   )
                                 ],
                                 content:
-                                Column(mainAxisSize: MainAxisSize.min, children: const <Widget>[
+                                const Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
                                   Flexible(
                                       child: Text(
                                           'You are currently not logged in. You can either create an account or log in to join this group.')),
@@ -361,20 +342,22 @@ class _GroupState extends State<Group> {
                               );
                             },
                           );
-                          if (confirm) {
+                          if (confirm && context.mounted) {
                             Navigator.pushNamed(context, '/login').then((value){
                               if (user != null) {
-                                members.add(user!.username);
+                                group.members.add(user!.username);
                               }
                             }
                             );
                           } else {
-                            Navigator.pushNamed(context, '/register').then((value){
-                              if (user != null) {
-                                members.add(user!.username);
+                            if (context.mounted) {
+                              Navigator.pushNamed(context, '/register').then((value){
+                                if (user != null) {
+                                  group.members.add(user!.username);
+                                }
                               }
+                              );
                             }
-                            );
                           }
                         }
                       },
@@ -399,7 +382,6 @@ class _GroupState extends State<Group> {
                     ),
                     child: OutlinedButton(
                       onPressed: () {
-                        _title.text = widget.groupName;
                         setState(() => isEditing = true);
                       },
                       child: Text(
@@ -413,7 +395,7 @@ class _GroupState extends State<Group> {
                       ),
                     ),
                   ),
-                if (!isEditing && !widget.creator && (user!.logged ? members.contains(user!.username) : false))
+                if (!isEditing && !widget.creator && (user!.logged ? group.members.contains(user!.username) : false))
                   Container(
                     margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                     padding: const EdgeInsets.all(5),
@@ -452,7 +434,7 @@ class _GroupState extends State<Group> {
                                 )
                               ],
                               content:
-                              Column(mainAxisSize: MainAxisSize.min, children: const <Widget>[
+                              const Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
                                 Flexible(
                                     child: Text(
                                         'Are you sure you want to leave this group?')),
@@ -466,27 +448,6 @@ class _GroupState extends State<Group> {
                       },
                       child: Text(
                         'Leave Group',
-                        style: TextStyle(
-                          fontSize: bigButtonFontSize,
-                          color: buttonTextColor,
-                          fontWeight: FontWeight.w400,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  ),
-                if (widget.creator && !isEditing)
-                  Container(
-                    margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                    padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 67),
-                    decoration: BoxDecoration(
-                      color: gold,
-                      border: Border.all(color: black, width: 3),
-                    ),
-                    child: OutlinedButton(
-                      onPressed: null,
-                      child: Text(
-                        'Invite',
                         style: TextStyle(
                           fontSize: bigButtonFontSize,
                           color: buttonTextColor,
@@ -535,7 +496,7 @@ class _GroupState extends State<Group> {
                                 )
                               ],
                               content:
-                              Column(mainAxisSize: MainAxisSize.min, children: const <Widget>[
+                              const Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
                                 Flexible(
                                     child: Text(
                                         'Confirm changes made to the group?')),
@@ -543,10 +504,10 @@ class _GroupState extends State<Group> {
                             );
                           },
                         );
-                        if (!confirm)
+                        if (!confirm) {
                           return;
-                        widget.groupName = _title.text;
-                        _selectedDate = _changedDate;
+                        }
+                        group.title = _title.text;
                         setState(() => isEditing = false);
                       },
                       child: Text(
@@ -570,7 +531,7 @@ class _GroupState extends State<Group> {
                     ),
                     child: OutlinedButton(
                       onPressed: () {
-                        _concertDate.text = DateFormat('E, MMM dd, yyyy - hh:mm').format(_selectedDate);
+                        _title.text = group.title;
                         setState(() => isEditing = false);
                       },
                       child: Text(
@@ -591,30 +552,13 @@ class _GroupState extends State<Group> {
     );
   }
 
-  _selectDate(BuildContext context) async {
-    DateTime? newSelectedDate = await showDatePicker(
-        context: context,
-        initialDate: _selectedDate != null ? _selectedDate : DateTime.now(),
-        firstDate: DateTime.now(),
-        lastDate: DateTime(2030),
-        builder: (BuildContext context, Widget? child) {
-          return Theme(
-              data: ThemeData.dark().copyWith(
-                colorScheme: ColorScheme.dark(
-                  primary: mainSchemeColor,
-                  onPrimary: black,
-                  surface: black,
-                  onSurface: textColor,
-                ),
-                dialogBackgroundColor: backgroundColor,
-              ),
-              child: child as Widget);
-        });
-
-    if (newSelectedDate != null) {
-      _changedDate = newSelectedDate;
-      _concertDate.text = DateFormat('E, MMM dd, yyyy - hh:mm').format(newSelectedDate);
+  Future<bool> retrieveGroup() async {
+    Map<String, dynamic> groupsJSON = GroupsAPI.getGroup;
+    if (!groupsJSON.containsKey('group')) {
+      return false;
     }
-    setState(() {});
+    var data = groupsJSON['group'];
+    group = Group.fromJson(data);
+    return true;
   }
 }

@@ -3,8 +3,12 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import '../utils/colors.dart';
 import '../utils/globals.dart';
+import '../utils/schedule_manager.dart';
 
 class FilterDrawer extends StatefulWidget {
+  late ScheduleManager filter;
+
+  FilterDrawer(this.filter);
 
   @override
   _FilterDrawerState createState() => _FilterDrawerState();
@@ -15,14 +19,12 @@ class _FilterDrawerState extends State<FilterDrawer> {
   @override
   void initState() {
     super.initState();
-    _startDateCon.text = DateFormat('E, MMM dd, yyyy - hh:mm').format(_startDate);
-    _endDateCon.text = 'None Selected';
+    _startDateCon.text = DateFormat('E, MMM dd, yyyy').format(widget.filter.toChangeStart);
+    _endDateCon.text = DateFormat('E, MMM dd, yyyy').format(widget.filter.toChangeEnd);
   }
 
   final _startDateCon = TextEditingController();
   final _endDateCon = TextEditingController();
-  DateTime _startDate = DateTime.now();
-  DateTime _endDate = DateTime.now();
 
   @override
   Widget build(BuildContext context) {
@@ -56,6 +58,7 @@ class _FilterDrawerState extends State<FilterDrawer> {
                   ),
                   TextButton(
                       onPressed: () {
+                        widget.filter.noChange();
                         Navigator.pop(context);
                       },
                       child: const Text(
@@ -87,8 +90,13 @@ class _FilterDrawerState extends State<FilterDrawer> {
                     borderSide: const BorderSide(color: black),
                   ),
                 ),
-                onTap: () {
-                  _selectStartDate(context);
+                onTap: () async {
+                  await widget.filter.selectStartDate(context);
+                  if (widget.filter.isStartChanged()) {
+                    _startDateCon.text = DateFormat('E, MMM dd, yyyy').format(
+                        widget.filter.toChangeStart);
+                    setState(() {});
+                  }
                 },
                 onChanged: null,
               ),
@@ -111,76 +119,17 @@ class _FilterDrawerState extends State<FilterDrawer> {
                     borderSide: const BorderSide(color: black),
                   ),
                 ),
-                onTap: () {
-                  _selectEndDate(context);
+                onTap: () async {
+                  await widget.filter.selectEndDate(context);
+                  if (widget.filter.isEndChanged()) {
+                    _endDateCon.text = DateFormat('E, MMM dd, yyyy').format(widget.filter.toChangeEnd);
+                    setState(() {});
+                  }
                 },
                 onChanged: null,
               ),
             ],
         ),
     );
-  }
-
-  _selectStartDate(BuildContext context) async {
-    DateTime? newSelectedDate = await showDatePicker(
-        context: context,
-        initialDate: _startDate != null ? _startDate : DateTime.now(),
-        firstDate: DateTime.now(),
-        lastDate: DateTime(2030),
-        builder: (BuildContext context, Widget? child) {
-          return Theme(
-              data: ThemeData.dark().copyWith(
-                colorScheme: ColorScheme.dark(
-                  primary: mainSchemeColor,
-                  onPrimary: black,
-                  surface: black,
-                  onSurface: textColor,
-                ),
-                dialogBackgroundColor: backgroundColor,
-              ),
-              child: child as Widget);
-        });
-
-    if (newSelectedDate != null) {
-      _startDate = newSelectedDate;
-      _startDateCon.text = DateFormat('E, MMM dd, yyyy - hh:mm').format(newSelectedDate);
-    }
-
-    if (_startDate.isAfter(_endDate)) {
-      _endDate = _startDate;
-      _endDateCon.text = 'None Selected';
-    }
-    setState(() {});
-  }
-
-  _selectEndDate(BuildContext context) async {
-    DateTime? newSelectedDate = await showDatePicker(
-        context: context,
-        initialDate: _startDate != null ? _startDate : DateTime.now(),
-        firstDate: _startDate != null ? _startDate : DateTime.now(),
-        lastDate: DateTime(2030),
-        builder: (BuildContext context, Widget? child) {
-          return Theme(
-              data: ThemeData.dark().copyWith(
-                colorScheme: ColorScheme.dark(
-                  primary: mainSchemeColor,
-                  onPrimary: black,
-                  surface: black,
-                  onSurface: textColor,
-                ),
-                dialogBackgroundColor: backgroundColor,
-              ),
-              child: child as Widget);
-        });
-
-    if (newSelectedDate != null) {
-      _endDate = newSelectedDate;
-      _endDateCon.text = DateFormat('E, MMM dd, yyyy - hh:mm').format(newSelectedDate);
-    }
-    setState(() {});
-  }
-
-  _setTime(BuildContext context) async {
-
   }
 }
