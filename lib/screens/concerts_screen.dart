@@ -336,7 +336,13 @@ class _ConcertsState extends State<ConcertsScreen> {
     if (page == 0) {
       if (totalPages + 1 == 1) {
         return Text(
-          ' 1',
+          ' 1 ',
+          style: defaultTextStyle,
+        );
+      }
+      if (page + 1 == totalPages) {
+        return Text(
+          ' 1,2 ',
           style: defaultTextStyle,
         );
       }
