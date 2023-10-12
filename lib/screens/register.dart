@@ -354,12 +354,14 @@ class _RegisterPageState extends State<RegisterPage> {
   Future<bool> register() async {
     Map<String, dynamic> package = {
       'Name': fields['name']!.editor.value.text,
-      'Username': fields['username']!.editor.value.text,
-      'Email': fields['Email']!.editor.value.text,
-      'Password': fields['Password']!.editor.value.text,
+      'UserName': fields['username']!.editor.value.text,
+      'Email': fields['email']!.editor.value.text,
+      'Password': fields['password']!.editor.value.text,
     };
     final res = await UserAPI.register(package);
-    if (res.statusCode != 200) {
+    print(res.body);
+    if (res.statusCode != 201) {
+      print(res.statusCode);
       return false;
     }
 

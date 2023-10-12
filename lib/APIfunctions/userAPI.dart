@@ -12,7 +12,7 @@ class UserAPI {
 
     try {
       response = await http.post(
-          Uri.http(API_PREFIX, '${apiRoute}/register'),
+          Uri.https(API_PREFIX, '${apiRoute}/register'),
           body: json.encode(queries),
           headers: baseHeader);
     } catch (e) {
@@ -25,11 +25,13 @@ class UserAPI {
 
   static Future<http.Response> login(Map<String, dynamic> query) async {
     http.Response response;
-    print(query);
+
+    var encoded = json.encode(query);
+    print(encoded);
 
     try {
       response = await http.post(
-          Uri.http(API_PREFIX, '${apiRoute}/login'),
+          Uri.https(API_PREFIX, '${apiRoute}/login'),
           body: json.encode(query),
           headers: baseHeader);
     } catch (e) {
@@ -44,7 +46,7 @@ class UserAPI {
     http.Response response;
 
     try {
-      response = await http.get(Uri.http(API_PREFIX, '${apiRoute}/validate'),
+      response = await http.get(Uri.https(API_PREFIX, '${apiRoute}/validate'),
           headers: baseHeader);
     } catch (e) {
       print(e.toString());
@@ -59,7 +61,7 @@ class UserAPI {
 
     try {
       response =
-          await http.get(Uri.http(API_PREFIX, '${apiRoute}/$id'), headers: {
+          await http.get(Uri.https(API_PREFIX, '${apiRoute}/$id'), headers: {
         HttpHeaders.contentTypeHeader: 'application/json',
         HttpHeaders.authorizationHeader: user!.authToken
       });

@@ -272,6 +272,8 @@ class _LogInPageState extends State<LogInPage> {
     };
 
     final res = await UserAPI.login(entries);
+    print(res.body);
+    print(res.statusCode);
     if (res.statusCode != 200) {
       print(res.body);
       return false;

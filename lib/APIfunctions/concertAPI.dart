@@ -8,7 +8,7 @@ class ConcertsAPI {
     http.Response response;
 
     try {
-      response = await http.get(Uri.http(API_PREFIX, '${apiRoute}/searchSongs', queries),
+      response = await http.get(Uri.https(API_PREFIX, '${apiRoute}/searchSongs', queries),
           headers: baseHeader);
     } catch (e) {
       print(e.toString());
@@ -23,7 +23,7 @@ class ConcertsAPI {
     print(query);
 
     try {
-      response = await http.get(Uri.http(API_PREFIX, '${apiRoute}/getSongData', query),
+      response = await http.get(Uri.https(API_PREFIX, '${apiRoute}/getSongData', query),
           headers: baseHeader);
     } catch (e) {
       print(e.toString());
@@ -37,7 +37,7 @@ class ConcertsAPI {
     http.Response response;
 
     try {
-      response = await http.get(Uri.http(API_PREFIX, '${apiRoute}/getTags'),
+      response = await http.get(Uri.https(API_PREFIX, '${apiRoute}/getTags'),
           headers: baseHeader);
     } catch (e) {
       print(e.toString());

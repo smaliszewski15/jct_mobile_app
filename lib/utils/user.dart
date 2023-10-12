@@ -18,8 +18,8 @@ class User {
   factory User.userFromJson(Map<String, dynamic> json) {
     String token = json.containsKey('token') ? json['token'] : '';
     var data = json['user'];
-    int id = json['ID'];
-    String name = data.containsKey('Dame') ? data['Dame'] : '';
+    int id = data['ID'];
+    String name = data.containsKey('Name') ? data['Name'] : '';
     String username = data['UserName'];
     String email = data['Email'];
     String password = data.containsKey('Password') ? data['Password'] : '';

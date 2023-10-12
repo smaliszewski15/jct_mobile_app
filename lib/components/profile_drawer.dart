@@ -43,7 +43,13 @@ class _HomeDrawerState extends State<HomeDrawer> {
                   borderRadius: const BorderRadius.all(Radius.circular(roundedCorners)),
                 ),
                 child: TextButton(
-                  onPressed: null,
+                  onPressed: () async {
+                    bool loggedOut = await user!.logout();
+                    if (loggedOut) {
+                      user = null;
+                    }
+                    setState(() {});
+                  },
                   child: Text(
                       'Sign Out',
                       style: TextStyle(

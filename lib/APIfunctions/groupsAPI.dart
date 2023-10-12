@@ -20,7 +20,7 @@ class GroupsAPI {
         'title': 'Title 2',
         'maestro': 'Stephen',
         'tags': 'jazz`rock',
-        'date': '2023-10-10',
+        'date': '2023-10-13',
         'time': '21:20',
         'members': [
           'Stephen',
@@ -32,7 +32,7 @@ class GroupsAPI {
         'title': 'Title 3',
         'maestro': 'Rayyan',
         'tags': 'soft`loud',
-        'date': '2023-10-10',
+        'date': '2023-10-12',
         'time': '23:40',
         'members': [
           'Stephen',
@@ -44,7 +44,7 @@ class GroupsAPI {
         'title': 'Title 4',
         'maestro': 'Himil',
         'tags': 'soft`loud',
-        'date': '2023-10-10',
+        'date': '2023-10-13',
         'time': '22:00',
         'members': [
           'Stephen',

@@ -138,6 +138,9 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                             addAutomaticKeepAlives: true,
                             itemCount: tempList.length,
                             itemBuilder: (context, index) {
+                              while (groupsList < groups.length && groupsList >= 0 && tempList[index].isAfter(groups[groupsList].date!)) {
+                                groupsList++;
+                              }
                               if (tempList[index].day != currentDay) {
                                 currentDay = tempList[index].day;
                                 if (tempList[index].month != currentMonth) {
