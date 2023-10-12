@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:john_cage_tribute/screens/maestro_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'concerts_screen.dart';
 import 'home_screen.dart';
-import 'test_screen.dart';
 import 'schedule_screen.dart';
 import 'socket_recording_toggle.dart';
 import '../components/concert_filter.dart';
@@ -60,7 +60,7 @@ class _SkeletonState extends State<Skeleton> {
                     color: textColor,
                   ),
                 ),
-                actions: _navManager.buttonNotifier.value == NavState.concert
+                actions: /*_navManager.buttonNotifier.value == NavState.concert
                     ? <Widget>[
                         Builder(
                           builder: (context) {
@@ -76,7 +76,7 @@ class _SkeletonState extends State<Skeleton> {
                           },
                         ),
                       ]
-                    : _navManager.buttonNotifier.value == NavState.schedule
+                    : */_navManager.buttonNotifier.value == NavState.schedule
                         ? <Widget>[
                             Builder(
                               builder: (context) {
@@ -190,7 +190,7 @@ class _SkeletonState extends State<Skeleton> {
                             case NavState.concert:
                               return ConcertsScreen(_tagManager);
                             case NavState.test:
-                              return TestScreen();
+                              return MaestroScreen();
                             case NavState.test2:
                               return SocketScreen();
                             case NavState.schedule:
