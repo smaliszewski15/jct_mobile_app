@@ -367,6 +367,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
     var data = json.decode(res.body);
     user = User.userFromJson(data);
+    user!.setPassword(fields['password']!.editor.value.text);
     return true;
   }
 

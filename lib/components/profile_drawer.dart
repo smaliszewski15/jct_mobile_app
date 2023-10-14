@@ -46,7 +46,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
                   onPressed: () async {
                     bool loggedOut = await user!.logout();
                     if (loggedOut) {
-                      user = null;
+                      user!.logged = false;
                     }
                     setState(() {});
                   },
@@ -168,7 +168,9 @@ class _HomeDrawerState extends State<HomeDrawer> {
           ),
           child: OutlinedButton(
             onPressed: () {
-              Navigator.pushNamed(context, '/register');
+              Navigator.pushNamed(context, '/register').then((entry) => {
+                setState(() {})
+              });
             },
             child: Text(
               'Register',
