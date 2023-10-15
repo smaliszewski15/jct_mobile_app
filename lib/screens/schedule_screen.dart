@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../APIfunctions/groupsAPI.dart';
@@ -27,16 +28,11 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
 
   @override
   void initState() {
-    done = getDateList();
+    tempList = dateList();
     currentMonth = DateTime.now().month;
     currentDay = DateTime.now().day;
-    groups = ParseGroups();
+    done = ParseGroups();
     super.initState();
-  }
-
-  Future<bool> getDateList() async {
-    tempList = dateList();
-    return true;
   }
 
   List<DateTime> dateList() {
@@ -118,7 +114,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
               valueListenable: widget.filter.changedNotifier,
               builder: (_, value, __) {
                 if (value) {
-                  done = getDateList();
+                  done = ParseGroups();
                   widget.filter.finUpdate();
                 }
                 return FutureBuilder(
@@ -182,7 +178,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                                         thickness: 1,
                                         color: black,
                                       ),
-                                      groupsList < groups.length && groupsList >= 0 && tempList[index] == groups[groupsList].date ?
+                                      groupsList < groups.length && groupsList >= 0 && (tempList[index] == groups[groupsList].date || (tempList[index].add(const Duration(minutes: 20))).isAfter(groups[groupsList].date!)) ?
                                       GroupCard(group: groups[groupsList++], height: totalHeight) : GroupCard(date: tempList[index], height: totalHeight),
                                     ],
                                   );
@@ -208,15 +204,14 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                                         thickness: 1,
                                         color: black,
                                       ),
-                                      groupsList < groups.length && groupsList >= 0 && tempList[index] == groups[groupsList].date
-                              ?         GroupCard(group: groups[groupsList++], height: totalHeight) : GroupCard(date: tempList[index], height: totalHeight),
+                                      groupsList < groups.length && groupsList >= 0 && (tempList[index] == groups[groupsList].date || (tempList[index].add(const Duration(minutes: 20))).isAfter(groups[groupsList].date!))
+                              ? GroupCard(group: groups[groupsList++], height: totalHeight) : GroupCard(date: tempList[index], height: totalHeight),
                                     ],
                                   );
                                 }
                               }
-                              if (groupsList < groups.length && groupsList >= 0 && tempList[index] == groups[groupsList].date) {
-                                groupsList++;
-                                return GroupCard(group: groups[groupsList - 1], height: totalHeight);
+                              if (groupsList < groups.length && groupsList >= 0 && (tempList[index] == groups[groupsList].date || (tempList[index].add(const Duration(minutes: 20))).isAfter(groups[groupsList].date!))) {
+                                return GroupCard(group: groups[groupsList++], height: totalHeight);
                               } else {
                                 return GroupCard(date: tempList[index], height: totalHeight);
                               }
@@ -225,7 +220,6 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                           );
                       }
                     }
-
                 );
               }
             ),
@@ -235,27 +229,64 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
     );
   }
 
-  List<Group> ParseGroups() {
-    Map<String, dynamic> groupsJSON = GroupsAPI.getGroups;
-    if (!groupsJSON.containsKey('groupsData')) {
-      return [];
-    }
-    List<Group> toRet = [];
+  Future<bool> ParseGroups() async {
+    groups = [];
 
-    for (var data in groupsJSON['groupsData']) {
-      Group newGroup = Group.fromJson(data);
-      if (toRet.isNotEmpty) {
-        int place = 0;
-        for (int i = 0; i < toRet.length; i++) {
-          if (newGroup.date!.isAfter(toRet[i].date!)) {
-            break;
+    DateTime end = widget.filter.end.add(const Duration(days: 1));
+    Map<String, dynamic> queryDate = {};
+
+    for (DateTime start = widget.filter.start; start != end; start = start.add(const Duration(days: 1))) {
+      queryDate['date'] = DateFormat('yyyy-MM-dd').format(start);
+
+      final res = await GroupsAPI.getSchedule(queryDate);
+
+      if (res.statusCode != 200) {
+        print(res.statusCode);
+        return false;
+      }
+      print(res.body);
+
+      var data = json.decode(res.body);
+
+      for (var concerts in data['scheduledTimes']) {
+        Group newGroup = Group.fromJson(concerts);
+        if (groups.isNotEmpty) {
+          int place = 0;
+          for (int i = 0; i < groups.length; i++) {
+            if (newGroup.date!.isAfter(groups[i].date!)) {
+              break;
+            }
           }
+          groups.insert(place, newGroup);
+        } else {
+          groups.add(newGroup);
         }
-        toRet.insert(place, newGroup);
-      } else {
-        toRet.add(newGroup);
       }
     }
-    return toRet;
+    return true;
   }
+
+  // List<Group> ParseGroups() {
+  //   Map<String, dynamic> groupsJSON = GroupsAPI.getGroups;
+  //   if (!groupsJSON.containsKey('groupsData')) {
+  //     return [];
+  //   }
+  //   List<Group> toRet = [];
+  //
+  //   for (var data in groupsJSON['groupsData']) {
+  //     Group newGroup = Group.fromJson(data);
+  //     if (toRet.isNotEmpty) {
+  //       int place = 0;
+  //       for (int i = 0; i < toRet.length; i++) {
+  //         if (newGroup.date!.isAfter(toRet[i].date!)) {
+  //           break;
+  //         }
+  //       }
+  //       toRet.insert(place, newGroup);
+  //     } else {
+  //       toRet.add(newGroup);
+  //     }
+  //   }
+  //   return toRet;
+  // }
 }
