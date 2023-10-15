@@ -1,6 +1,25 @@
+import 'dart:convert';
+import 'dart:io';
+import 'package:http/http.dart' as http;
 import 'api_globals.dart';
 
 class GroupsAPI {
+
+  static const String apiRoute = '/api/schedules';
+
+  static Future<http.Response> getSchedule(Map<String, dynamic> query) async {
+    http.Response response;
+
+    try {
+      response = await http.get(Uri.https(API_PREFIX, '${apiRoute}/getSchedule', query),
+          headers: baseHeader);
+    } catch (e) {
+      print(e.toString());
+      throw Exception('Could not connect to server');
+    }
+
+    return response;
+  }
 
   static Map<String, dynamic> getGroups = {
     'groupsData': [

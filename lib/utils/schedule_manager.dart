@@ -18,7 +18,7 @@ class ScheduleManager {
 
   _init() async {
     setStart();
-    end = start.add(const Duration(days: 30));
+    end = start.add(const Duration(days: 5));
     toChangeStart = start;
     toChangeEnd = end;
   }
