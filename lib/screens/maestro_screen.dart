@@ -1,9 +1,9 @@
 import 'dart:async';
-import 'package:audio_session/audio_session.dart';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
-import 'package:permission_handler/permission_handler.dart';
 import '../APIfunctions/api_globals.dart';
+import '../components/player.dart';
 import '../components/recorder.dart';
 import '../components/socket_listener.dart';
 import '../utils/colors.dart';
@@ -19,10 +19,14 @@ class _MaestroScreenState extends State<MaestroScreen> {
   final buttonNotifier = ValueNotifier<bool>(false);
   SocketConnect? socket;
 
+  final Player _mPlayer = Player();
   final Recorder _mRecorder = Recorder();
   StreamSubscription? _audioDetectedSubscription;
   StreamSubscription? _mRecordingDataSubscription;
   bool audioDetected = false;
+  bool muted = false;
+  bool started = false;
+  List<String> participants = [];
 
   @override
   void initState() {
@@ -38,6 +42,7 @@ class _MaestroScreenState extends State<MaestroScreen> {
 
   Future<void> release() async {
     _mRecorder.release();
+    _mPlayer.release();
   }
 
   Future<void>? stopRecorder() async {
@@ -55,13 +60,33 @@ class _MaestroScreenState extends State<MaestroScreen> {
     return;
   }
 
+  Future<void> stopPlayer() async {
+    await _mPlayer.stopPlayer();
+    _mPlayer.isPlaying = false;
+    return;
+  }
+
   Future<void> connect() async {
     socket = SocketConnect(SocketType.maestro);
     socket!.socket.stream.listen(
           (data) {
-            print(data);
-        String s = String.fromCharCodes(data);
+        String s = splitHeader(data);
         print(s);
+        List<String> list = s.split(':');
+        if (list[0] == 'participants') {
+          parseParticipants(list[1]);
+          print(s);
+          setState(() {});
+          return;
+        }
+        if (s == 'stop') {
+          stopRecorder();
+          return;
+        }
+        if (!muted) {
+          Uint8List music = data;
+          _mPlayer.mPlayer!.foodSink!.add(FoodData(music.sublist(1)));
+        }
       },
       onDone: () {
         print('done');
@@ -76,7 +101,7 @@ class _MaestroScreenState extends State<MaestroScreen> {
       socket!.disconnect();
     }
     socket = null;
-    setState(() {});
+    participants = [];
   }
 
   Future<void> record() async {
@@ -107,11 +132,21 @@ class _MaestroScreenState extends State<MaestroScreen> {
     setState(() {});
   }
 
+  Future<void> listenForSink() async {
+    await _mPlayer.listen();
+    _mPlayer.mPlayer!.foodSink!.add(FoodData(silence));
+    _mPlayer.isPlaying = true;
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
         await stopRecorder();
+        if (socket != null) {
+          disconnect();
+        }
         return true;
       },
       child: Container(
@@ -124,13 +159,105 @@ class _MaestroScreenState extends State<MaestroScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Container(
-                width: 100,
-                height: 100,
+                  padding: const EdgeInsets.all(10),
+                  width: double.infinity,
+                  child: Text(
+                      'You are the maestro. Click the connect button to connect to the socket, then start recording to actually start recording.',
+                      style: TextStyle(
+                        fontSize: headingFontSize,
+                        color: textColor,
+                      ),
+                      textAlign: TextAlign.center,
+                  ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Expanded(
+                    flex: 6,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Container(
+                          width: 100,
+                          height: 100,
+                          decoration: BoxDecoration(
+                            color: audioDetected ? Colors.green : white,
+                            shape: BoxShape.circle,
+                          ),
+                          child: TextButton(
+                            onPressed: () async {
+                              if (!_mRecorder.mRecorderIsInited) {
+                                audioDetected = false;
+                                return;
+                              }
+                              if (_mRecorder.isRecording) {
+                                await stopRecorder();
+                                disconnect();
+                                setState((){});
+                                return;
+                              }
+                              if (socket == null) {
+                                print('connect socket');
+                                await connect();
+                              } else {
+                                print('disconnect socket');
+                                await disconnect();
+                              }
+                              setState(() {});
+                            },
+                            child: const Icon(
+                              Icons.link,
+                              color: black,
+                              size: bottomIconSize + 20,
+                            ),
+                          ),
+                        ),
+                        Container(
+                          margin: const EdgeInsets.all(5),
+                          child: Text(
+                            socket != null ? 'Disconnect' : 'Connect',
+                            style: TextStyle(
+                              color: buttonTextColor,
+                              fontSize: titleFontSize,
+                            ),
+                          ),
+                        ),
+                      ]
+                    ),
+                  ),
+                  if (participants.isNotEmpty)
+                    Expanded(
+                      flex: 4,
+                      child: Container(
+                        height: 150,
+                        child: ListView.builder(
+                          itemCount: participants.length,
+                          itemBuilder: (context, index) {
+                            return Container(
+                              decoration: BoxDecoration(
+                                color: accentColor,
+                              ),
+                              child: Text(
+                                participants[index],
+                                style: defaultTextStyle,
+                                textAlign: TextAlign.center,
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+              Container(
+                margin: const EdgeInsets.all(5),
                 decoration: BoxDecoration(
-                  color: audioDetected ? Colors.green : white,
-                  shape: BoxShape.circle,
+                  borderRadius: const BorderRadius.all(Radius.circular(25)),
+                  border: Border.all(color: black),
+                  color: mainSchemeColor,
                 ),
-                child: OutlinedButton(
+                child: TextButton(
                   onPressed: () async {
                     if (!_mRecorder.mRecorderIsInited) {
                       audioDetected = false;
@@ -138,17 +265,14 @@ class _MaestroScreenState extends State<MaestroScreen> {
                     }
                     if (_mRecorder.isRecording) {
                       await stopRecorder();
-                      disconnect();
-                      setState((){});
-                      return;
-                    }
-                    if (socket == null) {
-                      print('connect socket');
-                      await connect();
+                      await stopPlayer();
+                      started = false;
                     } else {
-                      print('disconnect socket');
-                      await disconnect();
+                      await record();
+                      await listenForSink();
+                      started = true;
                     }
+                    setState((){});
                   },
                   style: ButtonStyle(
                     shape: MaterialStateProperty.all(
@@ -157,43 +281,44 @@ class _MaestroScreenState extends State<MaestroScreen> {
                         )
                     ),
                   ),
-                  child: const Icon(
-                    Icons.mic_rounded,
-                    color: black,
-                    size: bottomIconSize,
+                  child: Text(
+                    _mRecorder.isRecording ? 'Stop Recording' : 'Start Recording',
+                    style: buttonTextStyle,
                   ),
                 ),
               ),
-              Text(
-                  socket != null ? 'Disconnect' : 'Connect',
-                  style: TextStyle(
-                    color: buttonTextColor,
-                    fontSize: titleFontSize,
-                  )
-              ),
-              OutlinedButton(
-                onPressed: () async {
-                  if (!_mRecorder.mRecorderIsInited) {
-                    audioDetected = false;
-                    return;
-                  }
-                  if (_mRecorder.isRecording) {
-                    await stopRecorder();
-                    setState((){});
-                    return;
-                  }
-                  await record();
-                },
-                style: ButtonStyle(
-                  shape: MaterialStateProperty.all(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(25),
-                      )
+              Container(
+                margin: const EdgeInsets.all(5),
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.all(Radius.circular(25)),
+                  border: Border.all(color: black),
+                  color: mainSchemeColor,
+                ),
+                child: TextButton(
+                  onPressed: () async {
+                    setState(() => muted = !muted);
+                  },
+                  style: ButtonStyle(
+                    shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(25),
+                    )),
+                  ),
+                  child: Text(
+                    !muted ? 'Mute Playback' : 'Unmute Playback',
+                    style: buttonTextStyle,
                   ),
                 ),
+              ),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(10),
                 child: Text(
-                  _mRecorder.isRecording ? 'Stop' : 'Start',
-                  style: defaultTextStyle,
+                  started ? 'Started!' : '',
+                  style: TextStyle(
+                    fontSize: headingFontSize,
+                    color: textColor,
+                  ),
+                  textAlign: TextAlign.center,
                 ),
               ),
             ],
@@ -201,5 +326,10 @@ class _MaestroScreenState extends State<MaestroScreen> {
         ),
       ),
     );
+  }
+
+  void parseParticipants(String participantsList) {
+    participants = participantsList.split('`');
+    print(participants);
   }
 }

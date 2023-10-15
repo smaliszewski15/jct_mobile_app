@@ -13,6 +13,7 @@ class Player {
     if (mPlayer != null) {
       return mPlayer!.stopPlayer();
     }
+    isPlaying = false;
     print('stopping player');
     return null;
   }
@@ -38,5 +39,6 @@ class Player {
       numChannels: 1,
       sampleRate: tPSampleRate,
     );
+    isPlaying = true;
   }
 }

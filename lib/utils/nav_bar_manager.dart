@@ -28,14 +28,19 @@ class NavStateManager {
     buttonNotifier.value = NavState.schedule;
   }
 
-  void testing() {
-    title = 'Current Test Features';
-    buttonNotifier.value = NavState.test;
+  void maestro() {
+    title = 'Maestro';
+    buttonNotifier.value = NavState.maestro;
   }
 
-  void testing2() {
-    title = 'Current Test2 Features';
-    buttonNotifier.value = NavState.test2;
+  void performer() {
+    title = 'Performer';
+    buttonNotifier.value = NavState.performer;
+  }
+
+  void listener() {
+    title = 'Listener';
+    buttonNotifier.value = NavState.listener;
   }
 
   void admin() {
@@ -45,5 +50,5 @@ class NavStateManager {
 }
 
 enum NavState{
-  home, concert, schedule, admin, test, test2
+  home, concert, maestro, performer, listener, schedule, admin
 }
