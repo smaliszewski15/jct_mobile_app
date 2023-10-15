@@ -125,32 +125,6 @@ class _ProfileState extends State<Profile> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              if (!user!.isVerified)
-                Row(
-                  children: <Widget>[
-                    Container(
-                        padding: const EdgeInsets.all(10),
-                        child: Text(
-                            'You are not verified.',
-                            style: TextStyle(
-                              fontSize: bioTextSize,
-                              color: invalidColor,
-                            )
-                        )
-                    ),
-                    TextButton(
-                        onPressed: null,
-                        child: Text(
-                            'Click here to reverify!',
-                            style: TextStyle(
-                              fontSize: bioTextSize,
-                              decoration: TextDecoration.underline,
-                              color: invalidColor,
-                            )
-                        )
-                    )
-                  ],
-                ),
               Container(
                 width: 200,
                 height: 200,
