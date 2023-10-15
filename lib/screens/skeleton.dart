@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:john_cage_tribute/screens/maestro_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'concerts_screen.dart';
 import 'home_screen.dart';
-import 'test_screen.dart';
+import 'maestro_screen.dart';
+import 'performer_screen.dart';
+import 'listen_screen.dart';
 import 'schedule_screen.dart';
 import 'socket_recording_toggle.dart';
 //import '../components/concert_filter.dart';
@@ -188,10 +192,12 @@ class _SkeletonState extends State<Skeleton> {
                               return HomeScreen();
                             case NavState.concert:
                               return ConcertsScreen(_tagManager);
-                            case NavState.test:
-                              return TestScreen();
-                            case NavState.test2:
-                              return SocketScreen();
+                            case NavState.maestro:
+                              return MaestroScreen();
+                            case NavState.performer:
+                              return PerformerScreen();
+                            case NavState.listener:
+                              return ListenScreen();
                             case NavState.schedule:
                               return ScheduleScreen(_scheduleManager);
                             case NavState.admin:
@@ -289,8 +295,8 @@ class _SkeletonState extends State<Skeleton> {
                           child: OutlinedButton(
                             onPressed: () {
                               if (_navManager.buttonNotifier.value !=
-                                  NavState.test) {
-                                _navManager.testing();
+                                  NavState.maestro) {
+                                _navManager.maestro();
                                 setState(() {});
                               }
                             },
@@ -298,20 +304,20 @@ class _SkeletonState extends State<Skeleton> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
                                 Icon(
-                                  Icons.remove_done,
+                                  Icons.emoji_people,
                                   size: bottomIconSize,
                                   color: _navManager.buttonNotifier.value ==
-                                          NavState.test
+                                          NavState.maestro
                                       ? mainSchemeColor
                                       : white,
                                 ),
                                 Text(
-                                  'Test',
+                                  'Maestro',
                                   style: TextStyle(
                                     fontSize:
                                         smallerNavBarTextSize, //navBarTextSize,
                                     color: _navManager.buttonNotifier.value ==
-                                            NavState.test
+                                            NavState.maestro
                                         ? mainSchemeColor
                                         : white,
                                   ),
@@ -326,8 +332,8 @@ class _SkeletonState extends State<Skeleton> {
                           child: OutlinedButton(
                             onPressed: () {
                               if (_navManager.buttonNotifier.value !=
-                                  NavState.test2) {
-                                _navManager.testing2();
+                                  NavState.performer) {
+                                _navManager.performer();
                                 setState(() {});
                               }
                             },
@@ -335,20 +341,57 @@ class _SkeletonState extends State<Skeleton> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
                                 Icon(
-                                  Icons.remove_circle,
+                                  Icons.supervisor_account,
                                   size: bottomIconSize,
                                   color: _navManager.buttonNotifier.value ==
-                                          NavState.test2
+                                          NavState.performer
                                       ? mainSchemeColor
                                       : white,
                                 ),
                                 Text(
-                                  'Test2',
+                                  'Performer',
                                   style: TextStyle(
                                     fontSize:
                                         smallerNavBarTextSize, //navBarTextSize,
                                     color: _navManager.buttonNotifier.value ==
-                                            NavState.test2
+                                            NavState.performer
+                                        ? mainSchemeColor
+                                        : white,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          flex: 2,
+                          child: OutlinedButton(
+                            onPressed: () {
+                              if (_navManager.buttonNotifier.value !=
+                                  NavState.listener) {
+                                _navManager.listener();
+                                setState(() {});
+                              }
+                            },
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Icon(
+                                  Icons.psychology,
+                                  size: bottomIconSize,
+                                  color: _navManager.buttonNotifier.value ==
+                                      NavState.listener
+                                      ? mainSchemeColor
+                                      : white,
+                                ),
+                                Text(
+                                  'Listener',
+                                  style: TextStyle(
+                                    fontSize:
+                                    smallerNavBarTextSize, //navBarTextSize,
+                                    color: _navManager.buttonNotifier.value ==
+                                        NavState.listener
                                         ? mainSchemeColor
                                         : white,
                                   ),
