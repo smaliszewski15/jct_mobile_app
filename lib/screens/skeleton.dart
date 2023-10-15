@@ -1,19 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:john_cage_tribute/screens/maestro_screen.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'concerts_screen.dart';
 import 'home_screen.dart';
 import 'maestro_screen.dart';
 import 'performer_screen.dart';
 import 'listen_screen.dart';
 import 'schedule_screen.dart';
-import 'socket_recording_toggle.dart';
 //import '../components/concert_filter.dart';
 import '../components/group_filter.dart';
 import '../components/profile_drawer.dart';
 import '../utils/concert_tags_manager.dart';
 import '../utils/colors.dart';
-//import '../utils/concert.dart';
 import '../utils/globals.dart';
 import '../utils/schedule_manager.dart';
 import '../utils/nav_bar_manager.dart';
@@ -142,8 +138,9 @@ class _SkeletonState extends State<Skeleton> {
               body: Builder(
                 builder: (context) {
                   return GestureDetector(
-                    onHorizontalDragEnd: (DragEndDetails details) {
-                      if (details.primaryVelocity! > 0) {
+                    onPanEnd: (details) {
+                      bool vertDrag = details.velocity.pixelsPerSecond.dy > 200 || details.velocity.pixelsPerSecond.dy < -200;
+                      if (details.velocity.pixelsPerSecond.dx > 0 && !vertDrag) {
                         switch (_navManager.buttonNotifier.value) {
                           case NavState.home:
                             Scaffold.of(context).openDrawer();
@@ -152,22 +149,47 @@ class _SkeletonState extends State<Skeleton> {
                             _navManager.home();
                             setState(() => {});
                             break;
-                          case NavState.schedule:
+                          case NavState.maestro:
                             _navManager.concert();
+                            setState(() => {});
+                            break;
+                          case NavState.performer:
+                            _navManager.maestro();
+                            setState(() => {});
+                            break;
+                          case NavState.listener:
+                            _navManager.performer();
+                            setState(() => {});
+                            break;
+                          case NavState.schedule:
+                            _navManager.listener();
                             setState(() => {});
                             break;
                           case NavState.admin:
                             _navManager.schedule();
                             setState(() => {});
                             break;
+                          default: break;
                         }
-                      } else if (details.primaryVelocity! < 0) {
+                      }else if (details.velocity.pixelsPerSecond.dx < 0 && !vertDrag) {
                         switch (_navManager.buttonNotifier.value) {
                           case NavState.home:
                             _navManager.concert();
                             setState(() => {});
                             break;
                           case NavState.concert:
+                            _navManager.maestro();
+                            setState(() => {});
+                            break;
+                          case NavState.maestro:
+                            _navManager.performer();
+                            setState(() => {});
+                            break;
+                          case NavState.performer:
+                            _navManager.listener();
+                            setState(() => {});
+                            break;
+                          case NavState.listener:
                             _navManager.schedule();
                             setState(() => {});
                             break;
@@ -177,6 +199,7 @@ class _SkeletonState extends State<Skeleton> {
                               setState(() => {});
                             }
                             break;
+                          default: break;
                         }
                       }
                     },
