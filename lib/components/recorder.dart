@@ -42,6 +42,7 @@ class Recorder {
     if (mRecorder != null) {
       await mRecorder!.stopRecorder();
     }
+    isRecording = false;
     return;
   }
 
@@ -68,5 +69,6 @@ class Recorder {
       sampleRate: tRSampleRate,
       numChannels: 1,
     );
+    isRecording = true;
   }
 }

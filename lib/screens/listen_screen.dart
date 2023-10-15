@@ -72,8 +72,6 @@ class _ListenScreenState extends State<ListenScreen> {
   }
 
   Future<void> listen() async {
-    connectListenSocket();
-
     await _mPlayer.listen();
     _mPlayer.mPlayer!.foodSink!.add(FoodData(silence));
     _mPlayer.isPlaying = true;

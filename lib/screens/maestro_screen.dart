@@ -1,9 +1,9 @@
 import 'dart:async';
-import 'package:audio_session/audio_session.dart';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
-import 'package:permission_handler/permission_handler.dart';
 import '../APIfunctions/api_globals.dart';
+import '../components/player.dart';
 import '../components/recorder.dart';
 import '../components/socket_listener.dart';
 import '../utils/colors.dart';
@@ -19,10 +19,13 @@ class _MaestroScreenState extends State<MaestroScreen> {
   final buttonNotifier = ValueNotifier<bool>(false);
   SocketConnect? socket;
 
+  final Player _mPlayer = Player();
   final Recorder _mRecorder = Recorder();
   StreamSubscription? _audioDetectedSubscription;
   StreamSubscription? _mRecordingDataSubscription;
   bool audioDetected = false;
+  bool muted = false;
+  bool started = false;
   List<String> participants = [];
 
   @override
@@ -39,6 +42,7 @@ class _MaestroScreenState extends State<MaestroScreen> {
 
   Future<void> release() async {
     _mRecorder.release();
+    _mPlayer.release();
   }
 
   Future<void>? stopRecorder() async {
@@ -56,11 +60,17 @@ class _MaestroScreenState extends State<MaestroScreen> {
     return;
   }
 
+  Future<void> stopPlayer() async {
+    await _mPlayer.stopPlayer();
+    _mPlayer.isPlaying = false;
+    return;
+  }
+
   Future<void> connect() async {
     socket = SocketConnect(SocketType.maestro);
     socket!.socket.stream.listen(
           (data) {
-        String s = String.fromCharCodes(data);
+        String s = splitHeader(data);
         print(s);
         List<String> list = s.split(':');
         if (list[0] == 'participants') {
@@ -68,6 +78,14 @@ class _MaestroScreenState extends State<MaestroScreen> {
           print(s);
           setState(() {});
           return;
+        }
+        if (s == 'stop') {
+          stopRecorder();
+          return;
+        }
+        if (!muted) {
+          Uint8List music = data;
+          _mPlayer.mPlayer!.foodSink!.add(FoodData(music.sublist(1)));
         }
       },
       onDone: () {
@@ -84,7 +102,6 @@ class _MaestroScreenState extends State<MaestroScreen> {
     }
     socket = null;
     participants = [];
-    setState(() {});
   }
 
   Future<void> record() async {
@@ -112,6 +129,13 @@ class _MaestroScreenState extends State<MaestroScreen> {
     await _mRecorder.record(recordingDataController);
     socket!.socket.sink.add(start);
     _mRecorder.isRecording = true;
+    setState(() {});
+  }
+
+  Future<void> listenForSink() async {
+    await _mPlayer.listen();
+    _mPlayer.mPlayer!.foodSink!.add(FoodData(silence));
+    _mPlayer.isPlaying = true;
     setState(() {});
   }
 
@@ -180,6 +204,7 @@ class _MaestroScreenState extends State<MaestroScreen> {
                                 print('disconnect socket');
                                 await disconnect();
                               }
+                              setState(() {});
                             },
                             child: const Icon(
                               Icons.link,
@@ -226,6 +251,7 @@ class _MaestroScreenState extends State<MaestroScreen> {
                 ],
               ),
               Container(
+                margin: const EdgeInsets.all(5),
                 decoration: BoxDecoration(
                   borderRadius: const BorderRadius.all(Radius.circular(25)),
                   border: Border.all(color: black),
@@ -239,10 +265,14 @@ class _MaestroScreenState extends State<MaestroScreen> {
                     }
                     if (_mRecorder.isRecording) {
                       await stopRecorder();
-                      setState((){});
-                      return;
+                      await stopPlayer();
+                      started = false;
+                    } else {
+                      await record();
+                      await listenForSink();
+                      started = true;
                     }
-                    await record();
+                    setState((){});
                   },
                   style: ButtonStyle(
                     shape: MaterialStateProperty.all(
@@ -255,6 +285,40 @@ class _MaestroScreenState extends State<MaestroScreen> {
                     _mRecorder.isRecording ? 'Stop Recording' : 'Start Recording',
                     style: buttonTextStyle,
                   ),
+                ),
+              ),
+              Container(
+                margin: const EdgeInsets.all(5),
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.all(Radius.circular(25)),
+                  border: Border.all(color: black),
+                  color: mainSchemeColor,
+                ),
+                child: TextButton(
+                  onPressed: () async {
+                    setState(() => muted = !muted);
+                  },
+                  style: ButtonStyle(
+                    shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(25),
+                    )),
+                  ),
+                  child: Text(
+                    !muted ? 'Mute Playback' : 'Unmute Playback',
+                    style: buttonTextStyle,
+                  ),
+                ),
+              ),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(10),
+                child: Text(
+                  started ? 'Started!' : '',
+                  style: TextStyle(
+                    fontSize: headingFontSize,
+                    color: textColor,
+                  ),
+                  textAlign: TextAlign.center,
                 ),
               ),
             ],

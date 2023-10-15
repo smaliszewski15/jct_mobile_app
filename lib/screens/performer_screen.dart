@@ -10,8 +10,6 @@ import '../components/socket_listener.dart';
 import '../utils/colors.dart';
 import '../utils/globals.dart';
 
-final Uint8List silence = Uint8List(5000);
-
 class PerformerScreen extends StatefulWidget {
   @override
   _PerformerScreenState createState() => _PerformerScreenState();
@@ -47,7 +45,7 @@ class _PerformerScreenState extends State<PerformerScreen> {
     socket = SocketConnect(SocketType.performer);
     socket!.socket.stream.listen(
       (data) {
-        String s = String.fromCharCodes(data);
+        String s = splitHeader(data);
         List<String> split = s.split(':');
         if (split[0] == 'participants') {
           parseParticipants(split[1]);
@@ -57,6 +55,12 @@ class _PerformerScreenState extends State<PerformerScreen> {
           if (s == 'start') {
             print(s);
             record();
+            listenForSink();
+          } else if (s == 'stop') {
+            stopRecorder();
+            stopPlayer();
+            disconnect();
+            setState(() {});
           } else {
             print(data);
             if (!muted) {
@@ -134,13 +138,11 @@ class _PerformerScreenState extends State<PerformerScreen> {
       _mRecordingDataSubscription = null;
     }
     audioDetected = false;
-    _mRecorder.isRecording = false;
     return;
   }
 
   Future<void> stopPlayer() async {
     await _mPlayer.stopPlayer();
-    _mPlayer.isPlaying = false;
     return;
   }
 
@@ -165,17 +167,12 @@ class _PerformerScreenState extends State<PerformerScreen> {
       }
     });
     await _mRecorder.record(recordingDataController);
-    _mRecorder.isRecording = true;
-    listenForSink();
     setState(() {});
   }
 
   Future<void> listenForSink() async {
-    _mPlayer.listen();
-
     await _mPlayer.listen();
     _mPlayer.mPlayer!.foodSink!.add(FoodData(silence));
-    _mPlayer.isPlaying = true;
     setState(() {});
   }
 
@@ -236,6 +233,7 @@ class _PerformerScreenState extends State<PerformerScreen> {
                                   await stopRecorder();
                                   await stopPlayer();
                                   disconnect();
+                                  started = false;
                                 } else {
                                   if (!connectedForListen) {
                                     print('connect socket');
@@ -293,8 +291,8 @@ class _PerformerScreenState extends State<PerformerScreen> {
                     ),
                 ],
               ),
-
               Container(
+                margin: const EdgeInsets.all(5),
                 decoration: BoxDecoration(
                   borderRadius: const BorderRadius.all(Radius.circular(25)),
                   border: Border.all(color: black),
