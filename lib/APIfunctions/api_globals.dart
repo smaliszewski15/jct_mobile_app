@@ -6,6 +6,7 @@ final baseHeader = {HttpHeaders.contentTypeHeader: 'application/json'};
 
 //Headers for Sockets - TESTING
 Uint8List start = Uint8List.fromList([115,116,97,114,116,0]);
+Uint8List stop = Uint8List.fromList([115,116,111,112,0]);
 
 final Uint8List silence = Uint8List(5000);
 
