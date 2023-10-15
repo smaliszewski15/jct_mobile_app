@@ -25,6 +25,8 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
   Future<bool>? done;
   List<Group> groups = [];
   double totalHeight = 60;
+  bool creating = false;
+  bool joining = true;
 
   @override
   void initState() {
@@ -38,7 +40,9 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
   List<DateTime> dateList() {
     List<DateTime> toRet = [];
     DateTime end = widget.filter.end.add(const Duration(days: 1));
-    for (DateTime start = widget.filter.start; start != end; start = start.add(const Duration(minutes: 20))) {
+    for (DateTime start = widget.filter.start;
+        start != end;
+        start = start.add(const Duration(minutes: 20))) {
       toRet.add(start);
     }
     return toRet;
@@ -46,6 +50,10 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
 
   @override
   Widget build(BuildContext context) {
+    double toggleHeight = 50;
+    final bodyHeight = MediaQuery.of(context).size.height -
+        AppBar().preferredSize.height -
+        navBarHeight - toggleHeight;
     return Container(
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.height,
@@ -54,6 +62,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
         children: <Widget>[
           SizedBox(
             width: MediaQuery.of(context).size.width,
+            height: toggleHeight,
             child: Row(
               children: <Widget>[
                 Text(
@@ -67,6 +76,8 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                     } else {
                       totalHeight = 60;
                     }
+                    joining = !joining;
+                    creating = !creating;
                     setState(() => _createToggle = !_createToggle);
                   },
                   child: Row(
@@ -75,11 +86,11 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                       Container(
                         width: 75,
                         padding: const EdgeInsets.all(5),
-                        color: _createToggle ? black : mainSchemeColor,
+                        color: _createToggle ? mainSchemeColor : black,
                         child: Text(
                           'Create',
                           style: TextStyle(
-                            color: _createToggle ? white : black,
+                            color: _createToggle ? black : white,
                             fontSize: infoFontSize,
                           ),
                           textAlign: TextAlign.center,
@@ -88,11 +99,11 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                       Container(
                         width: 75,
                         padding: const EdgeInsets.all(5),
-                        color: _createToggle ? mainSchemeColor : black,
+                        color: _createToggle ? black : mainSchemeColor,
                         child: Text(
                           'Join',
                           style: TextStyle(
-                            color: _createToggle ? black : white,
+                            color: _createToggle ? white : black,
                             fontSize: infoFontSize,
                           ),
                           textAlign: TextAlign.center,
@@ -109,40 +120,44 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
             ),
           ),
           SizedBox(
-            height: MediaQuery.of(context).size.height - 98 - AppBar().preferredSize.height - navBarHeight,
+            height: bodyHeight,
             child: ValueListenableBuilder<bool>(
-              valueListenable: widget.filter.changedNotifier,
-              builder: (_, value, __) {
-                if (value) {
-                  done = ParseGroups();
-                  widget.filter.finUpdate();
-                }
-                return FutureBuilder(
-                    future: done,
-                    builder: (BuildContext context, AsyncSnapshot snapshot) {
-                      switch (snapshot.connectionState) {
-                        case ConnectionState.none:
-                        case ConnectionState.active:
-                        case ConnectionState.waiting:
-                          return const CircularProgressIndicator();
-                        case ConnectionState.done:
-                          if (snapshot.hasError) {
-                            return Text('Error: $snapshot.error}');
-                          }
-                          int groupsList = 0;
-                          return ListView.builder(
-                            addAutomaticKeepAlives: true,
-                            itemCount: tempList.length,
-                            itemBuilder: (context, index) {
-                              while (groupsList < groups.length && groupsList >= 0 && tempList[index].isAfter(groups[groupsList].date!)) {
-                                groupsList++;
-                              }
-                              if (tempList[index].day != currentDay) {
-                                currentDay = tempList[index].day;
+                valueListenable: widget.filter.changedNotifier,
+                builder: (_, value, __) {
+                  if (value) {
+                    done = ParseGroups();
+                    widget.filter.finUpdate();
+                  }
+                  return FutureBuilder(
+                      future: done,
+                      builder: (BuildContext context, AsyncSnapshot snapshot) {
+                        switch (snapshot.connectionState) {
+                          case ConnectionState.none:
+                          case ConnectionState.active:
+                          case ConnectionState.waiting:
+                            return const CircularProgressIndicator();
+                          case ConnectionState.done:
+                            if (snapshot.hasError) {
+                              return Text('Error: $snapshot.error}');
+                            }
+                            int groupsList = 0;
+                            return ListView.builder(
+                              addAutomaticKeepAlives: true,
+                              itemCount: tempList.length,
+                              itemBuilder: (context, index) {
+                                bool newDay = false;
+                                bool newMonth = false;
+                                if (tempList[index].day != currentDay) {
+                                  currentDay = tempList[index].day;
+                                  newDay = true;
+                                }
                                 if (tempList[index].month != currentMonth) {
                                   currentMonth = tempList[index].month;
-                                  return Column(
-                                    children: <Widget>[
+                                  newMonth = true;
+                                }
+                                return Column(
+                                  children: <Widget>[
+                                    if (newMonth)
                                       Container(
                                         padding: const EdgeInsets.symmetric(
                                             horizontal: 5),
@@ -157,11 +172,13 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                                           textAlign: TextAlign.left,
                                         ),
                                       ),
+                                    if (newMonth)
                                       const Divider(
                                         height: 5,
                                         thickness: 1,
                                         color: black,
                                       ),
+                                    if (newDay)
                                       Container(
                                         padding: const EdgeInsets.symmetric(
                                             horizontal: 5),
@@ -176,56 +193,37 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                                           textAlign: TextAlign.left,
                                         ),
                                       ),
+                                    if (newDay)
                                       const Divider(
                                         height: 5,
                                         thickness: 1,
                                         color: black,
                                       ),
-                                      groupsList < groups.length && groupsList >= 0 && (tempList[index] == groups[groupsList].date || (tempList[index].add(const Duration(minutes: 20))).isAfter(groups[groupsList].date!)) ?
-                                      GroupCard(group: groups[groupsList++], height: totalHeight) : GroupCard(date: tempList[index], height: totalHeight),
-                                    ],
-                                  );
-                                } else {
-                                  return Column(
-                                    children: <Widget>[
-                                      Container(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 5),
-                                        width: double.infinity,
-                                        child: Text(
-                                          DateFormat('dd').format(
-                                              DateTime(0, 0, currentDay)),
-                                          style: TextStyle(
-                                            fontSize: 24,
-                                            color: textColor,
-                                          ),
-                                          textAlign: TextAlign.left,
-                                        ),
-                                      ),
-                                      const Divider(
-                                        height: 5,
-                                        thickness: 1,
-                                        color: black,
-                                      ),
-                                      groupsList < groups.length && groupsList >= 0 && (tempList[index] == groups[groupsList].date || (tempList[index].add(const Duration(minutes: 20))).isAfter(groups[groupsList].date!))
-                              ? GroupCard(group: groups[groupsList++], height: totalHeight) : GroupCard(date: tempList[index], height: totalHeight),
-                                    ],
-                                  );
-                                }
-                              }
-                              if (groupsList < groups.length && groupsList >= 0 && (tempList[index] == groups[groupsList].date || (tempList[index].add(const Duration(minutes: 20))).isAfter(groups[groupsList].date!))) {
-                                return GroupCard(group: groups[groupsList++], height: totalHeight);
-                              } else {
-                                return GroupCard(date: tempList[index], height: totalHeight);
-                              }
-
-                            },
-                          );
-                      }
-                    }
-                );
-              }
-            ),
+                                    groupsList < groups.length &&
+                                            groupsList >= 0 &&
+                                            (tempList[index] ==
+                                                    groups[groupsList].date ||
+                                                (tempList[index].add(
+                                                        const Duration(
+                                                            minutes: 20)))
+                                                    .isAfter(groups[groupsList]
+                                                        .date!))
+                                        ? GroupCard(
+                                            group: groups[groupsList++],
+                                            height: totalHeight,
+                                            clickable: joining,
+                                          )
+                                        : GroupCard(
+                                            date: tempList[index],
+                                            height: totalHeight,
+                                            clickable: creating),
+                                  ],
+                                );
+                              },
+                            );
+                        }
+                      });
+                }),
           ),
         ],
       ),
@@ -238,7 +236,9 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
     DateTime end = widget.filter.end.add(const Duration(days: 1));
     Map<String, dynamic> queryDate = {};
 
-    for (DateTime start = widget.filter.start; start != end; start = start.add(const Duration(days: 1))) {
+    for (DateTime start = widget.filter.start;
+        start != end;
+        start = start.add(const Duration(days: 1))) {
       queryDate['date'] = DateFormat('yyyy-MM-dd').format(start);
 
       final res = await GroupsAPI.getSchedule(queryDate);
