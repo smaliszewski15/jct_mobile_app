@@ -43,7 +43,13 @@ class _HomeDrawerState extends State<HomeDrawer> {
                   borderRadius: const BorderRadius.all(Radius.circular(roundedCorners)),
                 ),
                 child: TextButton(
-                  onPressed: null,
+                  onPressed: () async {
+                    bool loggedOut = await user!.logout();
+                    if (loggedOut) {
+                      user!.logged = false;
+                    }
+                    setState(() {});
+                  },
                   child: Text(
                       'Sign Out',
                       style: TextStyle(
@@ -133,7 +139,9 @@ class _HomeDrawerState extends State<HomeDrawer> {
           ),
           child: OutlinedButton(
             onPressed: () {
-              Navigator.pushNamed(context, '/login');
+              Navigator.pushNamed(context, '/login').then((entry) => {
+                setState(() {})
+              });
             },
             child: Text(
               'Log in',
@@ -160,7 +168,9 @@ class _HomeDrawerState extends State<HomeDrawer> {
           ),
           child: OutlinedButton(
             onPressed: () {
-              Navigator.pushNamed(context, '/register');
+              Navigator.pushNamed(context, '/register').then((entry) => {
+                setState(() {})
+              });
             },
             child: Text(
               'Register',

@@ -17,11 +17,10 @@ class _EditUserProfilePageState extends State<EditUserProfilePage> {
 
   @override
   void initState() {
-    firstName  = CustomTextField(maxLength: 24, fieldName: 'First Name', fieldEntry: user == null ? '' : user!.firstName, tooltipKey: GlobalKey<TooltipState>());
-    lastName  = CustomTextField(maxLength: 24, fieldName: 'Last Name', fieldEntry: user == null ? '' : user!.lastName, tooltipKey: GlobalKey<TooltipState>());
-    username  = CustomTextField(maxLength: 255, fieldName: 'Username', fieldEntry: user == null ? '' : user!.username, tooltipKey: GlobalKey<TooltipState>());
-    email  = CustomTextField(maxLength: 255, fieldName: 'Email', fieldEntry: user == null ? '' : user!.email, tooltipKey: GlobalKey<TooltipState>());
-    phoneNumber  = CustomTextField(maxLength: 9, fieldName: 'Phone Number', fieldEntry: user == null ? '' : user!.phoneNumber, tooltipKey: GlobalKey<TooltipState>(), keyboardType: TextInputType.phone);
+    name  = CustomTextField(maxLength: 100, fieldName: 'Name', fieldEntry: user!.name, tooltipKey: GlobalKey<TooltipState>());
+    username  = CustomTextField(maxLength: 255, fieldName: 'Username', fieldEntry: user!.username, tooltipKey: GlobalKey<TooltipState>());
+    email  = CustomTextField(maxLength: 255, fieldName: 'Email', fieldEntry: user!.email, tooltipKey: GlobalKey<TooltipState>());
+    phoneNumber  = CustomTextField(maxLength: 9, fieldName: 'Phone Number', fieldEntry: user!.phoneNumber == null ? '' : user!.phoneNumber!, tooltipKey: GlobalKey<TooltipState>(), keyboardType: TextInputType.phone);
     password  = CustomTextField(maxLength: 60, fieldName: 'Password', fieldEntry: '', tooltipKey: GlobalKey<TooltipState>());
     super.initState();
   }
@@ -31,7 +30,7 @@ class _EditUserProfilePageState extends State<EditUserProfilePage> {
     super.dispose();
   }
 
-  late CustomTextField firstName, lastName, username, email, phoneNumber, password;
+  late CustomTextField name, username, email, phoneNumber, password;
 
   String errorMessage = '';
 
@@ -97,14 +96,14 @@ class _EditUserProfilePageState extends State<EditUserProfilePage> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: <Widget>[
                                     Text(
-                                      'First Name',
+                                      'Name',
                                       style: TextStyle(
                                         fontSize: bioTextSize,
                                         color: textColor,
                                       ),
                                       textAlign: TextAlign.center,
                                     ),
-                                    BasicTooltip(message: "First Names must be\n0-24 characters long and\ncan only contain\nASCII characters", tooltipkey: firstName.tooltipKey),
+                                    BasicTooltip(message: "Names must be\n0-100 characters long and\ncan only contain\nASCII characters", tooltipkey: name.tooltipKey),
                                   ]
                               ),
                               Container(
@@ -116,36 +115,7 @@ class _EditUserProfilePageState extends State<EditUserProfilePage> {
                                   borderRadius: BorderRadius.all(
                                       Radius.circular(roundedCorners)),
                                 ),
-                                child: firstName,
-                              ),
-                            ],
-                          ),
-                          Column(
-                            children: <Widget>[
-                              Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
-                                    Text(
-                                      'Last Name',
-                                      style: TextStyle(
-                                        fontSize: bioTextSize,
-                                        color: textColor,
-                                      ),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                    BasicTooltip(message: "Last Names must be\n0-24 characters long and\ncan only contain\nASCII characters", tooltipkey: lastName.tooltipKey),
-                                  ]
-                              ),
-                              Container(
-                                width: 150,
-                                margin: const EdgeInsets.only(left: 10),
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 5, horizontal: 5),
-                                decoration: const BoxDecoration(
-                                  borderRadius: BorderRadius.all(
-                                      Radius.circular(roundedCorners)),
-                                ),
-                                child: lastName,
+                                child: name,
                               ),
                             ],
                           ),
@@ -192,7 +162,11 @@ class _EditUserProfilePageState extends State<EditUserProfilePage> {
                                 ),
                                 textAlign: TextAlign.left,
                               ),
-                              BasicTooltip(message: "Emails must be in the correct email format", tooltipkey: email.tooltipKey),
+                              Text(
+                                'Emails cannot be changed',
+                                style: defaultTextStyle,
+                                textAlign: TextAlign.left,
+                              )
                             ],
                           ),
                           Container(
@@ -203,7 +177,24 @@ class _EditUserProfilePageState extends State<EditUserProfilePage> {
                               borderRadius: BorderRadius.all(
                                   Radius.circular(roundedCorners)),
                             ),
-                            child: email
+                            child: Container(
+                                width: MediaQuery.of(context).size.width / 1.2,
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 10, horizontal: 5),
+                                decoration: BoxDecoration(
+                                  color: textFieldBackingColor,
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(roundedCorners)),
+                                ),
+                                child: Text(
+                              user!.email,
+                              style: TextStyle(
+                                fontSize: bioTextSize,
+                                color: buttonTextColor
+                              ),
+                              textAlign: TextAlign.left,
+                              ),
+                            ),
                           ),
                         ],
                       ),
@@ -271,17 +262,9 @@ class _EditUserProfilePageState extends State<EditUserProfilePage> {
                             ),
                             child: OutlinedButton(
                               onPressed: () async {
-                                if (!validateField(firstName)) {
-                                  firstName.unfilled = true;
-                                  firstName.showToolTip();
-                                }
-                                if (!validateField(lastName)) {
-                                  lastName.unfilled = true;
-                                  lastName.showToolTip();
-                                }
-                                if (!validateField(email)) {
-                                  email.unfilled = true;
-                                  email.showToolTip();
+                                if (!validateField(name)) {
+                                  name.unfilled = true;
+                                  name.showToolTip();
                                 }
                                 if (!validateField(username)) {
                                   username.unfilled = true;
@@ -296,7 +279,7 @@ class _EditUserProfilePageState extends State<EditUserProfilePage> {
                                   password.showToolTip();
                                 }
 
-                                if (firstName.unfilled || lastName.unfilled || email.unfilled || username.unfilled ||
+                                if (name.unfilled || name.unfilled || username.unfilled ||
                                     phoneNumber.unfilled || password.unfilled) {
                                   setState(() {});
                                   return;
@@ -305,26 +288,14 @@ class _EditUserProfilePageState extends State<EditUserProfilePage> {
                                 try {
                                   final prefs = await SharedPreferences.getInstance();
 
-                                  if (firstName.editor.value.text != user!.firstName) {
-                                    prefs.setString('firstName', firstName.editor.value.text);
-                                    user!.firstName = firstName.editor.value.text;
+                                  if (name.editor.value.text != user!.name) {
+                                    prefs.setString('firstName', name.editor.value.text);
+                                    user!.name = name.editor.value.text;
                                   }
-
-                                  if (lastName.editor.value.text != user!.lastName) {
-                                    prefs.setString('lastName', lastName.editor.value.text);
-                                    user!.lastName = lastName.editor.value.text;
-                                  }
-
                                   if (username.editor.value.text != user!.username) {
                                     prefs.setString('username', username.editor.value.text);
                                     user!.username = username.editor.value.text;
                                   }
-
-                                  if (email.editor.value.text != user!.email) {
-                                    prefs.setString('email', email.editor.value.text);
-                                    user!.email = email.editor.value.text;
-                                  }
-
                                   if (phoneNumber.editor.value.text != user!.phoneNumber) {
                                     prefs.setString('phone_number', phoneNumber.editor.value.text);
                                     user!.phoneNumber = phoneNumber.editor.value.text;
