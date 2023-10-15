@@ -23,6 +23,10 @@ class ScheduleManager {
     toChangeEnd = end;
   }
 
+  void refreshFilter() {
+    _init();
+  }
+
   void setStart() {
     DateTime now = DateTime.now();
     start = DateTime(now.year, now.month, now.day, now.hour, now.minute);

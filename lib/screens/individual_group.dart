@@ -7,10 +7,9 @@ import '../utils/group.dart';
 import '../utils/user.dart';
 
 class IndividualGroup extends StatefulWidget {
-  late final String date;
-  final bool creator = true;
+  late Group group;
 
-  IndividualGroup(this.date);
+  IndividualGroup(this.group);
 
   @override
   _IndividualGroupState createState() => _IndividualGroupState();
@@ -18,6 +17,7 @@ class IndividualGroup extends StatefulWidget {
 
 class _IndividualGroupState extends State<IndividualGroup> {
   List<String> methods = ['Surprise Me', 'IChing', 'Spotlight'];
+  late bool isCreator;
 
   bool isEditing = false;
 
@@ -26,17 +26,33 @@ class _IndividualGroupState extends State<IndividualGroup> {
   @override
   void initState() {
     super.initState();
-    method = methods.first;
-    _concertDate.text = widget.date;
-    _title.text = '';
     done = retrieveGroup();
+    method = methods.first;
+    _concertDate.text = DateFormat('yyyy-mm-dd HH:mm').format(widget.group.date!);
+    _title.text = '';
+    isCreator = created();
   }
 
   final _concertDate = TextEditingController();
   final _title = TextEditingController();
+  final _passcode = TextEditingController();
+  bool passcodeUnfilled = false;
   bool titleUnfilled = false;
   late Group group;
   Future<bool>? done;
+
+  bool created() {
+    if (user == null) {
+      return false;
+    }
+    if (user!.id != widget.group.maestroID) {
+      return false;
+    }
+    if (user!.username != widget.group.maestro) {
+      return false;
+    }
+    return true;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +65,7 @@ class _IndividualGroupState extends State<IndividualGroup> {
             Navigator.pop(context);
           },
         ),
-        actions: widget.creator ? <Widget>[
+        actions: isCreator ? <Widget>[
           IconButton(
             icon: Icon(
               Icons.delete,
@@ -243,7 +259,7 @@ class _IndividualGroupState extends State<IndividualGroup> {
                     margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                     color: black,
                     child: Text(
-                      group.groupLeader,
+                      group.maestro,
                       style: defaultTextStyle,
                     )
                 ),
@@ -258,7 +274,7 @@ class _IndividualGroupState extends State<IndividualGroup> {
                 ListView.builder(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
-                    itemCount: group.members.length,
+                    itemCount: group.members!.length,
                     itemBuilder: (BuildContext context, int index) {
                       return Container(
                           width: double.infinity,
@@ -266,14 +282,24 @@ class _IndividualGroupState extends State<IndividualGroup> {
                           margin: const EdgeInsets.symmetric(vertical: 2, horizontal: 10),
                           color: black,
                           child: Text(
-                            group.members[index],
+                            group.members![index],
                             style: defaultTextStyle,
                           )
                       );
                     }
                 ),
+                if (group.passcodes != null)
+                  ListView.builder(
+                    itemCount: group.passcodes!.length,
+                    itemBuilder: (context, index) {
+                      return Text(
+                        group.passcodes![index].toString(),
+                        style: defaultTextStyle,
+                      );
+                    },
+                  ),
                 const Spacer(),
-                if (!widget.creator && group.date!.difference(DateTime.now()).inMinutes < 40 && group.members.contains(user!.username))
+                if (!isCreator && group.date!.difference(DateTime.now()).inMinutes < 40 && group.members!.contains(user!.username))
                   Container(
                     margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                     padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 67),
@@ -294,7 +320,7 @@ class _IndividualGroupState extends State<IndividualGroup> {
                       ),
                     ),
                   ),
-                if (!isEditing && !widget.creator && !group.members.contains(user!.username))
+                if (!isEditing && !isCreator && !group.members!.contains(user!.username))
                   Container(
                     margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                     padding: const EdgeInsets.all(5),
@@ -345,7 +371,7 @@ class _IndividualGroupState extends State<IndividualGroup> {
                           if (confirm && context.mounted) {
                             Navigator.pushNamed(context, '/login').then((value){
                               if (user != null) {
-                                group.members.add(user!.username);
+                                group.members!.add(user!.username);
                               }
                             }
                             );
@@ -353,7 +379,7 @@ class _IndividualGroupState extends State<IndividualGroup> {
                             if (context.mounted) {
                               Navigator.pushNamed(context, '/register').then((value){
                                 if (user != null) {
-                                  group.members.add(user!.username);
+                                  group.members!.add(user!.username);
                                 }
                               }
                               );
@@ -372,7 +398,7 @@ class _IndividualGroupState extends State<IndividualGroup> {
                       ),
                     ),
                   ),
-                if (!isEditing && widget.creator)
+                if (!isEditing && isCreator)
                   Container(
                     margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                     padding: const EdgeInsets.all(5),
@@ -395,7 +421,7 @@ class _IndividualGroupState extends State<IndividualGroup> {
                       ),
                     ),
                   ),
-                if (!isEditing && !widget.creator && (user!.logged ? group.members.contains(user!.username) : false))
+                if (!isEditing && !isCreator && (user!.logged ? group.members!.contains(user!.username) : false))
                   Container(
                     margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                     padding: const EdgeInsets.all(5),
@@ -457,7 +483,58 @@ class _IndividualGroupState extends State<IndividualGroup> {
                       ),
                     ),
                   ),
-                if (isEditing)
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(5),
+                  margin: const EdgeInsets.symmetric(horizontal: 5),
+                  child: TextField(
+                    maxLines: 1,
+                    controller: _passcode,
+                    decoration: passcodeUnfilled
+                        ? invalidTextField.copyWith(
+                        hintText: 'Enter passcode')
+                        : globalDecoration.copyWith(
+                        hintText: 'Enter passcode'),
+                    style: TextStyle(
+                      fontSize: bioTextSize + 2,
+                      color: buttonTextColor,
+                    ),
+                    onChanged: (field) {
+                      if (field.isEmpty) {
+                        setState(() => passcodeUnfilled = true);
+                        return;
+                      }
+                      setState(() => passcodeUnfilled = false);
+                    },
+                    textAlign: TextAlign.left,
+                    textInputAction: TextInputAction.next,
+                  ),
+                ),
+                Container(
+                  margin: const EdgeInsets.all(10),
+                  padding: const EdgeInsets.all(5),
+                  child: TextButton(
+                    onPressed: () async {
+                      Map<String, dynamic> query = {
+                        'maestroPasscode': _passcode.value.text,
+                      };
+
+                      final res = await GroupsAPI.prepare(query);
+                      if (res.statusCode != 200) {
+                        print(res.body);
+                        return;
+                      }
+                      if (context.mounted) {
+                        _showSnack(context);
+                      }
+                    },
+                    child: Text(
+                      'Prepare concert',
+                      style: buttonTextStyle,
+                    ),
+                  ),
+                ),
+                if (isEditing && false)
                   Container(
                     margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                     padding: const EdgeInsets.all(5),
@@ -550,6 +627,23 @@ class _IndividualGroupState extends State<IndividualGroup> {
           )
       ),
     );
+  }
+
+  void _showSnack(BuildContext context) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: WillPopScope(
+          onWillPop: () async {
+            ScaffoldMessenger.of(context).removeCurrentSnackBar();
+            return true;
+          },
+          child: const Text('Passcode read successfully!'),
+        ),
+        duration: const Duration(seconds: 3),
+      ),
+    ).closed.then((reason) {
+      Navigator.pushNamed(context, 'group/recording/maestro');
+    });
   }
 
   Future<bool> retrieveGroup() async {

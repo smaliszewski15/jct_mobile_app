@@ -1,11 +1,15 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import '../APIfunctions/groupsAPI.dart';
 import '../utils/colors.dart';
 import '../utils/globals.dart';
+import '../utils/group.dart';
 import '../utils/user.dart';
 
 class AddGroup extends StatefulWidget {
-  late final String date;
+  late final DateTime? date;
 
   AddGroup(this.date);
 
@@ -25,6 +29,10 @@ class _AddGroupState extends State<AddGroup> {
 
   final _title = TextEditingController();
   bool titleUnfilled = false;
+  final _tags = TextEditingController();
+  bool tagsUnfilled = false;
+  final _description = TextEditingController();
+  bool descriptionUnfilled = false;
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +72,7 @@ class _AddGroupState extends State<AddGroup> {
                           textAlign: TextAlign.left,
                         ),
                         Text(
-                          widget.date,
+                          DateFormat('yyyy-MM-dd hh:mm').format(widget.date!),
                           style: defaultTextStyle,
                         )
                       ],
@@ -195,11 +203,14 @@ class _AddGroupState extends State<AddGroup> {
                       border: Border.all(color: black, width: 3),
                     ),
                     child: OutlinedButton(
-                      onPressed: () {
+                      onPressed: () async {
                         if (_title.value.text.isEmpty) {
                           setState(() => titleUnfilled = true);
                         } else {
-                          Navigator.pushReplacementNamed(context, '/group/group', arguments: widget.date);
+                          bool success = await scheduleGroup();
+                          if (!success) {
+                            print('Something went wrong!');
+                          }
                         }
                       },
                       child: Text(
@@ -219,5 +230,80 @@ class _AddGroupState extends State<AddGroup> {
         ),
       ),
     );
+  }
+
+  Future<bool> scheduleGroup() async {
+    bool logged = await showDialog(context: context, builder: (context) {
+      return AlertDialog(
+        shape:  RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10)),
+        elevation: 15,
+        actions: <Widget>[
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context, 'false');
+            },
+            child: const Text(
+              'Register',
+              style: TextStyle(color: Colors.red, fontSize: 18),
+            ),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context, 'true');
+            },
+            child: const Text(
+              'Login',
+              style: TextStyle(color: Colors.red, fontSize: 18),
+            ),
+          ),
+        ],
+        content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: const <Widget>[
+              Flexible(
+                  child: Text(
+                      'You need to be logged in to be able to schedule a recording.')),
+            ],
+        ),
+      );
+    });
+
+
+    if (context.mounted) {
+      Navigator.pushNamed(context, logged ? '/login' : '/register');
+    }
+
+    if (user == null) {
+      return false;
+    }
+
+    Map<String, dynamic> package = {
+      'concertTitle': _title.value.text,
+      'concertTags': _tags.value.text,
+      'concertDescription': _description.value.text,
+      'date': DateFormat('yyyy-MM-dd').format(widget.date!),
+      'time': DateFormat('Hms'),
+      'username': user!.username,
+      'password': user!.password,
+    };
+
+    final res = await GroupsAPI.schedule(package);
+
+    if (res.statusCode != 200) {
+      print(res.body);
+    }
+
+    var data = json.decode(res.body);
+    var group = data['group'];
+    var schedule = data['schedule'];
+
+    Group newGroup = Group.fromScheduleJson(group);
+    newGroup.addPasscodes(schedule);
+    if (context.mounted) {
+      Navigator.pushReplacementNamed(context, '/group/group', arguments: newGroup);
+    }
+
+    return true;
   }
 }

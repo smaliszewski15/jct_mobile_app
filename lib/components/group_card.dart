@@ -41,11 +41,8 @@ class _GroupCardState extends State<GroupCard>
                     if (widget.clickable) {
                       Navigator.pushNamed(
                           context, '/group/group',
-                          arguments: DateFormat(
-                              'yyyy-MM-dd hh:mm')
-                              .format(
-                              widget.group!
-                                  .date!));
+                          arguments: widget.group!
+                                  .date!);
                     }
                   },
                   child: Column(
@@ -74,7 +71,7 @@ class _GroupCardState extends State<GroupCard>
                                 ),
                               ),
                               Text(
-                                widget.group!.groupLeader,
+                                widget.group!.maestro,
                                 style: TextStyle(
                                   fontSize: bioTextSize,
                                   color: textColor,
@@ -84,7 +81,7 @@ class _GroupCardState extends State<GroupCard>
                           ),
                         const Spacer(),
                         Text(
-                          '${widget.group!.members.length}/4',
+                          '${widget.group!.members!.length}/4',
                           style: TextStyle(
                               fontSize: infoFontSize,
                               color: widget.height == 60 ? textColor : black),
@@ -106,7 +103,7 @@ class _GroupCardState extends State<GroupCard>
                                 ),
                               ),
                               Text(
-                                widget.group!.groupLeader,
+                                widget.group!.maestro,
                                 style: TextStyle(
                                   fontSize: bioTextSize,
                                   color:
@@ -118,7 +115,7 @@ class _GroupCardState extends State<GroupCard>
                           const Spacer(),
                           Column(
                             mainAxisAlignment: MainAxisAlignment.end,
-                            children: widget.group!.members
+                            children: widget.group!.members!
                                 .map((entry) => Text(
                                       entry,
                                       style: TextStyle(
@@ -141,10 +138,8 @@ class _GroupCardState extends State<GroupCard>
           if (widget.clickable) {
             Navigator.pushNamed(
                 context, '/group/add',
-                arguments: DateFormat(
-                    'E, MMM dd, yyyy - hh:mm')
-                    .format(
-                    widget.date!));
+                arguments:
+                    widget.date!);
           }
         },
         child: Container(

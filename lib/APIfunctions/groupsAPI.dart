@@ -2,10 +2,14 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'api_globals.dart';
+import '../utils/user.dart';
 
 class GroupsAPI {
 
   static const String apiRoute = '/api/schedules';
+
+  static final authHeader = {HttpHeaders.contentTypeHeader: 'application/json',
+      HttpHeaders.authorizationHeader: user!.authToken};
 
   static Future<http.Response> getSchedule(Map<String, dynamic> query) async {
     http.Response response;
@@ -20,6 +24,38 @@ class GroupsAPI {
 
     return response;
   }
+
+  static Future<http.Response> schedule(Map<String, dynamic> query) async {
+    http.Response response;
+
+    try {
+      response = await http.post(Uri.https(API_PREFIX, '${apiRoute}/getSchedule'),
+          body: json.encode(query),
+          headers: authHeader);
+    } catch (e) {
+      print(e.toString());
+      throw Exception('Could not connect to server');
+    }
+
+    return response;
+  }
+
+  static Future<http.Response> prepare(Map<String, dynamic> query) async {
+    http.Response response;
+
+    try {
+      response = await http.post(Uri.https(API_PREFIX, '${apiRoute}/prepareConcert'),
+          body: json.encode(query),
+          headers: authHeader);
+    } catch (e) {
+      print(e.toString());
+      throw Exception('Could not connect to server');
+    }
+
+    return response;
+  }
+
+
 
   static Map<String, dynamic> getGroups = {
     'groupsData': [

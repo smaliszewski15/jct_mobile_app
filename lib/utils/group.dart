@@ -1,14 +1,17 @@
 class Group {
-  late int id;
-  late List<String> members;
-  late String groupLeader;
-  late DateTime? date;
-  late String tags;
+  late int groupID;
+  late String maestro;
+  late int maestroID;
   late String title;
+  late String tags;
   late String description;
 
+  late List<String>? members;
+  late DateTime? date;
+  late List<int>? passcodes;
 
-  Group({this.id = -1, this.members = const [], this.groupLeader = '', this.tags = '', this.title = '', this.description = '', this.date});
+
+  Group({this.groupID = -1, this.members = const [], this.maestro = '', this.maestroID = -1, this.tags = '', this.title = '', this.description = '', this.date, this.passcodes});
 
   factory Group.fromJson(Map json) {
     List<String> members = json['members'];
@@ -16,7 +19,32 @@ class Group {
     String title = json['title'];
     DateTime date = ConvertToDate(json['date'], json['time']);
     String tags = json['tags'];
-    return Group(members: members, groupLeader: leader, title: title, date: date, tags: tags);
+    return Group(members: members, maestro: leader, title: title, date: date, tags: tags);
+  }
+
+  factory Group.fromScheduleJson(Map json) {
+    String leader = json['GroupLeaderName'];
+    String title = json['Title'];
+    int id = json['GroupID'];
+    int maestroID = json['GroupLeaderID'];
+    String description = json['Description'];
+    DateTime date = ConvertToDate(json['Date'], json['Time']);
+    String tags = json['Tags'];
+    return Group(groupID: id, maestro: leader, maestroID: maestroID, title: title, date: date, tags: tags, description: description);
+  }
+
+  void addPasscodes(Map json) {
+    this.passcodes = _getListPasscodes(json);
+  }
+
+  static List<int> _getListPasscodes(Map json) {
+    List<int> toRet = [];
+    toRet.add(json['MaestroPasscode']);
+    toRet.add(json['User1Passcode']);
+    toRet.add(json['User2Passcode']);
+    toRet.add(json['User3Passcode']);
+    toRet.add(json['User4Passcode']);
+    return toRet;
   }
 
   static DateTime ConvertToDate(String date, String time) {

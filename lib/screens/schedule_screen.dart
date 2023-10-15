@@ -30,6 +30,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
 
   @override
   void initState() {
+    widget.filter.refreshFilter();
     tempList = dateList();
     currentMonth = DateTime.now().month;
     currentDay = DateTime.now().day;
@@ -53,7 +54,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
     double toggleHeight = 50;
     final bodyHeight = MediaQuery.of(context).size.height -
         AppBar().preferredSize.height -
-        navBarHeight - toggleHeight;
+        navBarHeight - 100;
     return Container(
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.height,
