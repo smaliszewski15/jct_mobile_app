@@ -48,6 +48,10 @@ class _ConcertsState extends State<ConcertsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    double blockHeight = 50;
+    final bodyHeight = MediaQuery.of(context).size.height -
+        AppBar().preferredSize.height -
+        navBarHeight - 2 * blockHeight - 50;
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
@@ -105,7 +109,7 @@ class _ConcertsState extends State<ConcertsScreen> {
             ),
             SizedBox(
               width: double.infinity,
-              height: 610,
+              height: bodyHeight,
               child: ValueListenableBuilder<bool>(
                 valueListenable: widget.tags.changedNotifier,
                 builder: (_, value, __) {
@@ -181,6 +185,7 @@ class _ConcertsState extends State<ConcertsScreen> {
             ),
             SizedBox(
               width: double.infinity,
+              height: blockHeight,
               child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
