@@ -57,6 +57,7 @@ class _PerformerScreenState extends State<PerformerScreen> {
             record();
             listenForSink();
           } else if (s == 'stop') {
+            print(s);
             stopRecorder();
             stopPlayer();
             disconnect();

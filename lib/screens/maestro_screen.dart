@@ -47,9 +47,6 @@ class _MaestroScreenState extends State<MaestroScreen> {
 
   Future<void>? stopRecorder() async {
     await _mRecorder.stopRecorder();
-    if (socket != null) {
-      socket!.socket.sink.add(stop);
-    }
     if (_audioDetectedSubscription != null) {
       await _audioDetectedSubscription!.cancel();
       _audioDetectedSubscription = null;
@@ -72,7 +69,6 @@ class _MaestroScreenState extends State<MaestroScreen> {
     socket!.socket.stream.listen(
           (data) {
         String s = splitHeader(data);
-        print(s);
         List<String> list = s.split(':');
         if (list[0] == 'participants') {
           parseParticipants(list[1]);
@@ -81,7 +77,8 @@ class _MaestroScreenState extends State<MaestroScreen> {
           return;
         }
         if (s == 'stop') {
-          stopRecorder();
+          print(s);
+          stopEverything();
           return;
         }
         if (!muted) {
@@ -97,11 +94,16 @@ class _MaestroScreenState extends State<MaestroScreen> {
     setState(() {});
   }
 
+  Future<void> stopEverything() async {
+    socket!.socket.sink.add(stop);
+    await stopRecorder();
+    await stopPlayer();
+    disconnect();
+    started = false;
+  }
+
   Future<void> disconnect() async {
     if (socket != null) {
-      if (_mRecorder.isRecording) {
-        socket!.socket.sink.add(stop);
-      }
       socket!.disconnect();
     }
     socket = null;
@@ -196,8 +198,7 @@ class _MaestroScreenState extends State<MaestroScreen> {
                                 return;
                               }
                               if (_mRecorder.isRecording) {
-                                await stopRecorder();
-                                disconnect();
+                                await stopEverything();
                                 setState((){});
                                 return;
                               }
@@ -268,11 +269,12 @@ class _MaestroScreenState extends State<MaestroScreen> {
                       return;
                     }
                     if (_mRecorder.isRecording) {
-                      await stopRecorder();
-                      await stopPlayer();
-                      disconnect();
+                      await stopEverything();
                       started = false;
                     } else {
+                      if (socket == null) {
+                        connect();
+                      }
                       await record();
                       await listenForSink();
                       started = true;

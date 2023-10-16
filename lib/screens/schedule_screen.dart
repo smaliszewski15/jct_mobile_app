@@ -202,13 +202,8 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                                       ),
                                     groupsList < groups.length &&
                                             groupsList >= 0 &&
-                                            (tempList[index] ==
-                                                    groups[groupsList].date ||
-                                                (tempList[index].add(
-                                                        const Duration(
-                                                            minutes: 20)))
-                                                    .isAfter(groups[groupsList]
-                                                        .date!))
+                                            tempList[index] ==
+                                                    groups[groupsList].date
                                         ? GroupCard(
                                             group: groups[groupsList++],
                                             height: totalHeight,
