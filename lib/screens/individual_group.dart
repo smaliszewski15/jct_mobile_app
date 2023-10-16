@@ -270,6 +270,42 @@ class _IndividualGroupState extends State<IndividualGroup> {
                   width: double.infinity,
                   margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                   child: Text(
+                    'Tags: ',
+                    style: defaultTextStyle,
+                  ),
+                ),
+                Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(5),
+                    margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                    color: black,
+                    child: Text(
+                      widget.group.tags,
+                      style: defaultTextStyle,
+                    )
+                ),
+                Container(
+                  width: double.infinity,
+                  margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                  child: Text(
+                    'Description: ',
+                    style: defaultTextStyle,
+                  ),
+                ),
+                Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(5),
+                    margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                    color: black,
+                    child: Text(
+                      widget.group.description,
+                      style: defaultTextStyle,
+                    )
+                ),
+                Container(
+                  width: double.infinity,
+                  margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                  child: Text(
                     'Members:',
                     style: defaultTextStyle,
                   ),
