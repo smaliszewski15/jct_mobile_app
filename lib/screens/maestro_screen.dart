@@ -47,6 +47,9 @@ class _MaestroScreenState extends State<MaestroScreen> {
 
   Future<void>? stopRecorder() async {
     await _mRecorder.stopRecorder();
+    if (socket != null) {
+      socket!.socket.sink.add(stop);
+    }
     if (_audioDetectedSubscription != null) {
       await _audioDetectedSubscription!.cancel();
       _audioDetectedSubscription = null;
@@ -98,6 +101,9 @@ class _MaestroScreenState extends State<MaestroScreen> {
 
   Future<void> disconnect() async {
     if (socket != null) {
+      if (_mRecorder.isRecording) {
+        socket!.socket.sink.add(stop);
+      }
       socket!.disconnect();
     }
     socket = null;
