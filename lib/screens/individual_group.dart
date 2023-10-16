@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../APIfunctions/groupsAPI.dart';
@@ -20,6 +22,7 @@ class _IndividualGroupState extends State<IndividualGroup> {
   late bool isCreator;
 
   bool isEditing = false;
+  String errorMessage = '';
 
   late String method;
 
@@ -289,7 +292,17 @@ class _IndividualGroupState extends State<IndividualGroup> {
                     }
                 ),
                 if (widget.group.passcodes != null)
+                  Container(
+                    width: double.infinity,
+                    margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                    child: Text(
+                      'Passcodes: ',
+                      style: defaultTextStyle,
+                    ),
+                  ),
+                if (widget.group.passcodes != null)
                   ListView.builder(
+                    shrinkWrap: true,
                     itemCount: widget.group.passcodes!.length,
                     itemBuilder: (context, index) {
                       return Text(
@@ -522,6 +535,8 @@ class _IndividualGroupState extends State<IndividualGroup> {
                       final res = await GroupsAPI.prepare(query);
                       if (res.statusCode != 200) {
                         print(res.body);
+                        var message = json.decode(res.body);
+                        errorMessage = message.containsKey('message') ? message['message'] : message['error'];
                         return;
                       }
                       if (context.mounted) {
@@ -623,6 +638,18 @@ class _IndividualGroupState extends State<IndividualGroup> {
                       ),
                     ),
                   ),
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(10),
+                  child: Text(
+                    errorMessage,
+                    style: TextStyle(
+                      fontSize: headingFontSize,
+                      color: invalidColor,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                )
               ],
             ),
           )
@@ -643,7 +670,7 @@ class _IndividualGroupState extends State<IndividualGroup> {
         duration: const Duration(seconds: 3),
       ),
     ).closed.then((reason) {
-      Navigator.pushNamed(context, 'group/recording/maestro');
+      Navigator.pushNamed(context, '/group/recording/maestro');
     });
   }
 

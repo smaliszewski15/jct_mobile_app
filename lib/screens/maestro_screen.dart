@@ -59,13 +59,11 @@ class _MaestroScreenState extends State<MaestroScreen> {
       _mRecordingDataSubscription = null;
     }
     audioDetected = false;
-    _mRecorder.isRecording = false;
     return;
   }
 
   Future<void> stopPlayer() async {
     await _mPlayer.stopPlayer();
-    _mPlayer.isPlaying = false;
     return;
   }
 
@@ -272,6 +270,7 @@ class _MaestroScreenState extends State<MaestroScreen> {
                     if (_mRecorder.isRecording) {
                       await stopRecorder();
                       await stopPlayer();
+                      disconnect();
                       started = false;
                     } else {
                       await record();

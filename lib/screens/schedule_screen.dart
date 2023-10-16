@@ -33,7 +33,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
     widget.filter.refreshFilter();
     tempList = dateList();
     currentMonth = DateTime.now().month;
-    currentDay = DateTime.now().day;
+    currentDay = 0;
     done = ParseGroups();
     super.initState();
   }

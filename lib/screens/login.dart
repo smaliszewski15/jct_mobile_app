@@ -281,6 +281,7 @@ class _LogInPageState extends State<LogInPage> {
 
     var data = json.decode(res.body);
     user = User.userFromJson(data);
+    user!.setPassword(password.editor.value.text);
     return true;
   }
 }

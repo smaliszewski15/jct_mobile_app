@@ -278,8 +278,6 @@ class _AddGroupState extends State<AddGroup> {
       'concertDescription': _description.value.text,
       'date': date,
       'time': time,
-      'username': user!.username,
-      'password': user!.password,
     };
 
     if (context.mounted) {
@@ -288,6 +286,8 @@ class _AddGroupState extends State<AddGroup> {
           print('not logged');
           return false;
         }
+        package['username'] = user!.username;
+        package['password'] = user!.password;
 
         final res = await GroupsAPI.schedule(package);
         print('won');
