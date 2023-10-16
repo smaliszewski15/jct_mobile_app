@@ -166,6 +166,9 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                                 if (groupsList < groups.length) {
                                   while (groups[groupsList].date!.isBefore(tempList[index])) {
                                     groupsList++;
+                                    if (!(groupsList < groups.length)) {
+                                      break;
+                                    }
                                   }
                                 }
                                 bool newDay = false;

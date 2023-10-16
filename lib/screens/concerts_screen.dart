@@ -109,6 +109,41 @@ class _ConcertsState extends State<ConcertsScreen> {
             ),
             SizedBox(
               width: double.infinity,
+              height: blockHeight,
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    if (page != 0)
+                      ElevatedButton(
+                        onPressed: (){
+                          page--;
+                          done = getConcertList(oldQuery);
+                          setState(() {});
+                        },
+                        child: Text(
+                          'Prev',
+                          style: defaultTextStyle,
+                        ),
+                      ),
+                    PageCounter(),
+                    if (hadMore || page != totalPages)
+                      ElevatedButton(
+                        onPressed: () async {
+                          page++;
+                          (done = getConcertList(oldQuery)).then((entry) => {
+                            setState(() {})
+                          });
+                        },
+                        child: Text(
+                          'Next',
+                          style: defaultTextStyle,
+                        ),
+                      ),
+                  ]
+              ),
+            ),
+            SizedBox(
+              width: double.infinity,
               height: bodyHeight,
               child: ValueListenableBuilder<bool>(
                 valueListenable: widget.tags.changedNotifier,
@@ -181,41 +216,6 @@ class _ConcertsState extends State<ConcertsScreen> {
                     },
                   );
                 },
-              ),
-            ),
-            SizedBox(
-              width: double.infinity,
-              height: blockHeight,
-              child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    if (page != 0)
-                      ElevatedButton(
-                        onPressed: (){
-                          page--;
-                          done = getConcertList(oldQuery);
-                          setState(() {});
-                        },
-                        child: Text(
-                          'Prev',
-                          style: defaultTextStyle,
-                        ),
-                      ),
-                    PageCounter(),
-                    if (hadMore || page != totalPages)
-                      ElevatedButton(
-                        onPressed: () async {
-                          page++;
-                          (done = getConcertList(oldQuery)).then((entry) => {
-                            setState(() {})
-                          });
-                        },
-                        child: Text(
-                          'Next',
-                          style: defaultTextStyle,
-                        ),
-                      ),
-                  ]
               ),
             ),
           ],
