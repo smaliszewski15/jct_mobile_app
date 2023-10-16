@@ -7,7 +7,9 @@ import '../screens/skeleton.dart';
 import '../screens/individual_concert.dart';
 import '../screens/edit_profile.dart';
 import '../screens/login.dart';
+import '../screens/maestro_screen.dart';
 import '../screens/register.dart';
+import '../utils/group.dart';
 
 class Routes {
   static const String skeletonScreen = '/skeleton';
@@ -16,6 +18,7 @@ class Routes {
 
   static const String groupScreen = '/group/group';
   static const String addGroupScreen = '/group/add';
+  static const String maestroScreen = '/group/recording/maestro';
 
   static const String profileScreen = '/profile';
   static const String editProfileScreen = '/profile/edit/information';
@@ -34,6 +37,7 @@ class Routes {
     editPasswordScreen: (context) => EditPasswordPage(),
     login: (context) => LogInPage(),
     register: (context) => RegisterPage(),
+    maestroScreen: (context) => MaestroScreen(),
     //addGroupScreen: (context) => AddGroup(),
   };
 
@@ -49,7 +53,7 @@ class Routes {
         }
       case addGroupScreen:
         var arguments = settings.arguments;
-        if (arguments is String) {
+        if (arguments is DateTime) {
           return MaterialPageRoute(builder: (context) => AddGroup(arguments));
         }
         else {
@@ -57,7 +61,7 @@ class Routes {
         }
       case groupScreen:
         var arguments = settings.arguments;
-        if (arguments is String) {
+        if (arguments is Group) {
           return MaterialPageRoute(builder: (context) => IndividualGroup(arguments));
         }
         else {

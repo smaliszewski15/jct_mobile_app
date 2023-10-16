@@ -9,10 +9,13 @@ class GroupCard extends StatefulWidget {
   late double height;
   late final DateTime? date;
   final buttonNotifier = ValueNotifier<double>(25);
+  bool clickable = false;
 
-  GroupCard({this.group, this.height = 60, this.date}) {
+  GroupCard({this.group, this.height = 60, this.date, this.clickable = false}) {
     buttonNotifier.value = height;
   }
+
+  void clickState() => clickable = !clickable;
 
   void changeHeight(double newHeight) => height = newHeight;
 
@@ -31,128 +34,121 @@ class _GroupCardState extends State<GroupCard>
             ? Container(
                 width: double.infinity,
                 height: widget.height,
-                margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
-                color: widget.height == 60 ? accentColor : mainSchemeColor,
-                child: TextButton(
-                  onPressed: () {
-                    if (widget.height == 120) {
-                      Navigator.pushNamed(context, '/group/group', arguments: DateFormat('yyyy-MM-dd hh:mm').format(widget.group!.date!));
-                    }
-                  },
-                  style: null,
+                margin: const EdgeInsets.all(5),
+                color: !widget.clickable ? accentColor : mainSchemeColor,
+                child:  TextButton(
+                  onPressed: widget.clickable ? () {
+                    Navigator.pushNamed(
+                        context, '/group/group',
+                        arguments: widget.group!);
+                  } : null,
                   child: Column(
-                    children: <Widget>[
+                  children: <Widget>[
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          widget.group!.date != null
+                              ? DateFormat('jm').format(widget.group!.date!)
+                              : DateFormat('jm').format(DateTime.now()),
+                          style: TextStyle(
+                              fontSize: infoFontSize,
+                              color: !widget.clickable ? textColor : black),
+                        ),
+                        const Spacer(),
+                        if (!widget.clickable)
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Text(
+                                widget.group!.title,
+                                style: TextStyle(
+                                  fontSize: infoFontSize,
+                                  color: textColor,
+                                ),
+                              ),
+                              Text(
+                                widget.group!.maestro,
+                                style: TextStyle(
+                                  fontSize: bioTextSize,
+                                  color: textColor,
+                                ),
+                              ),
+                            ],
+                          ),
+                        const Spacer(),
+                        Text(
+                          '${widget.group!.members!.length}/4',
+                          style: TextStyle(
+                              fontSize: infoFontSize,
+                              color: widget.height == 60 ? textColor : black),
+                        ),
+                      ],
+                    ),
+                    if (widget.clickable)
                       Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          Text(
-                            widget.group!.date != null
-                                ? DateFormat('jm').format(widget.group!.date!)
-                                : DateFormat('jm').format(DateTime.now()),
-                            style: TextStyle(
-                                fontSize: infoFontSize,
-                                color: widget.height == 60 ? textColor : black),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: <Widget>[
+                              Text(
+                                widget.group!.title,
+                                style: const TextStyle(
+                                  fontSize: infoFontSize,
+                                  color: black,
+                                ),
+                              ),
+                              Text(
+                                widget.group!.maestro,
+                                style: const TextStyle(
+                                  fontSize: bioTextSize,
+                                  color: black,
+                                ),
+                              ),
+                            ],
                           ),
                           const Spacer(),
-                          if (widget.height == 60)
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                Text(
-                                  widget.group!.title,
-                                  style: TextStyle(
-                                    fontSize: infoFontSize,
-                                    color: textColor,
-                                  ),
-                                ),
-                                Text(
-                                  widget.group!.groupLeader,
-                                  style: TextStyle(
-                                    fontSize: bioTextSize,
-                                    color: textColor,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          const Spacer(),
-                          Text(
-                            '${widget.group!.members.length}/4',
-                            style: TextStyle(
-                                fontSize: infoFontSize,
-                                color: widget.height == 60 ? textColor : black),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: widget.group!.members!
+                                .map((entry) => Text(
+                                      entry,
+                                      style: TextStyle(
+                                        fontSize: bioTextSize,
+                                        color: black,
+                                      ),
+                                    ))
+                                .toList(),
                           ),
                         ],
                       ),
-                      if (widget.height == 120)
-                        Row(
-                          children: <Widget>[
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: <Widget>[
-                                Text(
-                                  widget.group!.title,
-                                  style: TextStyle(
-                                    fontSize: infoFontSize,
-                                    color:
-                                        widget.height == 60 ? textColor : black,
-                                  ),
-                                ),
-                                Text(
-                                  widget.group!.groupLeader,
-                                  style: TextStyle(
-                                    fontSize: bioTextSize,
-                                    color:
-                                        widget.height == 60 ? textColor : black,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const Spacer(),
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: widget.group!.members
-                                  .map((entry) => Text(
-                                        entry,
-                                        style: TextStyle(
-                                          fontSize: bioTextSize,
-                                          color: widget.height == 60
-                                              ? textColor
-                                              : black,
-                                        ),
-                                      ))
-                                  .toList(),
-                            ),
-                          ],
-                        ),
-                    ],
-                  ),
+                  ],
+                ),
                 ),
               )
-            : Container(
+            : TextButton(
+            onPressed: widget.clickable ? () {
+          Navigator.pushNamed(
+                context, '/group/add',
+                arguments:
+                    widget.date!);
+        } : null,
+        child: Container(
                 width: double.infinity,
                 height: 60,
-                margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
-                color: widget.height == 60 ? mainSchemeColor : accentColor,
-                child: TextButton(
-                  onPressed: () {
-                    if (widget.height == 60) {
-                      Navigator.pushNamed(context, '/group/add', arguments: DateFormat('E, MMM dd, yyyy - hh:mm').format(widget.date!));
-                    }
-                  },
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        DateFormat('jm').format(widget.date!),
-                        style: TextStyle(
-                          fontSize: infoFontSize,
-                          color: widget.height == 60 ? black : textColor,
-                        ),
+                color: widget.clickable ? mainSchemeColor : accentColor,
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                      DateFormat('jm').format(widget.date!),
+                      style: TextStyle(
+                        fontSize: infoFontSize,
+                        color: widget.clickable ? black : textColor,
                       ),
-                    ],
-                  ),
+                    ),
                 ),
-              );
+              ),
+        );
       },
     );
   }

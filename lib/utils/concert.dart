@@ -32,8 +32,9 @@ class Concert {
   static List<String> _getPerformers(Map json) {
     List<String> toRet = [];
     for (int i = 1; i <= 4; i++) {
+      print(json);
       if (json.containsKey('User${i}Name')) {
-        toRet.add(json['User${i}Name']);
+        toRet.add(json['User${i}Name'] ?? '');
         i++;
       }
     }

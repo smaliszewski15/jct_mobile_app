@@ -47,6 +47,9 @@ class _MaestroScreenState extends State<MaestroScreen> {
 
   Future<void>? stopRecorder() async {
     await _mRecorder.stopRecorder();
+    if (socket != null) {
+      socket!.socket.sink.add(stop);
+    }
     if (_audioDetectedSubscription != null) {
       await _audioDetectedSubscription!.cancel();
       _audioDetectedSubscription = null;
@@ -56,13 +59,11 @@ class _MaestroScreenState extends State<MaestroScreen> {
       _mRecordingDataSubscription = null;
     }
     audioDetected = false;
-    _mRecorder.isRecording = false;
     return;
   }
 
   Future<void> stopPlayer() async {
     await _mPlayer.stopPlayer();
-    _mPlayer.isPlaying = false;
     return;
   }
 
@@ -98,6 +99,9 @@ class _MaestroScreenState extends State<MaestroScreen> {
 
   Future<void> disconnect() async {
     if (socket != null) {
+      if (_mRecorder.isRecording) {
+        socket!.socket.sink.add(stop);
+      }
       socket!.disconnect();
     }
     socket = null;
@@ -266,6 +270,7 @@ class _MaestroScreenState extends State<MaestroScreen> {
                     if (_mRecorder.isRecording) {
                       await stopRecorder();
                       await stopPlayer();
+                      disconnect();
                       started = false;
                     } else {
                       await record();

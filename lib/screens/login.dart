@@ -267,7 +267,7 @@ class _LogInPageState extends State<LogInPage> {
 
   Future<bool> login() async {
     Map<String, dynamic> entries = {
-      'username': username.editor.value.text,
+      'identifier': username.editor.value.text,
       'password': password.editor.value.text,
     };
 
@@ -281,6 +281,7 @@ class _LogInPageState extends State<LogInPage> {
 
     var data = json.decode(res.body);
     user = User.userFromJson(data);
+    user!.setPassword(password.editor.value.text);
     return true;
   }
 }
