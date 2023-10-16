@@ -24,7 +24,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
   late int currentDay;
   Future<bool>? done;
   List<Group> groups = [];
-  double totalHeight = 60;
+  double totalHeight = 120;
   bool creating = false;
   bool joining = true;
 
@@ -242,6 +242,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
         start = start.add(const Duration(days: 1))) {
       queryDate['date'] = DateFormat('yyyy-MM-dd').format(start);
 
+
       final res = await GroupsAPI.getSchedule(queryDate);
 
       if (res.statusCode != 200) {
@@ -249,23 +250,27 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
         return false;
       }
       print(res.body);
+      String date = DateFormat('yyyy-MM-dd').format(start);
 
       var data = json.decode(res.body);
 
       for (var concerts in data['scheduledTimes']) {
-        Group newGroup = Group.fromJson(concerts);
+        //Group newGroup = Group.fromJson(concerts);
+        Group newGroup = Group.fromDateConcert(date, concerts);
         if (groups.isNotEmpty) {
           int place = 0;
           for (int i = 0; i < groups.length; i++) {
-            if (newGroup.date!.isAfter(groups[i].date!)) {
+            if (newGroup.date!.isBefore(groups[i].date!)) {
               break;
             }
+            place++;
           }
           groups.insert(place, newGroup);
         } else {
           groups.add(newGroup);
         }
       }
+
     }
     return true;
   }

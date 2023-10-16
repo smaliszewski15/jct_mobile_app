@@ -38,7 +38,7 @@ class _IndividualGroupState extends State<IndividualGroup> {
   final _passcode = TextEditingController();
   bool passcodeUnfilled = false;
   bool titleUnfilled = false;
-  late Group group;
+  //late Group group;
   Future<bool>? done;
 
   bool created() {
@@ -175,7 +175,7 @@ class _IndividualGroupState extends State<IndividualGroup> {
                     textAlign: TextAlign.center,
                   ) :
                   Text(
-                    DateFormat('E, MMM dd, yyyy - hh:mm').format(group.date!),
+                    DateFormat('E, MMM dd, yyyy - hh:mm').format(widget.group.date!),
                     style: TextStyle(
                         fontSize: 30,
                         color: textColor
@@ -195,7 +195,7 @@ class _IndividualGroupState extends State<IndividualGroup> {
                         textAlign: TextAlign.left,
                       ),
                       Text(
-                        DateFormat('E, MMM dd, yyyy - hh:mm').format(group.date!),
+                        DateFormat('E, MMM dd, yyyy - hh:mm').format(widget.group.date!),
                         style: defaultTextStyle,
                       )
                     ],
@@ -259,7 +259,7 @@ class _IndividualGroupState extends State<IndividualGroup> {
                     margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                     color: black,
                     child: Text(
-                      group.maestro,
+                      widget.group.maestro,
                       style: defaultTextStyle,
                     )
                 ),
@@ -274,7 +274,7 @@ class _IndividualGroupState extends State<IndividualGroup> {
                 ListView.builder(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
-                    itemCount: group.members!.length,
+                    itemCount: widget.group.members!.length,
                     itemBuilder: (BuildContext context, int index) {
                       return Container(
                           width: double.infinity,
@@ -282,24 +282,24 @@ class _IndividualGroupState extends State<IndividualGroup> {
                           margin: const EdgeInsets.symmetric(vertical: 2, horizontal: 10),
                           color: black,
                           child: Text(
-                            group.members![index],
+                            widget.group.members![index],
                             style: defaultTextStyle,
                           )
                       );
                     }
                 ),
-                if (group.passcodes != null)
+                if (widget.group.passcodes != null)
                   ListView.builder(
-                    itemCount: group.passcodes!.length,
+                    itemCount: widget.group.passcodes!.length,
                     itemBuilder: (context, index) {
                       return Text(
-                        group.passcodes![index].toString(),
+                        widget.group.passcodes![index].toString(),
                         style: defaultTextStyle,
                       );
                     },
                   ),
                 const Spacer(),
-                if (!isCreator && group.date!.difference(DateTime.now()).inMinutes < 40 && group.members!.contains(user!.username))
+                if (!isCreator && widget.group.date!.difference(DateTime.now()).inMinutes < 40 && widget.group.members!.contains(user!.username))
                   Container(
                     margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                     padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 67),
@@ -320,7 +320,7 @@ class _IndividualGroupState extends State<IndividualGroup> {
                       ),
                     ),
                   ),
-                if (!isEditing && !isCreator && !group.members!.contains(user!.username))
+                if (!isEditing && !isCreator && !widget.group.members!.contains(user!.username))
                   Container(
                     margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                     padding: const EdgeInsets.all(5),
@@ -371,7 +371,7 @@ class _IndividualGroupState extends State<IndividualGroup> {
                           if (confirm && context.mounted) {
                             Navigator.pushNamed(context, '/login').then((value){
                               if (user != null) {
-                                group.members!.add(user!.username);
+                                widget.group.members!.add(user!.username);
                               }
                             }
                             );
@@ -379,7 +379,7 @@ class _IndividualGroupState extends State<IndividualGroup> {
                             if (context.mounted) {
                               Navigator.pushNamed(context, '/register').then((value){
                                 if (user != null) {
-                                  group.members!.add(user!.username);
+                                  widget.group.members!.add(user!.username);
                                 }
                               }
                               );
@@ -421,7 +421,7 @@ class _IndividualGroupState extends State<IndividualGroup> {
                       ),
                     ),
                   ),
-                if (!isEditing && !isCreator && (user!.logged ? group.members!.contains(user!.username) : false))
+                if (!isEditing && !isCreator && (user!.logged ? widget.group.members!.contains(user!.username) : false))
                   Container(
                     margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                     padding: const EdgeInsets.all(5),
@@ -468,7 +468,7 @@ class _IndividualGroupState extends State<IndividualGroup> {
                             );
                           },
                         );
-                        if (confirm) {
+                        if (confirm && context.mounted) {
                           Navigator.pop(context);
                         }
                       },
@@ -535,6 +535,7 @@ class _IndividualGroupState extends State<IndividualGroup> {
                   ),
                 ),
                 if (isEditing && false)
+                  //commented out because the button is not used rn
                   Container(
                     margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                     padding: const EdgeInsets.all(5),
@@ -584,7 +585,7 @@ class _IndividualGroupState extends State<IndividualGroup> {
                         if (!confirm) {
                           return;
                         }
-                        group.title = _title.text;
+                        widget.group.title = _title.text;
                         setState(() => isEditing = false);
                       },
                       child: Text(
@@ -608,7 +609,7 @@ class _IndividualGroupState extends State<IndividualGroup> {
                     ),
                     child: OutlinedButton(
                       onPressed: () {
-                        _title.text = group.title;
+                        _title.text = widget.group.title;
                         setState(() => isEditing = false);
                       },
                       child: Text(
@@ -647,12 +648,12 @@ class _IndividualGroupState extends State<IndividualGroup> {
   }
 
   Future<bool> retrieveGroup() async {
-    Map<String, dynamic> groupsJSON = GroupsAPI.getGroup;
-    if (!groupsJSON.containsKey('group')) {
-      return false;
-    }
-    var data = groupsJSON['group'];
-    group = Group.fromJson(data);
+    // Map<String, dynamic> groupsJSON = GroupsAPI.getGroup;
+    // if (!groupsJSON.containsKey('group')) {
+    //   return false;
+    // }
+    // var data = groupsJSON['group'];
+    // group = Group.fromJson(data);
     return true;
   }
 }

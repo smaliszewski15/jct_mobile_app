@@ -241,7 +241,7 @@ class _AddGroupState extends State<AddGroup> {
         actions: <Widget>[
           TextButton(
             onPressed: () {
-              Navigator.pop(context, 'false');
+              Navigator.pop(context, false);
             },
             child: const Text(
               'Register',
@@ -250,7 +250,7 @@ class _AddGroupState extends State<AddGroup> {
           ),
           TextButton(
             onPressed: () {
-              Navigator.pop(context, 'true');
+              Navigator.pop(context, true);
             },
             child: const Text(
               'Login',
@@ -269,41 +269,49 @@ class _AddGroupState extends State<AddGroup> {
       );
     });
 
+    String date = DateFormat('yyyy-MM-dd').format(widget.date!.toUtc()).toString();
+    String time = DateFormat('Hms').format(widget.date!.toUtc()).toString();
 
-    if (context.mounted) {
-      Navigator.pushNamed(context, logged ? '/login' : '/register');
-    }
-
-    if (user == null) {
-      return false;
-    }
-
-    Map<String, dynamic> package = {
+    Map<String,dynamic> package = {
       'concertTitle': _title.value.text,
       'concertTags': _tags.value.text,
       'concertDescription': _description.value.text,
-      'date': DateFormat('yyyy-MM-dd').format(widget.date!),
-      'time': DateFormat('Hms'),
+      'date': date,
+      'time': time,
       'username': user!.username,
       'password': user!.password,
     };
 
-    final res = await GroupsAPI.schedule(package);
-
-    if (res.statusCode != 200) {
-      print(res.body);
-    }
-
-    var data = json.decode(res.body);
-    var group = data['group'];
-    var schedule = data['schedule'];
-
-    Group newGroup = Group.fromScheduleJson(group);
-    newGroup.addPasscodes(schedule);
     if (context.mounted) {
-      Navigator.pushReplacementNamed(context, '/group/group', arguments: newGroup);
-    }
+      Navigator.pushNamed(context, logged ? '/login' : '/register').then((entry) async {
+        if (!user!.logged) {
+          print('not logged');
+          return false;
+        }
 
-    return true;
+        final res = await GroupsAPI.schedule(package);
+        print('won');
+
+        if (res.statusCode != 200) {
+          print(res.body);
+
+          return false;
+        }
+
+        var data = json.decode(res.body);
+        var group = data['group'];
+        print(group.toString());
+        var schedule = data['schedule'];
+        print(schedule.toString());
+
+        Group newGroup = Group.fromScheduleJson(group);
+        newGroup.addPasscodes(schedule);
+        if (context.mounted) {
+          Navigator.pushReplacementNamed(context, '/group/group', arguments: newGroup);
+        }
+      });
+      return true;
+    }
+    return false;
   }
 }

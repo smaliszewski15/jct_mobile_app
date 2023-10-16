@@ -33,6 +33,11 @@ class Group {
     return Group(groupID: id, maestro: leader, maestroID: maestroID, title: title, date: date, tags: tags, description: description);
   }
 
+  factory Group.fromDateConcert(String date, String time) {
+    DateTime newDate = ConvertToDate(date, time);
+    return Group(date: newDate.toLocal());
+  }
+
   void addPasscodes(Map json) {
     this.passcodes = _getListPasscodes(json);
   }
@@ -50,12 +55,13 @@ class Group {
   static DateTime ConvertToDate(String date, String time) {
     List<String> dateParts = date.split('-');
     int year = int.parse(dateParts[0]);
-    int month = int.parse(dateParts[2]);
-    int day = int.parse(dateParts[1]);
+    int month = int.parse(dateParts[1]);
+    int day = int.parse(dateParts[2]);
     List<String> timeParts = time.split(':');
     int hour = int.parse(timeParts[0]);
     int minute = int.parse(timeParts[1]);
-    DateTime toRet = DateTime(year, month, day, hour, minute);
+    DateTime toRet = DateTime.utc(year, month, day, hour, minute);
+    toRet = toRet.toLocal();
     return toRet;
   }
 

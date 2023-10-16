@@ -29,7 +29,7 @@ class GroupsAPI {
     http.Response response;
 
     try {
-      response = await http.post(Uri.https(API_PREFIX, '${apiRoute}/getSchedule'),
+      response = await http.post(Uri.https(API_PREFIX, '${apiRoute}/schedule'),
           body: json.encode(query),
           headers: authHeader);
     } catch (e) {

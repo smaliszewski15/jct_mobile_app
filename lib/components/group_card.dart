@@ -37,14 +37,11 @@ class _GroupCardState extends State<GroupCard>
                 margin: const EdgeInsets.all(5),
                 color: !widget.clickable ? accentColor : mainSchemeColor,
                 child:  TextButton(
-                  onPressed: () {
-                    if (widget.clickable) {
-                      Navigator.pushNamed(
-                          context, '/group/group',
-                          arguments: widget.group!
-                                  .date!);
-                    }
-                  },
+                  onPressed: widget.clickable ? () {
+                    Navigator.pushNamed(
+                        context, '/group/group',
+                        arguments: widget.group!);
+                  } : null,
                   child: Column(
                   children: <Widget>[
                     Row(
@@ -96,18 +93,16 @@ class _GroupCardState extends State<GroupCard>
                             children: <Widget>[
                               Text(
                                 widget.group!.title,
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontSize: infoFontSize,
-                                  color:
-                                  !widget.clickable ? textColor : black,
+                                  color: black,
                                 ),
                               ),
                               Text(
                                 widget.group!.maestro,
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontSize: bioTextSize,
-                                  color:
-                                  !widget.clickable ? textColor : black,
+                                  color: black,
                                 ),
                               ),
                             ],
@@ -120,9 +115,7 @@ class _GroupCardState extends State<GroupCard>
                                       entry,
                                       style: TextStyle(
                                         fontSize: bioTextSize,
-                                        color: !widget.clickable
-                                            ? textColor
-                                            : black,
+                                        color: black,
                                       ),
                                     ))
                                 .toList(),
@@ -134,18 +127,15 @@ class _GroupCardState extends State<GroupCard>
                 ),
               )
             : TextButton(
-            onPressed: () {
-          if (widget.clickable) {
-            Navigator.pushNamed(
+            onPressed: widget.clickable ? () {
+          Navigator.pushNamed(
                 context, '/group/add',
                 arguments:
                     widget.date!);
-          }
-        },
+        } : null,
         child: Container(
                 width: double.infinity,
                 height: 60,
-                margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
                 color: widget.clickable ? mainSchemeColor : accentColor,
                 child: Align(
                   alignment: Alignment.centerLeft,
