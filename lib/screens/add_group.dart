@@ -83,7 +83,7 @@ class _AddGroupState extends State<AddGroup> {
                       child: Text(
                         'Every concert must have a title. Enter yours here:',
                         style: TextStyle(
-                          fontSize: titleFontSize,
+                          fontSize: headingFontSize,
                           color: textColor,
                         ),
                         textAlign: TextAlign.center,
@@ -145,7 +145,7 @@ class _AddGroupState extends State<AddGroup> {
                     child: Text(
                       'Mixing Method: ',
                       style: TextStyle(
-                        fontSize: titleFontSize,
+                        fontSize: headingFontSize,
                         color: textColor,
                       ),
                       textAlign: TextAlign.center,
@@ -184,12 +184,116 @@ class _AddGroupState extends State<AddGroup> {
                       ).toList(),
                     ),
                   ),
+                  Container(
+                      padding: const EdgeInsets.all(20),
+                      child: Text(
+                        'Enter a description:',
+                        style: TextStyle(
+                          fontSize: headingFontSize,
+                          color: textColor,
+                        ),
+                        textAlign: TextAlign.center,
+                      )
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: TextField(
+                      maxLines: 1,
+                      controller: _description,
+                      decoration: descriptionUnfilled ?
+                      InputDecoration(
+                        contentPadding: const EdgeInsets.all(5),
+                        counterText: '',
+                        filled: true,
+                        fillColor: mainSchemeColor,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(20),
+                          borderSide: BorderSide(color: invalidColor),
+                        ),
+                      ) :
+                      InputDecoration(
+                        contentPadding: const EdgeInsets.all(5),
+                        counterText: '',
+                        filled: true,
+                        fillColor: mainSchemeColor,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(20),
+                          borderSide: const BorderSide(color: black),
+                        ),
+                      ),
+                      style: TextStyle(
+                        fontSize: titleFontSize,
+                        color: buttonTextColor,
+                      ),
+                      onChanged: (field) {
+                        if (field.isEmpty) {
+                          setState(() => titleUnfilled = true);
+                          return;
+                        } else {
+                          setState(() => titleUnfilled = false);
+                        }
+                      },
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  Container(
+                      padding: const EdgeInsets.all(20),
+                      child: Text(
+                        'And Lastly some tags:',
+                        style: TextStyle(
+                          fontSize: headingFontSize,
+                          color: textColor,
+                        ),
+                        textAlign: TextAlign.center,
+                      )
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: TextField(
+                      maxLines: 1,
+                      controller: _tags,
+                      decoration: tagsUnfilled ?
+                      InputDecoration(
+                        contentPadding: const EdgeInsets.all(5),
+                        counterText: '',
+                        filled: true,
+                        fillColor: mainSchemeColor,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(20),
+                          borderSide: BorderSide(color: invalidColor),
+                        ),
+                      ) :
+                      InputDecoration(
+                        contentPadding: const EdgeInsets.all(5),
+                        counterText: '',
+                        filled: true,
+                        fillColor: mainSchemeColor,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(20),
+                          borderSide: const BorderSide(color: black),
+                        ),
+                      ),
+                      style: TextStyle(
+                        fontSize: titleFontSize,
+                        color: buttonTextColor,
+                      ),
+                      onChanged: (field) {
+                        if (field.isEmpty) {
+                          setState(() => titleUnfilled = true);
+                          return;
+                        } else {
+                          setState(() => titleUnfilled = false);
+                        }
+                      },
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
                   //const Spacer(),
                   Flexible(
                     child: Text(
                       'Finished making your concert? Tap the button below to create your concert. The invitation codes will be sent to your email.',
                       style: TextStyle(
-                        fontSize: titleFontSize,
+                        fontSize: headingFontSize,
                         color: textColor,
                       ),
                       textAlign: TextAlign.center,
