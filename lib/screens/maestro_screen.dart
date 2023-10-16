@@ -155,180 +155,182 @@ class _MaestroScreenState extends State<MaestroScreen> {
         }
         return true;
       },
-      child: Container(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
-        color: backgroundColor,
-        child: Align(
-          alignment: Alignment.center,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Container(
+      child: SingleChildScrollView(
+        child: Container(
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height,
+          color: backgroundColor,
+          child: Align(
+            alignment: Alignment.center,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Container(
                   padding: const EdgeInsets.all(10),
                   width: double.infinity,
                   child: Text(
-                      'You are the maestro. Click the connect button to connect to the socket, then start recording to actually start recording.',
-                      style: TextStyle(
-                        fontSize: headingFontSize,
-                        color: textColor,
-                      ),
-                      textAlign: TextAlign.center,
-                  ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Expanded(
-                    flex: 6,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Container(
-                          width: 100,
-                          height: 100,
-                          decoration: BoxDecoration(
-                            color: audioDetected ? Colors.green : white,
-                            shape: BoxShape.circle,
-                          ),
-                          child: TextButton(
-                            onPressed: () async {
-                              if (!_mRecorder.mRecorderIsInited) {
-                                audioDetected = false;
-                                return;
-                              }
-                              if (_mRecorder.isRecording) {
-                                await stopEverything();
-                                setState((){});
-                                return;
-                              }
-                              if (socket == null) {
-                                print('connect socket');
-                                await connect();
-                              } else {
-                                print('disconnect socket');
-                                await disconnect();
-                              }
-                              setState(() {});
-                            },
-                            child: const Icon(
-                              Icons.link,
-                              color: black,
-                              size: bottomIconSize + 20,
-                            ),
-                          ),
-                        ),
-                        Container(
-                          margin: const EdgeInsets.all(5),
-                          child: Text(
-                            socket != null ? 'Disconnect' : 'Connect',
-                            style: TextStyle(
-                              color: buttonTextColor,
-                              fontSize: titleFontSize,
-                            ),
-                          ),
-                        ),
-                      ]
+                    'You are the maestro. Click the connect button to connect to the socket, then start recording to actually start recording.',
+                    style: TextStyle(
+                      fontSize: headingFontSize,
+                      color: textColor,
                     ),
+                    textAlign: TextAlign.center,
                   ),
-                  if (participants.isNotEmpty)
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
                     Expanded(
-                      flex: 4,
-                      child: Container(
-                        height: 150,
-                        child: ListView.builder(
-                          itemCount: participants.length,
-                          itemBuilder: (context, index) {
-                            return Container(
+                      flex: 6,
+                      child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Container(
+                              width: 100,
+                              height: 100,
                               decoration: BoxDecoration(
-                                color: accentColor,
+                                color: audioDetected ? Colors.green : white,
+                                shape: BoxShape.circle,
                               ),
+                              child: TextButton(
+                                onPressed: () async {
+                                  if (!_mRecorder.mRecorderIsInited) {
+                                    audioDetected = false;
+                                    return;
+                                  }
+                                  if (_mRecorder.isRecording) {
+                                    await stopEverything();
+                                    setState((){});
+                                    return;
+                                  }
+                                  if (socket == null) {
+                                    print('connect socket');
+                                    await connect();
+                                  } else {
+                                    print('disconnect socket');
+                                    await disconnect();
+                                  }
+                                  setState(() {});
+                                },
+                                child: const Icon(
+                                  Icons.link,
+                                  color: black,
+                                  size: bottomIconSize + 20,
+                                ),
+                              ),
+                            ),
+                            Container(
+                              margin: const EdgeInsets.all(5),
                               child: Text(
-                                participants[index],
-                                style: defaultTextStyle,
-                                textAlign: TextAlign.center,
+                                socket != null ? 'Disconnect' : 'Connect',
+                                style: TextStyle(
+                                  color: buttonTextColor,
+                                  fontSize: titleFontSize,
+                                ),
                               ),
-                            );
-                          },
-                        ),
+                            ),
+                          ]
                       ),
                     ),
-                ],
-              ),
-              Container(
-                margin: const EdgeInsets.all(5),
-                decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.all(Radius.circular(25)),
-                  border: Border.all(color: black),
-                  color: mainSchemeColor,
+                    if (participants.isNotEmpty)
+                      Expanded(
+                        flex: 4,
+                        child: Container(
+                          height: 150,
+                          child: ListView.builder(
+                            itemCount: participants.length,
+                            itemBuilder: (context, index) {
+                              return Container(
+                                decoration: BoxDecoration(
+                                  color: accentColor,
+                                ),
+                                child: Text(
+                                  participants[index],
+                                  style: defaultTextStyle,
+                                  textAlign: TextAlign.center,
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                  ],
                 ),
-                child: TextButton(
-                  onPressed: () async {
-                    if (!_mRecorder.mRecorderIsInited) {
-                      audioDetected = false;
-                      return;
-                    }
-                    if (_mRecorder.isRecording) {
-                      await stopEverything();
-                      started = false;
-                    } else {
-                      if (socket == null) {
-                        connect();
+                Container(
+                  margin: const EdgeInsets.all(5),
+                  decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.all(Radius.circular(25)),
+                    border: Border.all(color: black),
+                    color: mainSchemeColor,
+                  ),
+                  child: TextButton(
+                    onPressed: () async {
+                      if (!_mRecorder.mRecorderIsInited) {
+                        audioDetected = false;
+                        return;
                       }
-                      await record();
-                      await listenForSink();
-                      started = true;
-                    }
-                    setState((){});
-                  },
-                  style: ButtonStyle(
-                    shape: MaterialStateProperty.all(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(25),
-                        )
+                      if (_mRecorder.isRecording) {
+                        await stopEverything();
+                        started = false;
+                      } else {
+                        if (socket == null) {
+                          connect();
+                        }
+                        await record();
+                        await listenForSink();
+                        started = true;
+                      }
+                      setState((){});
+                    },
+                    style: ButtonStyle(
+                      shape: MaterialStateProperty.all(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(25),
+                          )
+                      ),
+                    ),
+                    child: Text(
+                      _mRecorder.isRecording ? 'Stop Recording' : 'Start Recording',
+                      style: buttonTextStyle,
                     ),
                   ),
+                ),
+                Container(
+                  margin: const EdgeInsets.all(5),
+                  decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.all(Radius.circular(25)),
+                    border: Border.all(color: black),
+                    color: mainSchemeColor,
+                  ),
+                  child: TextButton(
+                    onPressed: () async {
+                      setState(() => muted = !muted);
+                    },
+                    style: ButtonStyle(
+                      shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(25),
+                      )),
+                    ),
+                    child: Text(
+                      !muted ? 'Mute Playback' : 'Unmute Playback',
+                      style: buttonTextStyle,
+                    ),
+                  ),
+                ),
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(10),
                   child: Text(
-                    _mRecorder.isRecording ? 'Stop Recording' : 'Start Recording',
-                    style: buttonTextStyle,
+                    started ? 'Started!' : '',
+                    style: TextStyle(
+                      fontSize: headingFontSize,
+                      color: textColor,
+                    ),
+                    textAlign: TextAlign.center,
                   ),
                 ),
-              ),
-              Container(
-                margin: const EdgeInsets.all(5),
-                decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.all(Radius.circular(25)),
-                  border: Border.all(color: black),
-                  color: mainSchemeColor,
-                ),
-                child: TextButton(
-                  onPressed: () async {
-                    setState(() => muted = !muted);
-                  },
-                  style: ButtonStyle(
-                    shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(25),
-                    )),
-                  ),
-                  child: Text(
-                    !muted ? 'Mute Playback' : 'Unmute Playback',
-                    style: buttonTextStyle,
-                  ),
-                ),
-              ),
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(10),
-                child: Text(
-                  started ? 'Started!' : '',
-                  style: TextStyle(
-                    fontSize: headingFontSize,
-                    color: textColor,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
