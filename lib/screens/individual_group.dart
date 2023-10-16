@@ -130,8 +130,9 @@ class _IndividualGroupState extends State<IndividualGroup> {
         automaticallyImplyLeading: false,
       ),
       body: GestureDetector(
-          behavior: HitTestBehavior.translucent,
-          onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+        behavior: HitTestBehavior.translucent,
+        onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+        child: SingleChildScrollView(
           child: Container(
             width: double.infinity,
             height: MediaQuery.of(context).size.height,
@@ -586,7 +587,7 @@ class _IndividualGroupState extends State<IndividualGroup> {
                   ),
                 ),
                 if (isEditing && false)
-                  //commented out because the button is not used rn
+                //commented out because the button is not used rn
                   Container(
                     margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                     padding: const EdgeInsets.all(5),
@@ -688,7 +689,8 @@ class _IndividualGroupState extends State<IndividualGroup> {
                 )
               ],
             ),
-          )
+          ),
+        ),
       ),
     );
   }

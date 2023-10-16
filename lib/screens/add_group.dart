@@ -306,7 +306,7 @@ class _AddGroupState extends State<AddGroup> {
                       color: gold,
                       border: Border.all(color: black, width: 3),
                     ),
-                    child: OutlinedButton(
+                    child: TextButton(
                       onPressed: () async {
                         if (_title.value.text.isEmpty) {
                           setState(() => titleUnfilled = true);

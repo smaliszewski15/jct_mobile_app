@@ -51,58 +51,59 @@ class _ConcertsState extends State<ConcertsScreen> {
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          Container(
-            width: 300,
-            height: 35,
-            padding: const EdgeInsets.all(5),
-            margin: const EdgeInsets.symmetric(vertical: 5),
-            decoration: BoxDecoration(
-              borderRadius: const BorderRadius.all(Radius.circular(20)),
-              color: searchFieldColor,
-            ),
-            child: Row(
-              children: <Widget>[
-                Flexible(
-                  flex: 9,
-                  child: TextField(
-                    maxLines: 1,
-                    focusNode: searchFocus,
-                    controller: _search,
-                    decoration: InputDecoration.collapsed(
-                      hintText: 'Search...',
-                      hintStyle: TextStyle(
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Container(
+              width: 300,
+              height: 35,
+              padding: const EdgeInsets.all(5),
+              margin: const EdgeInsets.symmetric(vertical: 5),
+              decoration: BoxDecoration(
+                borderRadius: const BorderRadius.all(Radius.circular(20)),
+                color: searchFieldColor,
+              ),
+              child: Row(
+                children: <Widget>[
+                  Flexible(
+                    flex: 9,
+                    child: TextField(
+                      maxLines: 1,
+                      focusNode: searchFocus,
+                      controller: _search,
+                      decoration: InputDecoration.collapsed(
+                        hintText: 'Search...',
+                        hintStyle: TextStyle(
+                          color: buttonTextColor,
+                          decoration: TextDecoration.underline,
+                          fontSize: 18,
+                        ),
+                      ),
+                      style: TextStyle(
                         color: buttonTextColor,
-                        decoration: TextDecoration.underline,
                         fontSize: 18,
                       ),
+                      textInputAction: TextInputAction.done,
+                      onSubmitted: (query) {
+                        if (oldQuery.isEmpty || oldQuery != query) {
+                          print(query);
+                          done = getConcertList(query);
+                          oldQuery = query;
+                          setState(() {});
+                        }
+                      },
                     ),
-                    style: TextStyle(
-                      color: buttonTextColor,
-                      fontSize: 18,
-                    ),
-                    textInputAction: TextInputAction.done,
-                    onEditingComplete: () {
-                      String query = _search.value.text;
-                      if (oldQuery.isEmpty || oldQuery != query) {
-                        done = getConcertList(query);
-                        oldQuery = query;
-                        setState(() {});
-                      }
-                    },
                   ),
-                ),
-                const Icon(
-                  Icons.search,
-                  color: black,
-                  size: 15,
-                ),
-              ],
+                  const Icon(
+                    Icons.search,
+                    color: black,
+                    size: 15,
+                  ),
+                ],
+              ),
             ),
-          ),
-          SizedBox(
+            SizedBox(
               width: double.infinity,
               height: 610,
               child: ValueListenableBuilder<bool>(
@@ -177,42 +178,43 @@ class _ConcertsState extends State<ConcertsScreen> {
                   );
                 },
               ),
-          ),
-          SizedBox(
-            width: double.infinity,
-            child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  if (page != 0)
-                    ElevatedButton(
-                      onPressed: (){
-                        page--;
-                        done = getConcertList(oldQuery);
-                        setState(() {});
-                      },
-                      child: Text(
-                        'Prev',
-                        style: defaultTextStyle,
-                      ),
-                    ),
-                  PageCounter(),
-                  if (hadMore || page != totalPages)
-                    ElevatedButton(
-                      onPressed: () async {
-                        page++;
-                        (done = getConcertList(oldQuery)).then((entry) => {
-                          setState(() {})
-                        });
-                      },
-                      child: Text(
-                        'Next',
-                        style: defaultTextStyle,
-                      ),
-                    ),
-                ]
             ),
-          ),
-        ],
+            SizedBox(
+              width: double.infinity,
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    if (page != 0)
+                      ElevatedButton(
+                        onPressed: (){
+                          page--;
+                          done = getConcertList(oldQuery);
+                          setState(() {});
+                        },
+                        child: Text(
+                          'Prev',
+                          style: defaultTextStyle,
+                        ),
+                      ),
+                    PageCounter(),
+                    if (hadMore || page != totalPages)
+                      ElevatedButton(
+                        onPressed: () async {
+                          page++;
+                          (done = getConcertList(oldQuery)).then((entry) => {
+                            setState(() {})
+                          });
+                        },
+                        child: Text(
+                          'Next',
+                          style: defaultTextStyle,
+                        ),
+                      ),
+                  ]
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -221,7 +223,7 @@ class _ConcertsState extends State<ConcertsScreen> {
     Map<String, dynamic> queries = {};
 
     if (searchQuery.isNotEmpty) {
-      queries['query'] = searchQuery;
+      queries['search'] = searchQuery;
     }
     queries['page'] = '$page';
 

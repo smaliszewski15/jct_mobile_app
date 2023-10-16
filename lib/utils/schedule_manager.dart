@@ -31,7 +31,8 @@ class ScheduleManager {
     DateTime now = DateTime.now();
     start = DateTime(now.year, now.month, now.day, now.hour, now.minute);
     if (start.minute % 20 != 0) {
-      start = start.add(Duration(minutes: 20 - (start.minute % 20)));
+      start = start.subtract(Duration(minutes: start.minute % 20));
+      //start = start.add(Duration(minutes: 20 - (start.minute % 20)));
     }
   }
 

@@ -54,16 +54,17 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
     double toggleHeight = 50;
     final bodyHeight = MediaQuery.of(context).size.height -
         AppBar().preferredSize.height -
-        navBarHeight - 100;
+        navBarHeight - 2 * toggleHeight - 50;
     return Container(
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.height,
       color: backgroundColor,
       child: Column(
         children: <Widget>[
-          SizedBox(
+          Container(
             width: MediaQuery.of(context).size.width,
             height: toggleHeight,
+            padding: const EdgeInsets.symmetric(horizontal: 5),
             child: Row(
               children: <Widget>[
                 Text(
@@ -121,6 +122,22 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
             ),
           ),
           SizedBox(
+            width: MediaQuery.of(context).size.width,
+            height: toggleHeight,
+            child: Row(
+              children: <Widget>[
+                Text(
+                  'Current time in UTC: ',
+                  style: defaultTextStyle,
+                ),
+                Text(
+                  DateFormat('HH:mm').format(DateTime.now().toUtc()),
+                  style: defaultTextStyle,
+                ),
+              ],
+            ),
+          ),
+          SizedBox(
             height: bodyHeight,
             child: ValueListenableBuilder<bool>(
                 valueListenable: widget.filter.changedNotifier,
@@ -146,6 +163,11 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                               addAutomaticKeepAlives: true,
                               itemCount: tempList.length,
                               itemBuilder: (context, index) {
+                                if (groupsList < groups.length) {
+                                  while (groups[groupsList].date!.isBefore(tempList[index])) {
+                                    groupsList++;
+                                  }
+                                }
                                 bool newDay = false;
                                 bool newMonth = false;
                                 if (tempList[index].day != currentDay) {
@@ -265,7 +287,6 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
           groups.add(newGroup);
         }
       }
-
     }
     return true;
   }
