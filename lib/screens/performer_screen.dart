@@ -17,7 +17,8 @@ class PerformerScreen extends StatefulWidget {
 
 class _PerformerScreenState extends State<PerformerScreen> {
   final buttonNotifier = ValueNotifier<bool>(false);
-  SocketConnect? socket;
+  SocketConnect? listenSocket;
+  SocketConnect? performSocket;
 
   final Player _mPlayer = Player();
   final Recorder _mRecorder = Recorder();
@@ -37,13 +38,14 @@ class _PerformerScreenState extends State<PerformerScreen> {
   @override
   void dispose() {
     release();
-    socket!.disconnect();
+    listenSocket!.disconnect();
+    performSocket!.disconnect();
     super.dispose();
   }
 
   Future<void> connectPerformSocket() async {
-    socket = SocketConnect(SocketType.performer);
-    socket!.socket.stream.listen(
+    performSocket = SocketConnect(SocketType.performer);
+    performSocket!.socket.stream.listen(
       (data) {
         String s = splitHeader(data);
         List<String> split = s.split(':');
@@ -81,8 +83,8 @@ class _PerformerScreenState extends State<PerformerScreen> {
   }
 
   Future<void> connectListenSocket() async {
-    socket = SocketConnect(SocketType.listener);
-    socket!.socket.stream.listen(
+    listenSocket = SocketConnect(SocketType.listener);
+    listenSocket!.socket.stream.listen(
       (data) {
         String s = String.fromCharCodes(data);
         //Check if incoming header is start, then start recording
@@ -115,10 +117,14 @@ class _PerformerScreenState extends State<PerformerScreen> {
   }
 
   Future<void> disconnect() async {
-    if (socket != null) {
-      socket!.disconnect();
+    if (listenSocket != null) {
+      listenSocket!.disconnect();
     }
-    socket = null;
+    listenSocket = null;
+    if (performSocket != null) {
+      performSocket!.disconnect();
+    }
+    performSocket = null;
     participants = [];
     setState(() {});
   }
@@ -155,7 +161,7 @@ class _PerformerScreenState extends State<PerformerScreen> {
         recordingDataController.stream.listen((buffer) {
       if (buffer is FoodData) {
         if (buffer.data != null) {
-          socket!.socket.sink.add(musicHeader(buffer.data!));
+          performSocket!.socket.sink.add(musicHeader(buffer.data!));
         }
       }
     });
@@ -177,15 +183,19 @@ class _PerformerScreenState extends State<PerformerScreen> {
     setState(() {});
   }
 
+  Future<void> stopEverything() async {
+    await stopRecorder();
+    await stopPlayer();
+    disconnect();
+    started = false;
+    connectedForListen = false;
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        await _mRecorder.stopRecorder();
-        await _mPlayer.stopPlayer();
-        if (socket != null) {
-          disconnect();
-        }
+        stopEverything();
         return true;
       },
       child: SingleChildScrollView(
@@ -232,19 +242,17 @@ class _PerformerScreenState extends State<PerformerScreen> {
                                     return;
                                   }
                                   if (started) {
-                                    await stopRecorder();
-                                    await stopPlayer();
-                                    disconnect();
+                                    stopEverything();
                                     started = false;
                                   } else {
                                     if (!connectedForListen) {
                                       print('connect socket');
-                                      await connectListenSocket();
+                                      //await connectListenSocket();
                                       await connectPerformSocket();
                                       connectedForListen = true;
                                     } else {
                                       print('disconnect socket');
-                                      await disconnect();
+                                      stopEverything();
                                     }
                                   }
                                   setState(() {});
@@ -259,7 +267,7 @@ class _PerformerScreenState extends State<PerformerScreen> {
                             Container(
                               margin: const EdgeInsets.all(5),
                               child: Text(
-                                socket != null ? 'Disconnect' : 'Connect',
+                                performSocket != null ? 'Disconnect' : 'Connect',
                                 style: TextStyle(
                                   color: buttonTextColor,
                                   fontSize: titleFontSize,
