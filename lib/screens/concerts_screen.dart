@@ -1,16 +1,18 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:john_cage_tribute/utils/concert_tags_manager.dart';
+import 'package:intl/intl.dart';
+//import '../utils/concert_tags_manager.dart';
 import '../APIfunctions/concertAPI.dart';
 import '../utils/concert.dart';
 import '../utils/colors.dart';
 import '../utils/globals.dart';
+import '../utils/schedule_manager.dart';
 
 class ConcertsScreen extends StatefulWidget {
-  late TagsUpdater tags;
+  late ScheduleManager filter;
 
-  ConcertsScreen(this.tags);
+  ConcertsScreen(this.filter);
 
   @override
   _ConcertsState createState() => _ConcertsState();
@@ -146,11 +148,11 @@ class _ConcertsState extends State<ConcertsScreen> {
               width: double.infinity,
               height: bodyHeight,
               child: ValueListenableBuilder<bool>(
-                valueListenable: widget.tags.changedNotifier,
+                valueListenable: widget.filter.changedNotifier,
                 builder: (_, value, __) {
                   if (value) {
                     done = getConcertList(_search.value.text);
-                    widget.tags.finUpdate();
+                    widget.filter.finUpdate();
                   }
                   return FutureBuilder(
                     future: done,
@@ -239,6 +241,14 @@ class _ConcertsState extends State<ConcertsScreen> {
     //     count++;
     //   }
     // }
+
+    DateTime fromDateTime = widget.filter.start.toUtc();
+    DateTime toDateTime = widget.filter.end.toUtc();
+    String fromDate = DateFormat("yyyy-MM-ddTHH:mm:ss").format(fromDateTime);
+    String toDate = DateFormat("yyyy-MM-ddTHH:mm:ss").format(toDateTime);
+
+    queries['fromDateTime'] = fromDate;
+    queries['toDateTime'] = toDate;
 
     final res = await ConcertsAPI.searchSongs(queries);
 

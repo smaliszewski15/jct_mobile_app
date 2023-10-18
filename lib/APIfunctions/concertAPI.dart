@@ -8,6 +8,7 @@ class ConcertsAPI {
     http.Response response;
 
     try {
+      //URI encodes : into %3A. If the date filter doesn't work, its probably this
       response = await http.get(Uri.https(API_PREFIX, '${apiRoute}/searchSongs', queries),
           headers: baseHeader);
     } catch (e) {

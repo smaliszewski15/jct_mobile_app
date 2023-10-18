@@ -5,10 +5,10 @@ import 'maestro_screen.dart';
 import 'performer_screen.dart';
 import 'listen_screen.dart';
 import 'schedule_screen.dart';
-//import '../components/concert_filter.dart';
+import '../components/concert_filter.dart';
 import '../components/group_filter.dart';
 import '../components/profile_drawer.dart';
-import '../utils/concert_tags_manager.dart';
+//import '../utils/concert_tags_manager.dart';
 import '../utils/colors.dart';
 import '../utils/globals.dart';
 import '../utils/schedule_manager.dart';
@@ -22,7 +22,8 @@ class Skeleton extends StatefulWidget {
 
 class _SkeletonState extends State<Skeleton> {
   late final NavStateManager _navManager;
-  late final TagsUpdater _tagManager;
+  //late final TagsUpdater _tagManager;
+  late final ScheduleManager _concertFilterManager;
   late final ScheduleManager _scheduleManager;
   Future<bool>? done;
 
@@ -30,7 +31,8 @@ class _SkeletonState extends State<Skeleton> {
   void initState() {
     super.initState();
     _navManager = NavStateManager();
-    _tagManager = TagsUpdater();
+    //_tagManager = TagsUpdater();
+    _concertFilterManager = ScheduleManager();
     _scheduleManager = ScheduleManager();
     done = getUser();
   }
@@ -59,7 +61,7 @@ class _SkeletonState extends State<Skeleton> {
                     color: textColor,
                   ),
                 ),
-                actions: /*_navManager.buttonNotifier.value == NavState.concert
+                actions: _navManager.buttonNotifier.value == NavState.concert
                     ? <Widget>[
                         Builder(
                           builder: (context) {
@@ -75,7 +77,7 @@ class _SkeletonState extends State<Skeleton> {
                           },
                         ),
                       ]
-                    : */_navManager.buttonNotifier.value == NavState.schedule
+                    : _navManager.buttonNotifier.value == NavState.schedule
                         ? <Widget>[
                             Builder(
                               builder: (context) {
@@ -114,20 +116,22 @@ class _SkeletonState extends State<Skeleton> {
                 automaticallyImplyLeading: false,
               ),
               drawer: HomeDrawer(),
-              endDrawer:
-              // endDrawer: _navManager.buttonNotifier.value == NavState.concert
-              //     ? TagFilterDrawer(_tagManager)
-              //     :
+              endDrawer: _navManager.buttonNotifier.value == NavState.concert
+                  ? ConcertFilterDrawer(_concertFilterManager)
+                  :
               _navManager.buttonNotifier.value == NavState.schedule
                   ? FilterDrawer(_scheduleManager) : null,
               onEndDrawerChanged: (isOpened) {
                 if (!isOpened) {
-                  // if (_navManager.buttonNotifier.value == NavState.concert) {
-                  //   if (!Tag.ListEquals(
-                  //       _tagManager.prevFilter, _tagManager.filteredTags)) {
-                  //     _tagManager.doUpdate();
-                  //   }
-                  // }
+                  if (_navManager.buttonNotifier.value == NavState.concert) {
+                    // if (!Tag.ListEquals(
+                    //     _tagManager.prevFilter, _tagManager.filteredTags)) {
+                    //   _tagManager.doUpdate();
+                    // }
+                    if (_concertFilterManager.isChanged()) {
+                      _concertFilterManager.doUpdate();
+                    }
+                  }
                   if (_navManager.buttonNotifier.value == NavState.schedule) {
                     if (_scheduleManager.isChanged()) {
                       _scheduleManager.doUpdate();
@@ -214,7 +218,7 @@ class _SkeletonState extends State<Skeleton> {
                             case NavState.home:
                               return HomeScreen();
                             case NavState.concert:
-                              return ConcertsScreen(_tagManager);
+                              return ConcertsScreen(_concertFilterManager);
                             case NavState.maestro:
                               return MaestroScreen();
                             case NavState.performer:
