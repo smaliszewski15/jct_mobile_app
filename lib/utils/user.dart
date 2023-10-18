@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:shared_preferences/shared_preferences.dart';
+import '../APIfunctions/userAPI.dart';
 import '../utils/globals.dart';
 
 class User {
@@ -7,13 +10,13 @@ class User {
   late String username;
   late String email;
   late String password;
-  late String? phoneNumber;
+  late String phoneNumber;
   bool isAdmin = false;
   bool isVerified = false;
   bool logged = false;
   late String authToken;
 
-  User({this.id = -1, this.username = '', this.email = '', this.password = '', this.phoneNumber, this.name = '', this.authToken = '', this.isAdmin = false, this.isVerified = false});
+  User({this.id = -1, this.username = '', this.email = '', this.password = '', this.phoneNumber = '', this.name = '', this.authToken = '', this.isAdmin = false, this.isVerified = false});
 
   factory User.userFromJson(Map<String, dynamic> json) {
     String token = json.containsKey('token') ? json['token'] : '';
@@ -22,8 +25,7 @@ class User {
     String name = data.containsKey('Name') ? data['Name'] : '';
     String username = data['UserName'];
     String email = data['Email'];
-    //String password = data.containsKey('Password') ? data['Password'] : '';
-    String? phonenumber = data.containsKey('Phone') ? data['Phone'] : '';
+    String phonenumber = data.containsKey('Phone') ? data['Phone'] ?? '' : '';
     bool isAdmin;
     if (data['IsAdmin'] == 1) {
       isAdmin = true;
@@ -49,13 +51,18 @@ class User {
     try {
       final prefs = await SharedPreferences.getInstance();
 
-      prefs.setString('name', name);
-      prefs.setInt('id', id);
-      prefs.setString('token', authToken);
-      prefs.setString('email', email);
-      prefs.setBool('isAdmin', isAdmin);
-      prefs.setBool('isVerified', isVerified);
-      prefs.setString('password', password);
+      prefs.setInt('ID', id);
+      prefs.setString('UserName', username);
+      prefs.setString('Email', email);
+      prefs.setString('Password', password);
+
+      String un = prefs.getString("UserName") ?? '';
+      if (un.isEmpty) {
+        print('Not Success');
+      } else {
+        print('Success');
+      }
+
       return true;
     } catch (e) {
       print("Unable to open preferences");
@@ -63,22 +70,60 @@ class User {
     }
   }
 
+  static Future<User> _loginUser(Map<String,dynamic> userData) async {
+    User toRet = User();
+    try {
+      Map<String, dynamic> entries = {
+        'identifier': userData['UserName'],
+        'password': userData['Password'],
+      };
+
+      final res = await UserAPI.login(entries);
+      if (res.statusCode != 200) {
+        print(res.body);
+        return toRet;
+      }
+      var data = json.decode(res.body);
+
+      toRet = User.userFromJson(data);
+      toRet.setPassword(userData['Password']);
+      toRet.putUserInStorage();
+    } catch (e) {
+      print(e.toString());
+      return toRet;
+    }
+    return toRet;
+  }
+
   Future<User> getUserFromStorage() async {
     try {
       final prefs = await SharedPreferences.getInstance();
 
-      String un = prefs.getString("username") ?? '';
+      String un = prefs.getString("UserName") ?? '';
 
       if (un.isEmpty) {
+        print('user not in storage');
         return User();
       }
 
-      Map<String, dynamic> json = {};
-      for (var key in maps) {
-        json[key] = prefs.getString(key);
-      }
+      try {
+        Map<String,dynamic> userData = {};
+        for (var key in maps) {
+          print(key);
+          if (key == 'ID') {
+            userData[key] = prefs.getInt(key);
+          } else {
+            userData[key] = prefs.getString(key);
+          }
+        }
 
-      return User.userFromJson(json);
+        User toRet = await User._loginUser(userData);
+
+        return toRet;
+      } catch (e) {
+        print(e.toString());
+        return User();
+      }
     } catch (e) {
       print("Unable to open preferences");
       return User();
@@ -88,11 +133,9 @@ class User {
   Future<bool> logout() async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      final keys = prefs.getKeys();
+      await prefs.clear();
 
-      for (var key in keys) {
-        prefs.remove(key);
-      }
+      user = User();
 
       return true;
     } catch (e) {
@@ -102,7 +145,7 @@ class User {
   }
 
   String toString() {
-    String user = 'Name: ${this.name}\nUsername: ${this.username}\nEmail: ${this.email}\nPhone Number: ${this.phoneNumber}';
+    String user = 'Name: ${this.name}\nUsername: ${this.username}\nEmail: ${this.email}\nPassword: ${this.password}';
     return user;
   }
 }

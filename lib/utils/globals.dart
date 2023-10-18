@@ -55,7 +55,7 @@ final invalidTextField = globalDecoration.copyWith(
     suffixIcon: Icon(Icons.clear, color: invalidColor),
 );
 
-final List<String> maps = ["username", "password", "firstName", "lastName", "email", "phone_number"];
+final List<String> maps = ["ID", "UserName", "Email", "Password"];
 
 class AlwaysDisabledFocusNode extends FocusNode {
   @override

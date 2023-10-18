@@ -147,41 +147,33 @@ class _ProfileState extends State<Profile> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                    Column(
                       children: <Widget>[
-                        Expanded(
-                          flex: 5,
-                          child: Column(
-                            children: <Widget>[
-                              Text(
-                                'Name',
-                                style: TextStyle(
-                                  fontSize: bioTextSize,
-                                  color: textColor,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                              Container(
-                                width: double.infinity,
-                                margin: const EdgeInsets.only(left: 10),
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 10, horizontal: 7),
-                                decoration: BoxDecoration(
-                                  color: textFieldBackingColor,
-                                  borderRadius: const BorderRadius.all(
-                                      Radius.circular(roundedCorners)),
-                                ),
-                                child: Text(
-                                  user!.name == '' ? 'No Name' : user!.name,
-                                  style: TextStyle(
-                                    fontSize: bioTextSize,
-                                    color: buttonTextColor,
-                                  ),
-                                  textAlign: TextAlign.left,
-                                ),
-                              ),
-                            ],
+                        Text(
+                          'Name',
+                          style: TextStyle(
+                            fontSize: bioTextSize,
+                            color: textColor,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        Container(
+                          width: MediaQuery.of(context).size.width / 1.2,
+                          margin: const EdgeInsets.only(left: 10),
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 10, horizontal: 7),
+                          decoration: BoxDecoration(
+                            color: textFieldBackingColor,
+                            borderRadius: const BorderRadius.all(
+                                Radius.circular(roundedCorners)),
+                          ),
+                          child: Text(
+                            user!.name == '' ? 'No Name' : user!.name,
+                            style: TextStyle(
+                              fontSize: bioTextSize,
+                              color: buttonTextColor,
+                            ),
+                            textAlign: TextAlign.left,
                           ),
                         ),
                       ],
@@ -276,7 +268,7 @@ class _ProfileState extends State<Profile> {
                                 Radius.circular(roundedCorners)),
                           ),
                           child: Text(
-                            user!.phoneNumber == '' || user!.phoneNumber == null? 'No Phone Number' : user!.phoneNumber!,
+                            user!.phoneNumber == '' ? 'No Phone Number' : user!.phoneNumber,
                             style: TextStyle(
                               fontSize: bioTextSize,
                               color: buttonTextColor,

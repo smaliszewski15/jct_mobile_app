@@ -19,12 +19,12 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   void initState() {
     fields = {
-      'name': CustomTextField(maxLength: 100, fieldName: 'Name', fieldEntry: '', tooltipKey: GlobalKey<TooltipState>()),
-      'username' : CustomTextField(maxLength: 255, fieldName: 'Username', fieldEntry: '', tooltipKey: GlobalKey<TooltipState>()),
-      'email' : CustomTextField(maxLength: 255, fieldName: 'Email', fieldEntry: '', tooltipKey: GlobalKey<TooltipState>()),
-      'phone_number' : CustomTextField(maxLength: 10, fieldName: 'Phone Number', fieldEntry: '', tooltipKey: GlobalKey<TooltipState>(), keyboardType: TextInputType.phone),
-      'password' : CustomTextField(maxLength: 60, fieldName: 'Password', fieldEntry: '', tooltipKey: GlobalKey<TooltipState>()),
-      'confirmPassword' : CustomTextField(maxLength: 60, fieldName: 'Confirm Password', fieldEntry: '', tooltipKey: GlobalKey<TooltipState>()),
+      'name': CustomTextField(minLength: 10, maxLength: 100, fieldName: 'Name', fieldEntry: '', tooltipKey: GlobalKey<TooltipState>()),
+      'username' : CustomTextField(minLength: 10, maxLength: 255, fieldName: 'Username', fieldEntry: '', tooltipKey: GlobalKey<TooltipState>()),
+      'email' : CustomTextField(minLength: 10, maxLength: 255, fieldName: 'Email', fieldEntry: '', tooltipKey: GlobalKey<TooltipState>()),
+      'phone_number' : CustomTextField(minLength: 10, maxLength: 10, fieldName: 'Phone Number', fieldEntry: '', tooltipKey: GlobalKey<TooltipState>(), keyboardType: TextInputType.phone),
+      'password' : CustomTextField(minLength: 4, maxLength: 60, fieldName: 'Password', fieldEntry: '', tooltipKey: GlobalKey<TooltipState>()),
+      'confirmPassword' : CustomTextField(minLength: 4, maxLength: 60, fieldName: 'Confirm Password', fieldEntry: '', tooltipKey: GlobalKey<TooltipState>()),
     };
     super.initState();
   }
@@ -55,6 +55,7 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   late Map<String, CustomTextField> fields;
+  String errorMessage = '';
 
   @override
   Widget build(BuildContext context) {
@@ -108,7 +109,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: <Widget>[
                             SizedBox(
-                              width: MediaQuery.of(context).size.width,
+                              width: MediaQuery.of(context).size.width / 2,
                               child: TextButton(
                                 style: TextButton.styleFrom(
                                   textStyle: TextStyle(
@@ -120,9 +121,9 @@ class _RegisterPageState extends State<RegisterPage> {
                                 onPressed: () {
                                   setState(() => Navigator.pop(context));
                                 },
-                                child: Row(
+                                child: const Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
-                                  children: const <Widget>[
+                                  children: <Widget>[
                                     Icon(
                                       Icons.navigate_before,
                                     ),
@@ -131,32 +132,43 @@ class _RegisterPageState extends State<RegisterPage> {
                                 ),
                               ),
                             ),
-                            Row(
-                              children: <Widget>[
-                                Column(
-                                  children: <Widget>[
-                                    Row(
-                                      children: <Widget>[
-                                        Text(
-                                          'Name*',
-                                          style: TextStyle(
-                                            fontSize: bioTextSize,
-                                            color: textColor,
-                                          ),
-                                          textAlign: TextAlign.left,
-                                        ),
-                                        BasicTooltip(message: "Names must be\n0-100 characters long and\ncan only contain\nASCII characters", tooltipkey: fields['name']!.tooltipKey),
-                                      ]
-                                    ),
-                                    Container(
-                                      width: MediaQuery.of(context).size.width,
-                                      height: 40,
-                                      margin: const EdgeInsets.only(bottom: 5),
-                                      child: fields['name']!,
-                                    ),
-                                  ],
+                            Container(
+                              width: MediaQuery.of(context).size.width,
+                              margin: const EdgeInsets.all(5),
+                              child: Text(
+                                '* = Required',
+                                style: TextStyle(
+                                  fontSize: bioTextSize,
+                                  color: invalidColor,
                                 ),
-                              ],
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Text(
+                                  'Name',
+                                  style: TextStyle(
+                                    fontSize: bioTextSize,
+                                    color: textColor,
+                                  ),
+                                ),
+                                Text(
+                                  '*',
+                                  style: TextStyle(
+                                    fontSize: bioTextSize,
+                                    color: invalidColor,
+                                  ),
+                                ),
+                                BasicTooltip(message: "Names must be\n2-100 characters long and\ncan only contain\nASCII characters", tooltipkey: fields['name']!.tooltipKey),
+                              ]
+                            ),
+                            Container(
+                              width: MediaQuery.of(context).size.width,
+                              height: 40,
+                              margin: const EdgeInsets.only(bottom: 5),
+                              child: fields['name']!,
                             ),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -166,14 +178,21 @@ class _RegisterPageState extends State<RegisterPage> {
                                     Row(
                                       children: <Widget>[
                                         Text(
-                                          'Username*',
+                                          'Username',
                                           style: TextStyle(
                                             fontSize: bioTextSize,
                                             color: textColor,
                                           ),
                                           textAlign: TextAlign.left,
                                         ),
-                                        BasicTooltip(message: "Usernames must be\n0-24 characters long and\ncan only contain\nASCII characters", tooltipkey: fields['username']!.tooltipKey),
+                                        Text(
+                                            '*',
+                                            style: TextStyle(
+                                              fontSize: bioTextSize,
+                                              color: invalidColor,
+                                            )
+                                        ),
+                                        BasicTooltip(message: "Usernames must be\n2-24 characters long and\ncan only contain\nASCII characters", tooltipkey: fields['username']!.tooltipKey),
                                       ],
                                     ),
                                     Container(
@@ -196,7 +215,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                           ),
                                           textAlign: TextAlign.left,
                                         ),
-                                        BasicTooltip(message: "Please enter a phone number", tooltipkey: fields['phone_number']!.tooltipKey),
+                                        BasicTooltip(message: "Please enter a valid phone number", tooltipkey: fields['phone_number']!.tooltipKey),
                                       ],
                                     ),
                                     Container(
@@ -209,74 +228,98 @@ class _RegisterPageState extends State<RegisterPage> {
                                 ),
                               ],
                             ),
-                            Column(
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
-                                Row(
-                                  children: <Widget>[
-                                    Text(
-                                      'Email*',
-                                      style: TextStyle(
-                                        fontSize: bioTextSize,
-                                        color: textColor,
-                                      ),
-                                      textAlign: TextAlign.left,
-                                    ),
-                                    BasicTooltip(message: "Emails must be in the correct email format", tooltipkey: fields['email']!.tooltipKey),
-                                  ],
+                                Text(
+                                  'Email',
+                                  style: TextStyle(
+                                    fontSize: bioTextSize,
+                                    color: textColor,
+                                  ),
+                                  textAlign: TextAlign.left,
                                 ),
-                                Container(
-                                  width: double.infinity,
-                                  height: 40,
-                                  margin: const EdgeInsets.only(bottom: 5),
-                                  child: fields['email']!,
+                                Text(
+                                    '*',
+                                    style: TextStyle(
+                                      fontSize: bioTextSize,
+                                      color: invalidColor,
+                                    )
                                 ),
+                                BasicTooltip(message: "Emails must be in the correct email format", tooltipkey: fields['email']!.tooltipKey),
                               ],
                             ),
-                            Column(
+                            Container(
+                              width: double.infinity,
+                              height: 40,
+                              margin: const EdgeInsets.only(bottom: 5),
+                              child: fields['email']!,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
-                                Row(
-                                  children: <Widget>[
-                                    Text(
-                                      'Password*',
-                                      style: TextStyle(
-                                        fontSize: bioTextSize,
-                                        color: textColor,
-                                      ),
-                                      textAlign: TextAlign.left,
-                                    ),
-                                    BasicTooltip(message: "Passwords must be\nat least 8 characters long and\ncan only contain\nASCII characters", tooltipkey: fields['password']!.tooltipKey),
-                                  ],
+                                Text(
+                                  'Password',
+                                  style: TextStyle(
+                                    fontSize: bioTextSize,
+                                    color: textColor,
+                                  ),
+                                  textAlign: TextAlign.left,
                                 ),
-                                Container(
-                                  width: double.infinity,
-                                  height: 40,
-                                  margin: const EdgeInsets.only(bottom: 5),
-                                  child: fields['password']!,
+                                Text(
+                                    '*',
+                                    style: TextStyle(
+                                      fontSize: bioTextSize,
+                                      color: invalidColor,
+                                    )
                                 ),
+                                BasicTooltip(message: "Passwords must be\nat least 4 characters long and\ncan only contain\nASCII characters", tooltipkey: fields['password']!.tooltipKey),
                               ],
                             ),
-                            Column(
+                            Container(
+                              width: double.infinity,
+                              height: 40,
+                              margin: const EdgeInsets.only(bottom: 5),
+                              child: fields['password']!,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
-                                Row(
-                                  children: <Widget>[
-                                    Text(
-                                      'Confirm Password*',
-                                      style: TextStyle(
-                                        fontSize: bioTextSize,
-                                        color: textColor,
-                                      ),
-                                      textAlign: TextAlign.left,
-                                    ),
-                                    BasicTooltip(message: "Please confirm your password", tooltipkey: fields['confirmPassword']!.tooltipKey),
-                                  ],
+                                Text(
+                                  'Confirm Password',
+                                  style: TextStyle(
+                                    fontSize: bioTextSize,
+                                    color: textColor,
+                                  ),
+                                  textAlign: TextAlign.left,
                                 ),
-                                Container(
-                                  width: double.infinity,
-                                  height: 40,
-                                  margin: const EdgeInsets.only(bottom: 5),
-                                  child: fields['confirmPassword']!,
+                                Text(
+                                    '*',
+                                    style: TextStyle(
+                                      fontSize: bioTextSize,
+                                      color: invalidColor,
+                                    )
                                 ),
+                                BasicTooltip(message: "Please confirm your password", tooltipkey: fields['confirmPassword']!.tooltipKey),
                               ],
+                            ),
+                            Container(
+                              width: double.infinity,
+                              height: 40,
+                              margin: const EdgeInsets.only(bottom: 5),
+                              child: fields['confirmPassword']!,
+                            ),
+                            Container(
+                              width: MediaQuery.of(context).size.width,
+                              height: 20,
+                              margin: const EdgeInsets.all(5),
+                              child: Text(
+                                errorMessage,
+                                style: TextStyle(
+                                  fontSize: bioTextSize,
+                                  color: invalidColor,
+                                )
+                              ),
                             ),
                             const Spacer(),
                             Container(
@@ -327,11 +370,13 @@ class _RegisterPageState extends State<RegisterPage> {
                                         context, '/login');
                                   });
                                 },
-                                child: Row(
-                                  children: const <Widget>[
+                                child: const Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
                                     Flexible(
                                       child: Text(
-                                          'Have an account? Click to sign in'),
+                                          'Have an account? Click to sign in',
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -359,13 +404,14 @@ class _RegisterPageState extends State<RegisterPage> {
       'Password': fields['password']!.editor.value.text,
     };
     final res = await UserAPI.register(package);
+    var data = json.decode(res.body);
     print(res.body);
     if (res.statusCode != 201) {
       print(res.statusCode);
+      errorMessage = data['message'];
       return false;
     }
 
-    var data = json.decode(res.body);
     user = User.userFromJson(data);
     user!.setPassword(fields['password']!.editor.value.text);
     return true;
@@ -374,26 +420,33 @@ class _RegisterPageState extends State<RegisterPage> {
   bool allRegisterFieldsValid() {
     bool toReturn = true;
     fields.forEach((key, value) {
-      if (toReturn && key != 'phone_number') {
-        toReturn = validateField(value);
+      if (key != 'phone_number') {
+        if (value.isUnfilled() || !value.validate()) {
+          toReturn = false;
+          value.showToolTip();
+        }
+      } else {
+        if (!value.isUnfilled()) {
+          if (!value.validate()) {
+            toReturn = false;
+            value.showToolTip();
+          }
+        }
       }
     });
 
     if (!isEmail(fields['email']!.editor.value.text)) {
-      fields['email']!.unfilled = true;
+      fields['email']!.unfilled.value = true;
       fields['email']!.showToolTip();
       toReturn = false;
     }
 
-    return toReturn;
-  }
-
-  bool validateField(CustomTextField field) {
-    if (field.editor.value.text.isEmpty) {
-      field.unfilled = true;
-      field.showToolTip();
-      return false;
+    if (fields['password']!.editor.value.text != fields['confirmPassword']!.editor.value.text) {
+      fields['confirmPassword']!.unfilled.value = true;
+      fields['confirmPassword']!.showToolTip();
+      toReturn = false;
     }
-    return true;
+
+    return toReturn;
   }
 }

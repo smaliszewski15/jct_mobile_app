@@ -18,8 +18,8 @@ class _LogInPageState extends State<LogInPage> {
 
   @override
   void initState() {
-    username  = CustomTextField(maxLength: 255, fieldName: 'Username', fieldEntry: user == null ? '' : user!.username, tooltipKey: usernameKey);
-    password  = CustomTextField(maxLength: 60, fieldName: 'Password', fieldEntry: '', tooltipKey: passwordKey);
+    username  = CustomTextField(minLength: 2, maxLength: 255, fieldName: 'Username', fieldEntry: user == null ? '' : user!.username, tooltipKey: usernameKey);
+    password  = CustomTextField(minLength: 4, maxLength: 60, fieldName: 'Password', fieldEntry: '', tooltipKey: passwordKey);
     super.initState();
   }
 
@@ -33,6 +33,7 @@ class _LogInPageState extends State<LogInPage> {
   late CustomTextField username, password;
   final GlobalKey<TooltipState> usernameKey = GlobalKey<TooltipState>();
   final GlobalKey<TooltipState> passwordKey = GlobalKey<TooltipState>();
+  String errorMessage = '';
 
   @override
   Widget build(BuildContext context) {
@@ -178,6 +179,18 @@ class _LogInPageState extends State<LogInPage> {
                                   ],
                                 ),
                               ),
+                              Container(
+                                width: MediaQuery.of(context).size.width,
+                                height: 20,
+                                margin: const EdgeInsets.all(5),
+                                child: Text(
+                                    errorMessage,
+                                    style: TextStyle(
+                                      fontSize: bioTextSize,
+                                      color: invalidColor,
+                                    )
+                                ),
+                              ),
                               const Spacer(),
                               Container(
                                 margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
@@ -196,6 +209,7 @@ class _LogInPageState extends State<LogInPage> {
                                     if (success && context.mounted) {
                                       Navigator.pop(context, true);
                                     }
+                                    setState(() {});
                                   },
                                   child: Text(
                                     'Login',
@@ -252,15 +266,13 @@ class _LogInPageState extends State<LogInPage> {
 
   bool allLoginFieldsValid() {
     bool toReturn = true;
-    if (username.editor.value.text.isEmpty) {
+    if (username.isUnfilled()) {
       toReturn = false;
       username.showToolTip();
-      setState(() => username.unfilled = true);
     }
-    if (password.editor.value.text.isEmpty) {
+    if (password.isUnfilled()) {
       toReturn = false;
       password.showToolTip();
-      setState(() => password.unfilled = true);
     }
     return toReturn;
   }
@@ -272,16 +284,18 @@ class _LogInPageState extends State<LogInPage> {
     };
 
     final res = await UserAPI.login(entries);
+    var data = json.decode(res.body);
     print(res.body);
     print(res.statusCode);
     if (res.statusCode != 200) {
-      print(res.body);
+      errorMessage = data['message'];
       return false;
     }
 
-    var data = json.decode(res.body);
+
     user = User.userFromJson(data);
     user!.setPassword(password.editor.value.text);
+    user!.putUserInStorage();
     return true;
   }
 }

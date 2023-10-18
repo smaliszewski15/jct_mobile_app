@@ -139,7 +139,7 @@ class _SkeletonState extends State<Skeleton> {
                 builder: (context) {
                   return GestureDetector(
                     onPanEnd: (details) {
-                      bool vertDrag = details.velocity.pixelsPerSecond.dy > 200 || details.velocity.pixelsPerSecond.dy < -200;
+                      bool vertDrag = details.velocity.pixelsPerSecond.dy > 300 || details.velocity.pixelsPerSecond.dy < -300;
                       if (details.velocity.pixelsPerSecond.dx > 0 && !vertDrag) {
                         switch (_navManager.buttonNotifier.value) {
                           case NavState.home:
@@ -506,6 +506,24 @@ class _SkeletonState extends State<Skeleton> {
 
   Future<bool> getUser() async {
     user = await User().getUserFromStorage();
+    if (!user!.logged && context.mounted) {
+      _showUnableLoginSnack(context);
+    }
     return true;
+  }
+
+  void _showUnableLoginSnack(BuildContext context) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: WillPopScope(
+          onWillPop: () async {
+            ScaffoldMessenger.of(context).removeCurrentSnackBar();
+            return true;
+          },
+          child: Text('Could not retrieve user from storage'),
+        ),
+        duration: Duration(seconds: 3),
+      ),
+    );
   }
 }
