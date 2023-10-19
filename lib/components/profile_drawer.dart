@@ -53,7 +53,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
                   child: Text(
                       'Sign Out',
                       style: TextStyle(
-                        fontSize: bioTextSize,
+                        fontSize: smallFontSize,
                         color: invalidColor,
                       )
                   ),
@@ -146,7 +146,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
             child: Text(
               'Log in',
               style: TextStyle(
-                fontSize: bioTextSize,
+                fontSize: smallFontSize,
                 color: buttonTextColor,
                 fontWeight: FontWeight.w400,
               ),
@@ -175,7 +175,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
             child: Text(
               'Register',
               style: TextStyle(
-                fontSize: bioTextSize,
+                fontSize: smallFontSize,
                 color: buttonTextColor,
                 fontWeight: FontWeight.w400,
               ),

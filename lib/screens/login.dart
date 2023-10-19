@@ -92,42 +92,38 @@ class _LogInPageState extends State<LogInPage> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: <Widget>[
-                              SizedBox(
-                                width: MediaQuery.of(context).size.width,
-                                child: TextButton(
-                                  style: TextButton.styleFrom(
-                                    textStyle: TextStyle(
-                                      fontSize: 18,
-                                      color: mainSchemeColor,
-                                      decoration: TextDecoration.underline,
+                              TextButton(
+                                style: TextButton.styleFrom(
+                                  textStyle: TextStyle(
+                                    fontSize: 18,
+                                    color: mainSchemeColor,
+                                    decoration: TextDecoration.underline,
+                                  ),
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    Navigator.pop(context);
+                                  });
+                                },
+                                child: const Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    Icon(
+                                      Icons.navigate_before,
                                     ),
-                                  ),
-                                  onPressed: () {
-                                    setState(() {
-                                      Navigator.pop(context);
-                                    });
-                                  },
-                                  child: const Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: <Widget>[
-                                      Icon(
-                                        Icons.navigate_before,
-                                      ),
-                                      Text('Go Back'),
-                                    ],
-                                  ),
+                                    Text('Go Back'),
+                                  ],
                                 ),
                               ),
                               const Spacer(),
-                              Container(
+                              SizedBox(
                                 width: 210,
-                                padding: const EdgeInsets.only(top: 15),
                                 child: Row(
                                   children: <Widget>[
                                     Text(
                                       'Username',
                                       style: TextStyle(
-                                        fontSize: bioTextSize,
+                                        fontSize: smallFontSize,
                                         color: textColor,
                                       ),
                                       textAlign: TextAlign.left,
@@ -136,28 +132,19 @@ class _LogInPageState extends State<LogInPage> {
                                   ]
                                 ),
                               ),
-                              SizedBox(
-                                width: MediaQuery.of(context).size.width,
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
-                                    SizedBox(
-                                      width: 210,
-                                      height: 40,
-                                      child: username,
-                                    )
-                                  ],
-                                ),
-                              ),
                               Container(
+                                padding: const EdgeInsets.symmetric(vertical: 5),
                                 width: 210,
-                                padding: const EdgeInsets.only(top: 15),
+                                child: username,
+                              ),
+                              SizedBox(
+                                width: 210,
                                 child: Row(
                                   children: <Widget>[
                                     Text(
                                       'Password',
                                       style: TextStyle(
-                                        fontSize: bioTextSize,
+                                        fontSize: smallFontSize,
                                         color: textColor,
                                       ),
                                       textAlign: TextAlign.left,
@@ -166,18 +153,10 @@ class _LogInPageState extends State<LogInPage> {
                                   ]
                                 ),
                               ),
-                              SizedBox(
-                                width: MediaQuery.of(context).size.width,
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
-                                    SizedBox(
-                                      width: 210,
-                                      height: 40,
-                                      child: password,
-                                    ),
-                                  ],
-                                ),
+                              Container(
+                                padding: const EdgeInsets.symmetric(vertical: 5),
+                                width: 210,
+                                child: password,
                               ),
                               Container(
                                 width: MediaQuery.of(context).size.width,
@@ -186,20 +165,20 @@ class _LogInPageState extends State<LogInPage> {
                                 child: Text(
                                     errorMessage,
                                     style: TextStyle(
-                                      fontSize: bioTextSize,
+                                      fontSize: smallFontSize,
                                       color: invalidColor,
                                     )
                                 ),
                               ),
                               const Spacer(),
                               Container(
-                                margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                                padding: const EdgeInsets.all(5),
+                                margin: const EdgeInsets.symmetric(vertical: 5),
+                                padding: const EdgeInsets.symmetric(horizontal: 20),
                                 decoration: BoxDecoration(
                                   color: mainSchemeColor,
                                   border: Border.all(color: black, width: 3),
                                 ),
-                                child: OutlinedButton(
+                                child: TextButton(
                                   onPressed: () async {
                                     if (!allLoginFieldsValid()) {
                                       setState(() {});
@@ -214,7 +193,7 @@ class _LogInPageState extends State<LogInPage> {
                                   child: Text(
                                     'Login',
                                     style: TextStyle(
-                                      fontSize: bioTextSize + 10,
+                                      fontSize: buttonFontSize,
                                       color: buttonTextColor,
                                       fontWeight: FontWeight.w400,
                                     ),

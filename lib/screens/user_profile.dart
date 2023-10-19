@@ -152,7 +152,7 @@ class _ProfileState extends State<Profile> {
                         Text(
                           'Name',
                           style: TextStyle(
-                            fontSize: bioTextSize,
+                            fontSize: smallFontSize,
                             color: textColor,
                           ),
                           textAlign: TextAlign.center,
@@ -170,7 +170,7 @@ class _ProfileState extends State<Profile> {
                           child: Text(
                             user!.name == '' ? 'No Name' : user!.name,
                             style: TextStyle(
-                              fontSize: bioTextSize,
+                              fontSize: smallFontSize,
                               color: buttonTextColor,
                             ),
                             textAlign: TextAlign.left,
@@ -185,7 +185,7 @@ class _ProfileState extends State<Profile> {
                           child: Text(
                             'Username',
                             style: TextStyle(
-                              fontSize: bioTextSize,
+                              fontSize: smallFontSize,
                               color: textColor,
                             ),
                             textAlign: TextAlign.center,
@@ -203,7 +203,7 @@ class _ProfileState extends State<Profile> {
                           child: Text(
                             user!.username == '' ? 'No User Name' : user!.username,
                             style: TextStyle(
-                              fontSize: bioTextSize,
+                              fontSize: smallFontSize,
                               color: buttonTextColor,
                             ),
                             textAlign: TextAlign.left,
@@ -218,7 +218,7 @@ class _ProfileState extends State<Profile> {
                           child: Text(
                             'Email',
                             style: TextStyle(
-                              fontSize: bioTextSize,
+                              fontSize: smallFontSize,
                               color: textColor,
                             ),
                             textAlign: TextAlign.center,
@@ -236,7 +236,7 @@ class _ProfileState extends State<Profile> {
                           child: Text(
                             user!.email == '' ? 'No Email' : user!.email,
                             style: TextStyle(
-                              fontSize: bioTextSize,
+                              fontSize: smallFontSize,
                               color: buttonTextColor,
                             ),
                             textAlign: TextAlign.left,
@@ -251,7 +251,7 @@ class _ProfileState extends State<Profile> {
                           child: Text(
                             'Phone Number',
                             style: TextStyle(
-                              fontSize: bioTextSize,
+                              fontSize: smallFontSize,
                               color: textColor,
                             ),
                             textAlign: TextAlign.center,
@@ -270,7 +270,7 @@ class _ProfileState extends State<Profile> {
                           child: Text(
                             user!.phoneNumber == '' ? 'No Phone Number' : user!.phoneNumber,
                             style: TextStyle(
-                              fontSize: bioTextSize,
+                              fontSize: smallFontSize,
                               color: buttonTextColor,
                             ),
                             textAlign: TextAlign.left,

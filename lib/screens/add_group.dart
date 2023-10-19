@@ -134,7 +134,7 @@ class _AddGroupState extends State<AddGroup> {
                     Text(
                       'You must have a title for your concert',
                       style: TextStyle(
-                        fontSize: bioTextSize,
+                        fontSize: smallFontSize,
                         color: invalidColor,
                       ),
                       textAlign: TextAlign.center,
@@ -176,7 +176,7 @@ class _AddGroupState extends State<AddGroup> {
                           child: Text(
                             value,
                             style: const TextStyle(
-                              fontSize: bioTextSize,
+                              fontSize: smallFontSize,
                             ),
                           ),
                         );

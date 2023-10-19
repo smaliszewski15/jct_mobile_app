@@ -18,22 +18,20 @@ class ScheduleScreen extends StatefulWidget {
 }
 
 class _ScheduleScreenState extends State<ScheduleScreen> {
-  bool _createToggle = false;
+  bool _reserveToggle = false;
   late List<DateTime> tempList;
-  late int currentMonth;
-  late int currentDay;
+  int currentMonth = DateTime.now().month;
+  int currentDay = DateTime.now().day;
   Future<bool>? done;
   List<Group> groups = [];
   double totalHeight = 120;
-  bool creating = false;
-  bool joining = true;
+  bool reserving = false;
+  bool browsing = true;
 
   @override
   void initState() {
     widget.filter.refreshFilter();
     tempList = dateList();
-    currentMonth = DateTime.now().month;
-    currentDay = 0;
     done = ParseGroups();
     super.initState();
   }
@@ -58,58 +56,86 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
       color: backgroundColor,
       child: Column(
         children: <Widget>[
-          Container(
-            width: MediaQuery.of(context).size.width,
-            height: toggleHeight,
-            padding: const EdgeInsets.symmetric(horizontal: 5),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                TextButton(
-                  onPressed: () {
-                    if (totalHeight == 50) {
-                      totalHeight = 120;
-                    } else {
-                      totalHeight = 50;
-                    }
-                    joining = !joining;
-                    creating = !creating;
-                    setState(() => _createToggle = !_createToggle);
-                  },
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Container(
-                        width: 75,
-                        padding: const EdgeInsets.all(5),
-                        color: _createToggle ? mainSchemeColor : black,
-                        child: Text(
-                          'Create',
-                          style: TextStyle(
-                            color: _createToggle ? black : white,
-                            fontSize: infoFontSize,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              TextButton(
+                onPressed: !_reserveToggle
+                    ? () {
+                        if (totalHeight != 120) {
+                          totalHeight == 120;
+                        }
+                        reserving = true;
+                        browsing = false;
+                        setState(() => _reserveToggle = true);
+                      }
+                    : null,
+                child: Container(
+                    width: 100,
+                    height: toggleHeight,
+                    color: _reserveToggle ? mainSchemeColor : black,
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: Text(
+                      'Reserve',
+                      style: TextStyle(
+                        color: _reserveToggle ? black : white,
+                        fontSize: infoFontSize,
                       ),
-                      Container(
-                        width: 75,
-                        padding: const EdgeInsets.all(5),
-                        color: _createToggle ? black : mainSchemeColor,
-                        child: Text(
-                          'Join',
-                          style: TextStyle(
-                            color: _createToggle ? white : black,
-                            fontSize: infoFontSize,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
                 ),
-              ],
-            ),
+              ),
+              TextButton(
+                onPressed: _reserveToggle
+                    ? () {
+                        if (totalHeight != 50) {
+                          totalHeight == 50;
+                        }
+                        reserving = false;
+                        browsing = true;
+                        setState(() => _reserveToggle = false);
+                      }
+                    : null,
+                child: Container(
+                    width: 100,
+                    height: toggleHeight,
+                    color: _reserveToggle ? black : mainSchemeColor,
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: Text(
+                      'Browse',
+                      style: TextStyle(
+                        color: _reserveToggle ? white : black,
+                        fontSize: infoFontSize,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          Column(
+            children: <Widget>[
+              Container(
+                key: ValueKey(currentDay),
+                padding: const EdgeInsets.symmetric(horizontal: 5),
+                width: double.infinity,
+                child: Text(
+                  DateFormat('MMMM, dd').format(DateTime(0, currentMonth, currentDay)),
+                  style: TextStyle(
+                    fontSize: 32,
+                    color: textColor,
+                  ),
+                  textAlign: TextAlign.left,
+                ),
+              ),
+              const Divider(
+                height: 5,
+                thickness: 1,
+                color: black,
+              ),
+            ],
           ),
           Expanded(
             child: ValueListenableBuilder<bool>(
@@ -131,15 +157,17 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                             if (snapshot.hasError) {
                               return Text('Error: $snapshot.error}');
                             }
-                            currentDay = 0;
                             currentMonth = DateTime.now().month;
+                            currentDay = DateTime.now().day;
                             int groupsList = 0;
                             return ListView.builder(
                               addAutomaticKeepAlives: true,
                               itemCount: tempList.length,
                               itemBuilder: (context, index) {
                                 if (groupsList < groups.length) {
-                                  while (groups[groupsList].date!.isBefore(tempList[index])) {
+                                  while (groups[groupsList]
+                                      .date!
+                                      .isBefore(tempList[index])) {
                                     groupsList++;
                                     if (!(groupsList < groups.length)) {
                                       break;
@@ -148,13 +176,13 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                                 }
                                 bool newDay = false;
                                 bool newMonth = false;
-                                if (tempList[index].day != currentDay) {
-                                  currentDay = tempList[index].day;
-                                  newDay = true;
-                                }
                                 if (tempList[index].month != currentMonth) {
                                   currentMonth = tempList[index].month;
                                   newMonth = true;
+                                }
+                                if (tempList[index].day != currentDay) {
+                                  currentDay = tempList[index].day;
+                                  newDay = true;
                                 }
                                 return Column(
                                   children: <Widget>[
@@ -203,16 +231,16 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                                     groupsList < groups.length &&
                                             groupsList >= 0 &&
                                             tempList[index] ==
-                                                    groups[groupsList].date
+                                                groups[groupsList].date
                                         ? GroupCard(
                                             group: groups[groupsList++],
                                             height: totalHeight,
-                                            clickable: joining,
+                                            clickable: browsing,
                                           )
                                         : GroupCard(
                                             date: tempList[index],
                                             height: totalHeight,
-                                            clickable: creating),
+                                            clickable: reserving),
                                   ],
                                 );
                               },
@@ -236,7 +264,6 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
         start != end;
         start = start.add(const Duration(days: 1))) {
       queryDate['date'] = DateFormat('yyyy-MM-dd').format(start);
-
 
       final res = await GroupsAPI.getSchedule(queryDate);
 

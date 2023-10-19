@@ -118,7 +118,7 @@ class _EditUserProfilePageState extends State<EditUserProfilePage> {
                                 Text(
                                   'Name',
                                   style: TextStyle(
-                                    fontSize: bioTextSize,
+                                    fontSize: smallFontSize,
                                     color: textColor,
                                   ),
                                   textAlign: TextAlign.center,
@@ -151,7 +151,7 @@ class _EditUserProfilePageState extends State<EditUserProfilePage> {
                                   Text(
                                     'Username',
                                     style: TextStyle(
-                                      fontSize: bioTextSize,
+                                      fontSize: smallFontSize,
                                       color: textColor,
                                     ),
                                     textAlign: TextAlign.center,
@@ -183,7 +183,7 @@ class _EditUserProfilePageState extends State<EditUserProfilePage> {
                                 Text(
                                   'Phone Number',
                                   style: TextStyle(
-                                    fontSize: bioTextSize,
+                                    fontSize: smallFontSize,
                                     color: textColor,
                                   ),
                                   textAlign: TextAlign.left,
@@ -216,7 +216,7 @@ class _EditUserProfilePageState extends State<EditUserProfilePage> {
                                 Text(
                                   'Enter your password to confirm changes',
                                   style: TextStyle(
-                                    fontSize: bioTextSize,
+                                    fontSize: smallFontSize,
                                     color: textColor,
                                   ),
                                   textAlign: TextAlign.center,
@@ -302,7 +302,7 @@ class _EditUserProfilePageState extends State<EditUserProfilePage> {
                           child: Text(
                             'Confirm Changes',
                             style: TextStyle(
-                              fontSize: bioTextSize + 10,
+                              fontSize: bigButtonFontSize,
                               color: buttonTextColor,
                               fontWeight: FontWeight.w400,
                             ),
@@ -528,7 +528,7 @@ class _EditPasswordPageState extends State<EditPasswordPage> {
                       child: Text(
                         'Confirm Changes',
                         style: TextStyle(
-                          fontSize: bioTextSize + 10,
+                          fontSize: bigButtonFontSize,
                           color: buttonTextColor,
                           fontWeight: FontWeight.w400,
                         ),

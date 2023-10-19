@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 //import '../utils/concert_tags_manager.dart';
 import '../APIfunctions/concertAPI.dart';
+import '../APIfunctions/groupsAPI.dart';
 import '../components/concert_card.dart';
 import '../utils/concert.dart';
 import '../utils/colors.dart';
+import '../utils/group.dart';
 import '../utils/globals.dart';
 import '../utils/schedule_manager.dart';
 
@@ -24,6 +26,7 @@ class _ConcertsState extends State<ConcertsScreen> {
   void initState() {
     super.initState();
     done = getConcertList('');
+    upcoming = Group.fromScheduleJson(GroupsAPI.getGroup['group']);
     searchFocus.addListener(() => searchLostFocus());
   }
 
@@ -33,6 +36,7 @@ class _ConcertsState extends State<ConcertsScreen> {
     super.dispose();
   }
 
+  late Group upcoming;
   List<Concert> searchResults = [];
   String oldQuery = '';
   final _search = TextEditingController();
@@ -104,7 +108,7 @@ class _ConcertsState extends State<ConcertsScreen> {
                   const Icon(
                     Icons.search,
                     color: black,
-                    size: infoFontSize,
+                    size: smallIconSize,
                   ),
                 ],
               ),
@@ -127,21 +131,21 @@ class _ConcertsState extends State<ConcertsScreen> {
                     ),
                   ),
                   Text(
-                    "Session Date and Time: ",
+                    "Session Date and Time: ${upcoming.date}",
                     style: TextStyle(
                       fontSize: infoFontSize,
                       color: buttonTextColor,
                     ),
                   ),
                   Text(
-                    "Group Leader: ",
+                    "Group Leader: ${upcoming.maestro}",
                     style: TextStyle(
                       fontSize: infoFontSize,
                       color: buttonTextColor,
                     ),
                   ),
                   Text(
-                    "Tags: ",
+                    "Tags: ${upcoming.tags}",
                     style: TextStyle(
                       fontSize: infoFontSize,
                       color: buttonTextColor,
@@ -149,7 +153,9 @@ class _ConcertsState extends State<ConcertsScreen> {
                   ),
                   TextButton(
                     onPressed: () {
-
+                      Navigator.pushNamed(
+                          context, '/group/group',
+                          arguments: upcoming);
                     },
                     style: TextButton.styleFrom(
                       textStyle: const TextStyle(

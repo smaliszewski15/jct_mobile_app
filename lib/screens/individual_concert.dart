@@ -69,7 +69,7 @@ class _ConcertPageState extends State<ConcertPage> {
                     return Text('Error: $snapshot.error}',
                         style: TextStyle(
                           color: black,
-                          fontSize: bioTextSize,
+                          fontSize: smallFontSize,
                         ));
                   }
                   if (concert.id == -1) {

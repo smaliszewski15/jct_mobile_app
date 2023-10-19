@@ -22,12 +22,12 @@ class BasicTooltip extends StatelessWidget {
       showDuration: const Duration(seconds: 2),
       textAlign: TextAlign.center,
       textStyle: TextStyle(
-        fontSize: bioTextSize - 2,
+        fontSize: extraSmallFontSize,
         color: textColor,
       ),
       child: Icon(
         Icons.help,
-        size: bioTextSize,
+        size: smallFontSize,
         color: textColor,
       ),
     );

@@ -268,7 +268,7 @@ class _SkeletonState extends State<Skeleton> {
                                   'Home',
                                   style: TextStyle(
                                     fontSize:
-                                        smallerNavBarTextSize, //navBarTextSize,
+                                        navBarTextSize, //navBarTextSize,
                                     color: _navManager.buttonNotifier.value ==
                                             NavState.home
                                         ? mainSchemeColor
@@ -305,7 +305,7 @@ class _SkeletonState extends State<Skeleton> {
                                   'Concerts',
                                   style: TextStyle(
                                     fontSize:
-                                        smallerNavBarTextSize, //navBarTextSize,
+                                        navBarTextSize, //navBarTextSize,
                                     color: _navManager.buttonNotifier.value ==
                                             NavState.concert
                                         ? mainSchemeColor
@@ -342,7 +342,7 @@ class _SkeletonState extends State<Skeleton> {
                                   'Maestro',
                                   style: TextStyle(
                                     fontSize:
-                                        smallerNavBarTextSize, //navBarTextSize,
+                                        navBarTextSize, //navBarTextSize,
                                     color: _navManager.buttonNotifier.value ==
                                             NavState.maestro
                                         ? mainSchemeColor
@@ -379,7 +379,7 @@ class _SkeletonState extends State<Skeleton> {
                                   'Performer',
                                   style: TextStyle(
                                     fontSize:
-                                        smallerNavBarTextSize, //navBarTextSize,
+                                        navBarTextSize, //navBarTextSize,
                                     color: _navManager.buttonNotifier.value ==
                                             NavState.performer
                                         ? mainSchemeColor
@@ -416,7 +416,7 @@ class _SkeletonState extends State<Skeleton> {
                                   'Listener',
                                   style: TextStyle(
                                     fontSize:
-                                    smallerNavBarTextSize, //navBarTextSize,
+                                    navBarTextSize, //navBarTextSize,
                                     color: _navManager.buttonNotifier.value ==
                                         NavState.listener
                                         ? mainSchemeColor
@@ -453,7 +453,7 @@ class _SkeletonState extends State<Skeleton> {
                                   'Schedule',
                                   style: TextStyle(
                                     fontSize:
-                                        smallerNavBarTextSize, //user.isAdmin ? navBarTextSize,
+                                        navBarTextSize, //user.isAdmin ? navBarTextSize,
                                     color: _navManager.buttonNotifier.value ==
                                             NavState.schedule
                                         ? mainSchemeColor
@@ -485,7 +485,7 @@ class _SkeletonState extends State<Skeleton> {
                                     'Admin',
                                     style: TextStyle(
                                       fontSize:
-                                          smallerNavBarTextSize, //user.isAdmin ? navBarTextSize,
+                                          navBarTextSize,
                                       color: _navManager.buttonNotifier.value ==
                                               NavState.admin
                                           ? mainSchemeColor

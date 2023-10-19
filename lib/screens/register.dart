@@ -138,7 +138,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               child: Text(
                                 '* = Required',
                                 style: TextStyle(
-                                  fontSize: bioTextSize,
+                                  fontSize: smallFontSize,
                                   color: invalidColor,
                                 ),
                                 textAlign: TextAlign.center,
@@ -150,14 +150,14 @@ class _RegisterPageState extends State<RegisterPage> {
                                 Text(
                                   'Name',
                                   style: TextStyle(
-                                    fontSize: bioTextSize,
+                                    fontSize: smallFontSize,
                                     color: textColor,
                                   ),
                                 ),
                                 Text(
                                   '*',
                                   style: TextStyle(
-                                    fontSize: bioTextSize,
+                                    fontSize: smallFontSize,
                                     color: invalidColor,
                                   ),
                                 ),
@@ -180,7 +180,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                         Text(
                                           'Username',
                                           style: TextStyle(
-                                            fontSize: bioTextSize,
+                                            fontSize: smallFontSize,
                                             color: textColor,
                                           ),
                                           textAlign: TextAlign.left,
@@ -188,7 +188,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                         Text(
                                             '*',
                                             style: TextStyle(
-                                              fontSize: bioTextSize,
+                                              fontSize: smallFontSize,
                                               color: invalidColor,
                                             )
                                         ),
@@ -210,7 +210,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                         Text(
                                           'Phone Number',
                                           style: TextStyle(
-                                            fontSize: bioTextSize,
+                                            fontSize: smallFontSize,
                                             color: textColor,
                                           ),
                                           textAlign: TextAlign.left,
@@ -234,7 +234,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                 Text(
                                   'Email',
                                   style: TextStyle(
-                                    fontSize: bioTextSize,
+                                    fontSize: smallFontSize,
                                     color: textColor,
                                   ),
                                   textAlign: TextAlign.left,
@@ -242,7 +242,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                 Text(
                                     '*',
                                     style: TextStyle(
-                                      fontSize: bioTextSize,
+                                      fontSize: smallFontSize,
                                       color: invalidColor,
                                     )
                                 ),
@@ -261,7 +261,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                 Text(
                                   'Password',
                                   style: TextStyle(
-                                    fontSize: bioTextSize,
+                                    fontSize: smallFontSize,
                                     color: textColor,
                                   ),
                                   textAlign: TextAlign.left,
@@ -269,7 +269,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                 Text(
                                     '*',
                                     style: TextStyle(
-                                      fontSize: bioTextSize,
+                                      fontSize: smallFontSize,
                                       color: invalidColor,
                                     )
                                 ),
@@ -288,7 +288,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                 Text(
                                   'Confirm Password',
                                   style: TextStyle(
-                                    fontSize: bioTextSize,
+                                    fontSize: smallFontSize,
                                     color: textColor,
                                   ),
                                   textAlign: TextAlign.left,
@@ -296,7 +296,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                 Text(
                                     '*',
                                     style: TextStyle(
-                                      fontSize: bioTextSize,
+                                      fontSize: smallFontSize,
                                       color: invalidColor,
                                     )
                                 ),
@@ -316,7 +316,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               child: Text(
                                 errorMessage,
                                 style: TextStyle(
-                                  fontSize: bioTextSize,
+                                  fontSize: smallFontSize,
                                   color: invalidColor,
                                 )
                               ),
@@ -345,7 +345,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                 child: Text(
                                   'Register',
                                   style: TextStyle(
-                                    fontSize: bioTextSize + 10,
+                                    fontSize: buttonFontSize,
                                     color: buttonTextColor,
                                     fontWeight: FontWeight.w400,
                                   ),
