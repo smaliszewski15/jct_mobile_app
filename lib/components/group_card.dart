@@ -70,7 +70,7 @@ class _GroupCardState extends State<GroupCard>
                               Text(
                                 widget.group!.maestro,
                                 style: TextStyle(
-                                  fontSize: bioTextSize,
+                                  fontSize: smallFontSize,
                                   color: textColor,
                                 ),
                               ),
@@ -101,7 +101,7 @@ class _GroupCardState extends State<GroupCard>
                               Text(
                                 widget.group!.maestro,
                                 style: const TextStyle(
-                                  fontSize: bioTextSize,
+                                  fontSize: smallFontSize,
                                   color: black,
                                 ),
                               ),
@@ -113,8 +113,8 @@ class _GroupCardState extends State<GroupCard>
                             children: widget.group!.members!
                                 .map((entry) => Text(
                                       entry,
-                                      style: TextStyle(
-                                        fontSize: bioTextSize,
+                                      style: const TextStyle(
+                                        fontSize: smallFontSize,
                                         color: black,
                                       ),
                                     ))

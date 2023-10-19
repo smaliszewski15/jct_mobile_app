@@ -112,17 +112,14 @@ class GroupsAPI {
 
   static Map<String, dynamic> getGroup = {
     'group': {
-      'title': 'Title 1',
-      'maestro': 'Paul',
-      'tags': 'soft`loud',
-      'date': '2023-9-10',
-      'time': '22:40',
-      'members': [
-        'Stephen',
-        'Paul',
-        'Kyle',
-      ],
-      'description': 'This is a description of the group and what will be the concert ig',
+      'Title': 'Title 1',
+      'GroupID': 2,
+      'GroupLeaderName': 'Paul',
+      'GroupLeaderID': 4,
+      'Description': 'This is a description',
+      'Tags': 'soft`loud',
+      'Date': '2023-9-10',
+      'Time': '22:40',
     },
   };
 }
