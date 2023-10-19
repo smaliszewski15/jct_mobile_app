@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 //import '../utils/concert_tags_manager.dart';
 import '../APIfunctions/concertAPI.dart';
+import '../components/concert_card.dart';
 import '../utils/concert.dart';
 import '../utils/colors.dart';
 import '../utils/globals.dart';
@@ -51,20 +52,19 @@ class _ConcertsState extends State<ConcertsScreen> {
   @override
   Widget build(BuildContext context) {
     double blockHeight = 50;
-    final bodyHeight = MediaQuery.of(context).size.height -
-        AppBar().preferredSize.height -
-        navBarHeight - 2 * blockHeight - 50;
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
-      child: SingleChildScrollView(
+      child: Container(
+        height: MediaQuery.of(context).size.height,
+        padding: const EdgeInsets.symmetric(horizontal: 5),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             Container(
-              width: 300,
-              height: 35,
-              padding: const EdgeInsets.all(5),
+              width: double.infinity,
+              height: blockHeight,
+              padding: const EdgeInsets.symmetric(horizontal: 10),
               margin: const EdgeInsets.symmetric(vertical: 5),
               decoration: BoxDecoration(
                 borderRadius: const BorderRadius.all(Radius.circular(20)),
@@ -83,12 +83,12 @@ class _ConcertsState extends State<ConcertsScreen> {
                         hintStyle: TextStyle(
                           color: buttonTextColor,
                           decoration: TextDecoration.underline,
-                          fontSize: 18,
+                          fontSize: infoFontSize,
                         ),
                       ),
                       style: TextStyle(
                         color: buttonTextColor,
-                        fontSize: 18,
+                        fontSize: infoFontSize,
                       ),
                       textInputAction: TextInputAction.done,
                       onSubmitted: (query) {
@@ -104,7 +104,64 @@ class _ConcertsState extends State<ConcertsScreen> {
                   const Icon(
                     Icons.search,
                     color: black,
-                    size: 15,
+                    size: infoFontSize,
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(5),
+              decoration: BoxDecoration(
+                color: mainSchemeColor,
+                border: Border.all(color: black, width: 3),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Text(
+                    'Upcoming Concert',
+                    style: TextStyle(
+                      fontSize: headingFontSize,
+                      color: buttonTextColor,
+                    ),
+                  ),
+                  Text(
+                    "Session Date and Time: ",
+                    style: TextStyle(
+                      fontSize: infoFontSize,
+                      color: buttonTextColor,
+                    ),
+                  ),
+                  Text(
+                    "Group Leader: ",
+                    style: TextStyle(
+                      fontSize: infoFontSize,
+                      color: buttonTextColor,
+                    ),
+                  ),
+                  Text(
+                    "Tags: ",
+                    style: TextStyle(
+                      fontSize: infoFontSize,
+                      color: buttonTextColor,
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () {
+
+                    },
+                    style: TextButton.styleFrom(
+                      textStyle: const TextStyle(
+                        fontSize: headingFontSize,
+                        color: Color(0xff2483f0),
+                        fontStyle: FontStyle.italic,
+                        decoration: TextDecoration.underline,
+                      ),
+                    ),
+                    child: const Text(
+                      "Check it out ->",
+                    ),
                   ),
                 ],
               ),
@@ -144,9 +201,12 @@ class _ConcertsState extends State<ConcertsScreen> {
                   ]
               ),
             ),
-            SizedBox(
-              width: double.infinity,
-              height: bodyHeight,
+            const Divider(
+              height: 5,
+              thickness: 1,
+              color: black,
+            ),
+            Expanded(
               child: ValueListenableBuilder<bool>(
                 valueListenable: widget.filter.changedNotifier,
                 builder: (_, value, __) {
@@ -172,46 +232,7 @@ class _ConcertsState extends State<ConcertsScreen> {
                             physics: const AlwaysScrollableScrollPhysics(),
                             itemCount: searchResults.length,
                             itemBuilder: (context, index) {
-                              return Container(
-                                width: double.infinity,
-                                margin: const EdgeInsets.symmetric(
-                                    vertical: 5, horizontal: 10),
-                                padding: const EdgeInsets.all(10),
-                                color: accentColor,
-                                child: OutlinedButton(
-                                  onPressed: () {
-                                    Navigator.restorablePushNamed(
-                                        context, '/concerts/concert',
-                                        arguments: searchResults[index].id);
-                                  },
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: <Widget>[
-                                      Align(
-                                        alignment: Alignment.centerLeft,
-                                        child: Text(
-                                          searchResults[index].title,
-                                          style: TextStyle(
-                                            fontSize: 24,
-                                            color: textColor,
-                                          ),
-                                          textAlign: TextAlign.left,
-                                        ),
-                                      ),
-                                      Align(
-                                          alignment: Alignment.centerLeft,
-                                          child: Text(
-                                            searchResults[index].maestro,
-                                            style: TextStyle(
-                                              fontSize: infoFontSize,
-                                              color: textColor,
-                                            ),
-                                            textAlign: TextAlign.left,
-                                          )),
-                                    ],
-                                  ),
-                                ),
-                              );
+                              return ConcertCard(concert: searchResults[index]);
                             },
                           );
                       }
@@ -233,14 +254,6 @@ class _ConcertsState extends State<ConcertsScreen> {
       queries['search'] = searchQuery;
     }
     queries['page'] = '$page';
-
-    // if (widget.tags.filteredTags.isNotEmpty) {
-    //   int count = 1;
-    //   for (var tag in widget.tags.filteredTags) {
-    //     queries['tag$count'] = '${tag.tagID}';
-    //     count++;
-    //   }
-    // }
 
     DateTime fromDateTime = widget.filter.start.toUtc();
     DateTime toDateTime = widget.filter.end.toUtc();
@@ -276,7 +289,9 @@ class _ConcertsState extends State<ConcertsScreen> {
     }
 
     for (var map in data['searchResults']) {
-      searchResults.add(Concert.searchedSong(map));
+      Concert newConcert = Concert.searchedSong(map);
+      searchResults.add(newConcert);
+
     }
     return true;
   }
@@ -351,6 +366,7 @@ class _ConcertsState extends State<ConcertsScreen> {
     );
   }
 
+  //Old method of retrieving concerts, without API attached
 /*Future<bool> getConcertList() async {
     searchResults = [];
     var data = ConcertsAPI.searchSongs;

@@ -143,7 +143,7 @@ class _SkeletonState extends State<Skeleton> {
                 builder: (context) {
                   return GestureDetector(
                     onPanEnd: (details) {
-                      bool vertDrag = details.velocity.pixelsPerSecond.dy > 300 || details.velocity.pixelsPerSecond.dy < -300;
+                      bool vertDrag = details.velocity.pixelsPerSecond.dy.abs() > details.velocity.pixelsPerSecond.dx.abs();
                       if (details.velocity.pixelsPerSecond.dx > 0 && !vertDrag) {
                         switch (_navManager.buttonNotifier.value) {
                           case NavState.home:

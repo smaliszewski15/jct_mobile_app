@@ -254,7 +254,7 @@ class HomeScreen extends StatelessWidget {
                 ),
               ],
             ),
-            Padding(
+            Container(
               padding: const EdgeInsets.symmetric(vertical: 10),
               child: Text(
                 'About John Cage',

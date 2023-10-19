@@ -263,7 +263,7 @@ class _ConcertPageState extends State<ConcertPage> {
                             ),
                           ),
                           const Spacer(),
-                          Center(
+                          /*Center(
                             child: Container(
                               padding: const EdgeInsets.all(5),
                               decoration: BoxDecoration(
@@ -295,7 +295,7 @@ class _ConcertPageState extends State<ConcertPage> {
                                 ),
                               ),
                             ),
-                          ),
+                          ),*/
                         ],
                       ),
                     ),

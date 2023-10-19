@@ -52,11 +52,8 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
   @override
   Widget build(BuildContext context) {
     double toggleHeight = 50;
-    final bodyHeight = MediaQuery.of(context).size.height -
-        AppBar().preferredSize.height -
-        navBarHeight - 2 * toggleHeight - 50;
     return Container(
-      width: MediaQuery.of(context).size.width,
+      width: double.infinity,
       height: MediaQuery.of(context).size.height,
       color: backgroundColor,
       child: Column(
@@ -66,17 +63,14 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
             height: toggleHeight,
             padding: const EdgeInsets.symmetric(horizontal: 5),
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Text(
-                  'I would like to...',
-                  style: defaultTextStyle,
-                ),
                 TextButton(
                   onPressed: () {
-                    if (totalHeight == 60) {
+                    if (totalHeight == 50) {
                       totalHeight = 120;
                     } else {
-                      totalHeight = 60;
+                      totalHeight = 50;
                     }
                     joining = !joining;
                     creating = !creating;
@@ -114,31 +108,10 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                     ],
                   ),
                 ),
-                Text(
-                  'a group.',
-                  style: defaultTextStyle,
-                ),
               ],
             ),
           ),
-          SizedBox(
-            width: MediaQuery.of(context).size.width,
-            height: toggleHeight,
-            child: Row(
-              children: <Widget>[
-                Text(
-                  'Current time in UTC: ',
-                  style: defaultTextStyle,
-                ),
-                Text(
-                  DateFormat('HH:mm').format(DateTime.now().toUtc()),
-                  style: defaultTextStyle,
-                ),
-              ],
-            ),
-          ),
-          SizedBox(
-            height: bodyHeight,
+          Expanded(
             child: ValueListenableBuilder<bool>(
                 valueListenable: widget.filter.changedNotifier,
                 builder: (_, value, __) {
@@ -158,6 +131,8 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                             if (snapshot.hasError) {
                               return Text('Error: $snapshot.error}');
                             }
+                            currentDay = 0;
+                            currentMonth = DateTime.now().month;
                             int groupsList = 0;
                             return ListView.builder(
                               addAutomaticKeepAlives: true,

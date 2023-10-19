@@ -11,8 +11,8 @@ class Concert {
   Concert({this.title = '', this.id = -1, this.maestro = '', this.performers = const [], this.tags = '', this.description = '', this.date = '',});
 
   factory Concert.searchedSong(Map json) {
-    if (json.containsKey('Title') && json.containsKey('GroupID') && json.containsKey('GroupLeaderName')) {
-      return Concert(title: json['Title'], id: json['GroupID'], maestro: json['GroupLeaderName']);
+    if (json.containsKey('Title') && json.containsKey('GroupID') && json.containsKey('GroupLeaderName') && json.containsKey('Tags')) {
+      return Concert(title: json['Title'], id: json['GroupID'], maestro: json['GroupLeaderName'], tags: json['Tags']);
     }
     return Concert();
   }
@@ -32,7 +32,6 @@ class Concert {
   static List<String> _getPerformers(Map json) {
     List<String> toRet = [];
     for (int i = 1; i <= 4; i++) {
-      print(json);
       if (json.containsKey('User${i}Name')) {
         toRet.add(json['User${i}Name'] ?? '');
         i++;
