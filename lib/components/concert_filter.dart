@@ -6,7 +6,7 @@ import '../utils/globals.dart';
 import '../utils/schedule_manager.dart';
 
 class ConcertFilterDrawer extends StatefulWidget {
-  late ScheduleManager filter;
+  late final ScheduleManager filter;
 
   ConcertFilterDrawer(this.filter);
 
@@ -36,7 +36,7 @@ class _ConcertFilterDrawerState extends State<ConcertFilterDrawer> {
         children: <Widget>[
           DrawerHeader(
             child: Text(
-              'Filter by when you want to record:',
+              'Filter by when the concert was recorded:',
               style: defaultTextStyle,
               textAlign: TextAlign.center,
             ),
@@ -127,6 +127,14 @@ class _ConcertFilterDrawerState extends State<ConcertFilterDrawer> {
               }
             },
             onChanged: null,
+          ),
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(20),
+            child: Text(
+              'To filter by tags, simply type the tags into the search bar',
+              style: defaultTextStyle,
+            ),
           ),
         ],
       ),

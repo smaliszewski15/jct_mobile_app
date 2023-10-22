@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import '../utils/colors.dart';
 import '../utils/concert.dart';
 import '../utils/globals.dart';
@@ -21,7 +22,7 @@ class _ConcertCardState extends State<ConcertCard> {
           vertical: 5, horizontal: 10),
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
-        borderRadius: const BorderRadius.all(Radius.circular(20)),
+        borderRadius: const BorderRadius.all(Radius.circular(roundedCorners)),
         color: accentColor,
       ),
       child: OutlinedButton(
@@ -58,7 +59,18 @@ class _ConcertCardState extends State<ConcertCard> {
             Align(
               alignment: Alignment.centerLeft,
               child: Text(
-                "Tags: ${widget.concert.tags}",
+                "Tags: ${widget.concert.tags.split('`').join(', ')}",
+                style: TextStyle(
+                  fontSize: infoFontSize,
+                  color: textColor,
+                ),
+                textAlign: TextAlign.left,
+              ),
+            ),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                "Recorded on: ${DateFormat('yyyy-MM-dd HH:mm').format(widget.concert.date!)}",
                 style: TextStyle(
                   fontSize: infoFontSize,
                   color: textColor,

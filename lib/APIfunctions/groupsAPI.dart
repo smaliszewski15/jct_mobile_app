@@ -9,7 +9,7 @@ class GroupsAPI {
   static const String apiRoute = '/api/schedules';
 
   static final authHeader = {HttpHeaders.contentTypeHeader: 'application/json',
-      HttpHeaders.authorizationHeader: user!.authToken};
+      HttpHeaders.authorizationHeader: user.authToken};
 
   static Future<http.Response> getSchedule(Map<String, dynamic> query) async {
     http.Response response;
@@ -55,7 +55,19 @@ class GroupsAPI {
     return response;
   }
 
+  static Future<http.Response> getNextConcert() async {
+    http.Response response;
 
+    try {
+      response = await http.get(Uri.https(API_PREFIX, '${apiRoute}/getNextConcert'),
+          headers: baseHeader);
+    } catch (e) {
+      print(e.toString());
+      throw Exception('Could not connect to server');
+    }
+
+    return response;
+  }
 
   static Map<String, dynamic> getGroups = {
     'groupsData': [

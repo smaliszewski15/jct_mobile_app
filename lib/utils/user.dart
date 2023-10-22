@@ -150,4 +150,4 @@ class User {
   }
 }
 
-User? user;
+User user = User();

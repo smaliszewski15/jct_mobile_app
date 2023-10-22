@@ -64,17 +64,16 @@ class _AddGroupState extends State<AddGroup> {
                     width: double.infinity,
                     margin: const EdgeInsets.all(10),
                     child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         Text(
-                          'Scheduled Date:',
+                          'Scheduled Date: ',
                           style: defaultTextStyle,
-                          textAlign: TextAlign.left,
                         ),
                         Text(
                           DateFormat('yyyy-MM-dd hh:mm').format(widget.date!),
                           style: defaultTextStyle,
-                        )
+                        ),
                       ],
                     ),
                   ),
@@ -198,7 +197,7 @@ class _AddGroupState extends State<AddGroup> {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: TextField(
-                      maxLines: 1,
+                      maxLines: 3,
                       controller: _description,
                       decoration: descriptionUnfilled ?
                       InputDecoration(
@@ -222,7 +221,7 @@ class _AddGroupState extends State<AddGroup> {
                         ),
                       ),
                       style: TextStyle(
-                        fontSize: titleFontSize,
+                        fontSize: infoFontSize,
                         color: buttonTextColor,
                       ),
                       onChanged: (field) {
@@ -237,18 +236,29 @@ class _AddGroupState extends State<AddGroup> {
                     ),
                   ),
                   Container(
-                      padding: const EdgeInsets.all(20),
+                      padding: const EdgeInsets.all(10),
                       child: Text(
-                        'And Lastly some tags:',
+                        'And lastly, some tags to describe your concert:',
                         style: TextStyle(
                           fontSize: headingFontSize,
                           color: textColor,
                         ),
                         textAlign: TextAlign.center,
-                      )
+                      ),
                   ),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    padding: const EdgeInsets.all(5),
+                    child: Text(
+                      'Enter as a list of comma separated words',
+                      style: TextStyle(
+                        fontSize: infoFontSize,
+                        color: textColor,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                     child: TextField(
                       maxLines: 1,
                       controller: _tags,
@@ -274,7 +284,7 @@ class _AddGroupState extends State<AddGroup> {
                         ),
                       ),
                       style: TextStyle(
-                        fontSize: titleFontSize,
+                        fontSize: infoFontSize,
                         color: buttonTextColor,
                       ),
                       onChanged: (field) {
@@ -337,7 +347,7 @@ class _AddGroupState extends State<AddGroup> {
   }
 
   Future<bool> scheduleGroup() async {
-    bool logged = await showDialog(context: context, builder: (context) {
+    var logged = await showDialog(context: context, builder: (context) {
       return AlertDialog(
         shape:  RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10)),
@@ -373,6 +383,10 @@ class _AddGroupState extends State<AddGroup> {
       );
     });
 
+    if (logged != true) {
+      return false;
+    }
+
     String date = DateFormat('yyyy-MM-dd').format(widget.date!.toUtc()).toString();
     String time = DateFormat('Hms').format(widget.date!.toUtc()).toString();
 
@@ -386,19 +400,17 @@ class _AddGroupState extends State<AddGroup> {
 
     if (context.mounted) {
       Navigator.pushNamed(context, logged ? '/login' : '/register').then((entry) async {
-        if (!user!.logged) {
+        if (!user.logged) {
           print('not logged');
           return false;
         }
-        package['username'] = user!.username;
-        package['password'] = user!.password;
+        package['username'] = user.username;
+        package['password'] = user.password;
 
         final res = await GroupsAPI.schedule(package);
-        print('won');
 
         if (res.statusCode != 200) {
           print(res.body);
-
           return false;
         }
 

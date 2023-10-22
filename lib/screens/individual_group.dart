@@ -8,8 +8,14 @@ import '../utils/globals.dart';
 import '../utils/group.dart';
 import '../utils/user.dart';
 
+enum SocketType {
+  listener,
+  performer,
+  maestro
+}
+
 class IndividualGroup extends StatefulWidget {
-  late Group group;
+  late final Group group;
 
   IndividualGroup(this.group);
 
@@ -46,13 +52,10 @@ class _IndividualGroupState extends State<IndividualGroup> {
   Future<bool>? done;
 
   bool created() {
-    if (user == null) {
+    if (user.id != widget.group.maestroID) {
       return false;
     }
-    if (user!.id != widget.group.maestroID) {
-      return false;
-    }
-    if (user!.username != widget.group.maestro) {
+    if (user.username != widget.group.maestro) {
       return false;
     }
     return true;
@@ -352,7 +355,32 @@ class _IndividualGroupState extends State<IndividualGroup> {
                             border: Border.all(color: black, width: 3),
                           ),
                           child: TextButton(
-                            onPressed: null,
+                            onPressed: () async {
+                              //UNCOMMENT WHEN NOT DOING UI SHIT
+                              // bool logged = await logMaestroIn();
+                              // if (!logged) {
+                              //   setState(() => errorMessage = "You must be logged in to start the concert");
+                              //   return;
+                              // }
+                              // bool pass = await getPasscode();
+                              // if (!pass) {
+                              //   setState(() => errorMessage = "You must enter your maestro passcode to start the concert");
+                              //   _passcode.clear();
+                              //   return;
+                              // }
+                              // bool succ = await checkMaestroPasscode();
+                              // if (!succ) {
+                              //   setState(() => errorMessage = "Password either incorrect or cannot connect to the server");
+                              //   _passcode.clear();
+                              //   return;
+                              // }
+                              if (context.mounted) {
+                                _showSnack(context, SocketType.maestro);
+                                return;
+                              }
+                              _passcode.clear();
+                              return;
+                            },
                             child: Text(
                               'Maestro',
                               style: TextStyle(
@@ -374,7 +402,25 @@ class _IndividualGroupState extends State<IndividualGroup> {
                           ),
                           margin: const EdgeInsets.all(4),
                           child: TextButton(
-                            onPressed: null,
+                            onPressed:  () async {
+                              //UNCOMMENT WHEN NOT DOING UI SHIT
+                              // bool pass = await getPasscode();
+                              // if (!pass) {
+                              //   setState(() => errorMessage = "You must enter a passcode to start the concert");
+                              //   return;
+                              // }
+                              // bool succ = await checkPerformerPasscode();
+                              // if (!succ) {
+                              //   setState(() => errorMessage = "Password either incorrect or cannot connect to the server");
+                              //   _passcode.clear();
+                              //   return;
+                              // }
+                              if (context.mounted) {
+                                _showSnack(context, SocketType.performer);
+                                return;
+                              }
+                              _passcode.clear();
+                            },
                             child: Text(
                               'Performer',
                               style: TextStyle(
@@ -396,7 +442,18 @@ class _IndividualGroupState extends State<IndividualGroup> {
                           ),
                           margin: const EdgeInsets.all(4),
                           child: TextButton(
-                            onPressed: null,
+                            onPressed: () async {
+                              //UNCOMMENT WHEN NOT DOING UI SHIT
+                              // bool succ = await checkListenerPasscode();
+                              // if (!succ) {
+                              //   setState(() => errorMessage = "Password either incorrect or cannot connect to the server");
+                              //   return;
+                              // }
+                              if (context.mounted) {
+                                _showSnack(context, SocketType.listener);
+                                return;
+                              }
+                            },
                             child: Text(
                               'Listener',
                               style: TextStyle(
@@ -681,7 +738,147 @@ class _IndividualGroupState extends State<IndividualGroup> {
     );
   }
 
-  void _showSnack(BuildContext context) {
+  Future<bool> logMaestroIn() async {
+    bool logged = await showDialog(context: context, builder: (context) {
+      return AlertDialog(
+        shape:  RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10)),
+        elevation: 15,
+        actions: <Widget>[
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context, false);
+            },
+            child: const Text(
+              'Register',
+              style: TextStyle(color: Colors.red, fontSize: 18),
+            ),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context, true);
+            },
+            child: const Text(
+              'Login',
+              style: TextStyle(color: Colors.red, fontSize: 18),
+            ),
+          ),
+        ],
+        content: const Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Flexible(
+                child: Text(
+                    'You need to be logged in to be able to schedule a recording.')),
+          ],
+        ),
+      );
+    });
+
+    if (context.mounted) {
+      Navigator.pushNamed(context, logged ? '/login' : '/register').then((entry) async {
+        if (!user.logged) {
+          print('not logged');
+          return false;
+        }
+        return true;
+      });
+    }
+    return false;
+  }
+
+  Future<bool> getPasscode() async {
+    bool? gotPasscode = await showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text("Enter your passcode to join the session"),
+          shape:  RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10)),
+          elevation: 15,
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context, false);
+              },
+              child: const Text(
+                'Cancel',
+                style: TextStyle(color: Colors.red, fontSize: 18),
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context, true);
+              },
+              child: const Text(
+                'Submit',
+                style: TextStyle(color: Colors.red, fontSize: 18),
+              ),
+            ),
+          ],
+          content: PasscodeAlert(editor: _passcode),
+        );
+      }
+    );
+
+    if (gotPasscode == null || gotPasscode == false) {
+      return false;
+    }
+    return true;
+  }
+
+  Future<bool> checkMaestroPasscode() async {
+    Map<String, dynamic> query = {
+      'maestroPasscode': _passcode.value.text,
+    };
+
+    final res = await GroupsAPI.prepare(query);
+    if (res.statusCode != 200) {
+      print(res.body);
+      var message = json.decode(res.body);
+      errorMessage = message.containsKey('message')
+          ? message['message']
+          : message['error'];
+      return false;
+    }
+    return true;
+  }
+
+  Future<bool> checkPerformerPasscode() async {
+    Map<String, dynamic> query = {
+      'performerPasscode': _passcode.value.text,
+    };
+
+    final res = await GroupsAPI.prepare(query);
+    if (res.statusCode != 200) {
+      print(res.body);
+      var message = json.decode(res.body);
+      errorMessage = message.containsKey('message')
+          ? message['message']
+          : message['error'];
+      return false;
+    }
+    return true;
+  }
+
+  Future<bool> checkListenerPasscode() async {
+    Map<String, dynamic> query = {
+      'listenerPasscode': _passcode.value.text,
+    };
+
+    final res = await GroupsAPI.prepare(query);
+    if (res.statusCode != 200) {
+      print(res.body);
+      var message = json.decode(res.body);
+      errorMessage = message.containsKey('message')
+          ? message['message']
+          : message['error'];
+      return false;
+    }
+    return true;
+  }
+
+  void _showSnack(BuildContext context, SocketType type) {
     ScaffoldMessenger.of(context)
         .showSnackBar(
           SnackBar(
@@ -697,7 +894,15 @@ class _IndividualGroupState extends State<IndividualGroup> {
         )
         .closed
         .then((reason) {
-      Navigator.pushNamed(context, '/group/recording/maestro');
+          if (context.mounted) {
+            if (type == SocketType.maestro) {
+              Navigator.restorablePushNamed(context, '/group/recording/maestro');
+            } else if (type == SocketType.performer) {
+              Navigator.restorablePushNamed(context, '/group/recording/performer');
+            } else if (type == SocketType.listener) {
+              Navigator.restorablePushNamed(context, '/group/recording/listener');
+            }
+          }
     });
   }
 
@@ -709,5 +914,38 @@ class _IndividualGroupState extends State<IndividualGroup> {
     // var data = groupsJSON['group'];
     // group = Group.fromJson(data);
     return true;
+  }
+}
+
+class PasscodeAlert extends StatefulWidget {
+  late final editor;
+
+  PasscodeAlert({required this.editor});
+
+  @override
+  _PasscodeAlertState createState() => _PasscodeAlertState();
+}
+
+class _PasscodeAlertState extends State<PasscodeAlert> {
+
+  @override
+  void initState(){
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return TextField(
+      maxLines: 1,
+      controller: widget.editor,
+      decoration: globalDecoration.copyWith(
+          hintText: 'Enter your passcode'),
+      style: TextStyle(
+        fontSize: smallFontSize,
+        color: buttonTextColor,
+      ),
+      textAlign: TextAlign.left,
+      textInputAction: TextInputAction.done,
+    );
   }
 }

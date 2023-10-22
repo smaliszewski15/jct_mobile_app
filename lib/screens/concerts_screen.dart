@@ -13,7 +13,7 @@ import '../utils/globals.dart';
 import '../utils/schedule_manager.dart';
 
 class ConcertsScreen extends StatefulWidget {
-  late ScheduleManager filter;
+  late final ScheduleManager filter;
 
   ConcertsScreen(this.filter);
 
@@ -25,8 +25,8 @@ class _ConcertsState extends State<ConcertsScreen> {
   @override
   void initState() {
     super.initState();
+    getNextConcert();
     done = getConcertList('');
-    upcoming = Group.fromScheduleJson(GroupsAPI.getGroup['group']);
     searchFocus.addListener(() => searchLostFocus());
   }
 
@@ -36,7 +36,7 @@ class _ConcertsState extends State<ConcertsScreen> {
     super.dispose();
   }
 
-  late Group upcoming;
+  Group upcoming = Group();
   List<Concert> searchResults = [];
   String oldQuery = '';
   final _search = TextEditingController();
@@ -113,65 +113,66 @@ class _ConcertsState extends State<ConcertsScreen> {
                 ],
               ),
             ),
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(5),
-              decoration: BoxDecoration(
-                color: mainSchemeColor,
-                border: Border.all(color: black, width: 3),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Text(
-                    'Upcoming Concert',
-                    style: TextStyle(
-                      fontSize: headingFontSize,
-                      color: buttonTextColor,
-                    ),
-                  ),
-                  Text(
-                    "Session Date and Time: ${upcoming.date}",
-                    style: TextStyle(
-                      fontSize: infoFontSize,
-                      color: buttonTextColor,
-                    ),
-                  ),
-                  Text(
-                    "Group Leader: ${upcoming.maestro}",
-                    style: TextStyle(
-                      fontSize: infoFontSize,
-                      color: buttonTextColor,
-                    ),
-                  ),
-                  Text(
-                    "Tags: ${upcoming.tags}",
-                    style: TextStyle(
-                      fontSize: infoFontSize,
-                      color: buttonTextColor,
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pushNamed(
-                          context, '/group/group',
-                          arguments: upcoming);
-                    },
-                    style: TextButton.styleFrom(
-                      textStyle: const TextStyle(
+            if (upcoming.groupID != -1)
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(5),
+                decoration: BoxDecoration(
+                  color: mainSchemeColor,
+                  border: Border.all(color: black, width: 3),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Text(
+                      'Upcoming Concert',
+                      style: TextStyle(
                         fontSize: headingFontSize,
-                        color: Color(0xff2483f0),
-                        fontStyle: FontStyle.italic,
-                        decoration: TextDecoration.underline,
+                        color: buttonTextColor,
                       ),
                     ),
-                    child: const Text(
-                      "Check it out ->",
+                    Text(
+                      "Session Date and Time: ${upcoming.date}",
+                      style: TextStyle(
+                        fontSize: infoFontSize,
+                        color: buttonTextColor,
+                      ),
                     ),
-                  ),
-                ],
+                    Text(
+                      "Group Leader: ${upcoming.maestro}",
+                      style: TextStyle(
+                        fontSize: infoFontSize,
+                        color: buttonTextColor,
+                      ),
+                    ),
+                    Text(
+                      "Tags: ${upcoming.tags.split('`').join(', ')}",
+                      style: TextStyle(
+                        fontSize: infoFontSize,
+                        color: buttonTextColor,
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pushNamed(
+                            context, '/group/group',
+                            arguments: upcoming);
+                      },
+                      style: TextButton.styleFrom(
+                        textStyle: const TextStyle(
+                          fontSize: headingFontSize,
+                          color: Color(0xff2483f0),
+                          fontStyle: FontStyle.italic,
+                          decoration: TextDecoration.underline,
+                        ),
+                      ),
+                      child: const Text(
+                        "Check it out ->",
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
             SizedBox(
               width: double.infinity,
               height: blockHeight,
@@ -297,8 +298,26 @@ class _ConcertsState extends State<ConcertsScreen> {
     for (var map in data['searchResults']) {
       Concert newConcert = Concert.searchedSong(map);
       searchResults.add(newConcert);
-
     }
+    return true;
+  }
+
+  Future<bool> getNextConcert() async {
+
+    final res = await GroupsAPI.getNextConcert();
+
+    if (res.statusCode != 200) {
+      print(res.body);
+      return false;
+    }
+
+    var data = json.decode(res.body);
+    if (!data.containsKey('nextConcertGroup')) {
+      return false;
+    }
+
+    upcoming = Group.fromNextJson(data);
+    setState(() {});
     return true;
   }
 

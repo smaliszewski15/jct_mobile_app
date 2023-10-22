@@ -22,11 +22,14 @@ class _ListenScreenState extends State<ListenScreen> {
   SocketConnect? socket;
 
   final Player _mPlayer = Player();
-  bool connectedForListen = false;
+  bool muted = false;
+  bool started = false;
+  List<String> participants = [];
 
   @override
   void initState() {
     super.initState();
+    connectListenSocket();
   }
 
   @override
@@ -40,16 +43,34 @@ class _ListenScreenState extends State<ListenScreen> {
     socket = SocketConnect(SocketType.listener);
     socket!.socket.stream.listen(
           (data) {
-        print(data);
-        Uint8List music = data;
-        _mPlayer.mPlayer!.foodSink!.add(FoodData(music.sublist(1)));
-      },
-      onDone: () {
-        print('done');
-      },
-      onError: (error) => print(error),
+            String s = splitHeader(data);
+            List<String> split = s.split(':');
+            if (split[0] == 'participants') {
+              parseParticipants(split[1]);
+              print(s);
+              setState(() {});
+            } else {
+              if (s == 'start') {
+                print(s);
+              } else if (s == 'stop') {
+                print(s);
+                stopPlayer();
+                disconnect();
+                setState(() {});
+              } else {
+                print(data);
+                if (!muted) {
+                  Uint8List music = data;
+                  _mPlayer.mPlayer!.foodSink!.add(FoodData(music.sublist(1)));
+                }
+              }
+            }
+          },
+          onDone: () {
+            print('done');
+          },
+          onError: (error) => print(error),
     );
-    connectedForListen = true;
     setState(() {});
   }
 
@@ -78,8 +99,6 @@ class _ListenScreenState extends State<ListenScreen> {
     setState(() {});
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -88,66 +107,97 @@ class _ListenScreenState extends State<ListenScreen> {
         disconnect();
         return true;
       },
-      child: Container(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
-        color: backgroundColor,
-        child: Align(
-          alignment: Alignment.center,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Container(
-                padding: const EdgeInsets.all(10),
-                width: double.infinity,
-                child: Text(
-                  'You are a listener. Click the connect button to connect to the socket, then wait for a concert to start.',
-                  style: TextStyle(
-                    fontSize: headingFontSize,
-                    color: textColor,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-              Container(
-                width: 100,
-                height: 100,
-                decoration: const BoxDecoration(
-                  color: white,
-                  shape: BoxShape.circle,
-                ),
-                child: TextButton(
-                  onPressed: () async {
-                    if (!connectedForListen) {
-                      await listen();
-                      await connectListenSocket();
-                      connectedForListen = true;
-                    } else {
-                      print('disconnect socket');
-                      await disconnect();
-                      await stopPlayer();
-                      connectedForListen = false;
-                    }
-                    setState((){});
-                  },
-                  child: const Icon(
-                    Icons.link,
-                    color: black,
-                    size: bottomIconSize + 20,
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: backgroundColor,
+        ),
+        body: Container(
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height,
+          color: backgroundColor,
+          child: Align(
+            alignment: Alignment.center,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  width: double.infinity,
+                  child: Text(
+                    'You are a listener. You can choose to mute the concert if you wish.',
+                    style: TextStyle(
+                      fontSize: headingFontSize,
+                      color: textColor,
+                    ),
+                    textAlign: TextAlign.center,
                   ),
                 ),
-              ),
-              Text(
-                  !connectedForListen ? 'Disconnect' : 'Connect',
-                  style: TextStyle(
-                    color: buttonTextColor,
-                    fontSize: titleFontSize,
-                  )
-              ),
-            ],
+                const Spacer(),
+                if (participants.isNotEmpty)
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: participants.length,
+                      itemBuilder: (context, index) {
+                        return Container(
+                          padding: const EdgeInsets.all(5),
+                          decoration: BoxDecoration(
+                            borderRadius: const BorderRadius.all(Radius.circular(roundedCorners)),
+                            color: accentColor,
+                          ),
+                          child: Text(
+                            participants[index],
+                            style: defaultTextStyle,
+                            textAlign: TextAlign.center,
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                Container(
+                  margin: const EdgeInsets.all(5),
+                  decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.all(Radius.circular(25)),
+                    border: Border.all(color: black),
+                    color: mainSchemeColor,
+                  ),
+                  child: TextButton(
+                    onPressed: () async {
+                      setState(() => muted = !muted);
+                    },
+                    style: ButtonStyle(
+                      shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(25),
+                      )),
+                    ),
+                    child: Text(
+                      !muted ? 'Mute Playback' : 'Unmute Playback',
+                      style: buttonTextStyle,
+                    ),
+                  ),
+                ),
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(10),
+                  child: Text(
+                    started ? 'Started!' : '',
+                    style: TextStyle(
+                      fontSize: headingFontSize,
+                      color: textColor,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                const Spacer(),
+              ],
+            ),
           ),
         ),
       ),
     );
+  }
+
+  void parseParticipants(String participantsList) {
+    participants = participantsList.split('`').sublist(1);
+    print(participants);
   }
 }

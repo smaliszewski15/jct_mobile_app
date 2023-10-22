@@ -28,21 +28,6 @@ class NavStateManager {
     buttonNotifier.value = NavState.schedule;
   }
 
-  void maestro() {
-    title = 'Maestro';
-    buttonNotifier.value = NavState.maestro;
-  }
-
-  void performer() {
-    title = 'Performer';
-    buttonNotifier.value = NavState.performer;
-  }
-
-  void listener() {
-    title = 'Listener';
-    buttonNotifier.value = NavState.listener;
-  }
-
   void admin() {
     title = 'Admin Page';
     buttonNotifier.value = NavState.admin;
@@ -50,5 +35,5 @@ class NavStateManager {
 }
 
 enum NavState{
-  home, concert, maestro, performer, listener, schedule, admin
+  home, concert, schedule, admin
 }
