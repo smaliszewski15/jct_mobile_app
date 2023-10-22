@@ -35,7 +35,7 @@ class _IndividualGroupState extends State<IndividualGroup> {
   @override
   void initState() {
     super.initState();
-    done = retrieveGroup();
+    //done = retrieveGroup();
     method = methods.first;
     _concertDate.text =
         DateFormat('yyyy-mm-dd HH:mm').format(widget.group.date!);
@@ -45,10 +45,10 @@ class _IndividualGroupState extends State<IndividualGroup> {
 
   final _concertDate = TextEditingController();
   final _title = TextEditingController();
-  final _passcode = TextEditingController();
-  bool passcodeUnfilled = false;
   bool titleUnfilled = false;
-  Future<bool>? done;
+  final _passcode = PasscodeAlert();
+  final _username = PasscodeAlert();
+  //Future<bool>? done;
 
   bool created() {
     if (user.id != widget.group.maestroID) {
@@ -377,7 +377,7 @@ class _IndividualGroupState extends State<IndividualGroup> {
                                 _showSnack(context, SocketType.maestro);
                                 return;
                               }
-                              _passcode.clear();
+                              _passcode.editor.clear();
                               return;
                             },
                             child: Text(
@@ -418,7 +418,7 @@ class _IndividualGroupState extends State<IndividualGroup> {
                                 _showSnack(context, SocketType.performer);
                                 return;
                               }
-                              _passcode.clear();
+                              _passcode.editor.clear();
                             },
                             child: Text(
                               'Performer',
@@ -807,6 +807,9 @@ class _IndividualGroupState extends State<IndividualGroup> {
             ),
             TextButton(
               onPressed: () {
+                if (_passcode.unfilled) {
+                  return;
+                }
                 Navigator.pop(context, true);
               },
               child: const Text(
@@ -815,7 +818,7 @@ class _IndividualGroupState extends State<IndividualGroup> {
               ),
             ),
           ],
-          content: PasscodeAlert(editor: _passcode),
+          content: _passcode,
         );
       }
     );
@@ -828,7 +831,7 @@ class _IndividualGroupState extends State<IndividualGroup> {
 
   Future<bool> checkMaestroPasscode() async {
     Map<String, dynamic> query = {
-      'maestroPasscode': _passcode.value.text,
+      'maestroPasscode': _passcode.editor.value.text,
     };
 
     final res = await GroupsAPI.prepare(query);
@@ -845,7 +848,7 @@ class _IndividualGroupState extends State<IndividualGroup> {
 
   Future<bool> checkPerformerPasscode() async {
     Map<String, dynamic> query = {
-      'performerPasscode': _passcode.value.text,
+      'performerPasscode': _passcode.editor.value.text,
     };
 
     final res = await GroupsAPI.validatePerformer(query);
@@ -862,7 +865,7 @@ class _IndividualGroupState extends State<IndividualGroup> {
 
   Future<bool> checkListenerPasscode() async {
     Map<String, dynamic> query = {
-      'listenerPasscode': _passcode.value.text,
+      'listenerPasscode': _passcode.editor.value.text,
     };
 
     final res = await GroupsAPI.prepare(query);
@@ -892,12 +895,46 @@ class _IndividualGroupState extends State<IndividualGroup> {
           ),
         )
         .closed
-        .then((reason) {
+        .then((reason) async {
+          if (!user.logged) {
+            bool? gotUsername = await showDialog(
+                context: context,
+                builder: (context) {
+                  return AlertDialog(
+                    title: const Text("Enter a username to put onto the concert"),
+                    shape:  RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)),
+                    elevation: 15,
+                    actions: <Widget>[
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pop(context, false);
+                        },
+                        child: const Text(
+                          'Be anonymous',
+                          style: TextStyle(color: Colors.red, fontSize: 18),
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pop(context, true);
+                        },
+                        child: const Text(
+                          'Enter name',
+                          style: TextStyle(color: Colors.red, fontSize: 18),
+                        ),
+                      ),
+                    ],
+                    content: _username,
+                  );
+                }
+            );
+          }
           if (context.mounted) {
             if (type == SocketType.maestro) {
-              Navigator.restorablePushNamed(context, '/group/recording/maestro');
+              Navigator.restorablePushNamed(context, '/group/recording/maestro', arguments: _passcode.editor.value.text);
             } else if (type == SocketType.performer) {
-              Navigator.restorablePushNamed(context, '/group/recording/performer');
+              Navigator.restorablePushNamed(context, '/group/recording/performer', arguments: _passcode.editor.value.text);
             } else if (type == SocketType.listener) {
               Navigator.restorablePushNamed(context, '/group/recording/listener');
             }
@@ -905,21 +942,20 @@ class _IndividualGroupState extends State<IndividualGroup> {
     });
   }
 
-  Future<bool> retrieveGroup() async {
-    // Map<String, dynamic> groupsJSON = GroupsAPI.getGroup;
-    // if (!groupsJSON.containsKey('group')) {
-    //   return false;
-    // }
-    // var data = groupsJSON['group'];
-    // group = Group.fromJson(data);
-    return true;
-  }
+  // Future<bool> retrieveGroup() async {
+  //   Map<String, dynamic> groupsJSON = GroupsAPI.getGroup;
+  //   if (!groupsJSON.containsKey('group')) {
+  //     return false;
+  //   }
+  //   var data = groupsJSON['group'];
+  //   group = Group.fromJson(data);
+  //   return true;
+  // }
 }
 
 class PasscodeAlert extends StatefulWidget {
-  late final editor;
-
-  PasscodeAlert({required this.editor});
+  final editor = TextEditingController();
+  bool unfilled = false;
 
   @override
   _PasscodeAlertState createState() => _PasscodeAlertState();
@@ -937,12 +973,23 @@ class _PasscodeAlertState extends State<PasscodeAlert> {
     return TextField(
       maxLines: 1,
       controller: widget.editor,
-      decoration: globalDecoration.copyWith(
+      decoration: widget.unfilled
+          ? invalidTextField.copyWith(
+          hintText: 'Enter your passcode')
+          : globalDecoration.copyWith(
           hintText: 'Enter your passcode'),
+
       style: TextStyle(
         fontSize: smallFontSize,
         color: buttonTextColor,
       ),
+      onChanged: (field) {
+        if (field.isEmpty) {
+          setState(() => widget.unfilled = true);
+          return;
+        }
+        setState(() => widget.unfilled = false);
+      },
       textAlign: TextAlign.left,
       textInputAction: TextInputAction.done,
     );
