@@ -9,8 +9,13 @@ import '../components/recorder.dart';
 import '../components/socket_listener.dart';
 import '../utils/colors.dart';
 import '../utils/globals.dart';
+import '../utils/user.dart';
 
 class PerformerScreen extends StatefulWidget {
+  late final String passcode;
+
+  PerformerScreen({required this.passcode});
+
   @override
   _PerformerScreenState createState() => _PerformerScreenState();
 }
@@ -41,7 +46,7 @@ class _PerformerScreenState extends State<PerformerScreen> {
   }
 
   Future<void> connectPerformSocket() async {
-    performSocket = SocketConnect(SocketType.performer);
+    performSocket = SocketConnect(SocketType.performer, user.logged ? user.username : 'jeff', widget.passcode);
     performSocket!.socket.stream.listen(
       (data) {
         String s = splitHeader(data);

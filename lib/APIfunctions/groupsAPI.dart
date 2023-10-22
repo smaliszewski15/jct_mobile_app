@@ -55,6 +55,21 @@ class GroupsAPI {
     return response;
   }
 
+  static Future<http.Response> validatePerformer(Map<String, dynamic> query) async {
+    http.Response response;
+
+    try {
+      response = await http.post(Uri.https(API_PREFIX, '${apiRoute}/validatePerformer'),
+          body: json.encode(query),
+          headers: authHeader);
+    } catch (e) {
+      print(e.toString());
+      throw Exception('Could not connect to server');
+    }
+
+    return response;
+  }
+
   static Future<http.Response> getNextConcert() async {
     http.Response response;
 

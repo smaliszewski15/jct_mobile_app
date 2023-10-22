@@ -41,8 +41,6 @@ class Routes {
     editPasswordScreen: (context) => EditPasswordPage(),
     login: (context) => LogInPage(),
     register: (context) => RegisterPage(),
-    maestroScreen: (context) => MaestroScreen(),
-    performerScreen: (context) => PerformerScreen(),
     listenScreen: (context) => ListenScreen(),
     //addGroupScreen: (context) => AddGroup(),
   };
@@ -69,6 +67,22 @@ class Routes {
         var arguments = settings.arguments;
         if (arguments is Group) {
           return MaterialPageRoute(builder: (context) => IndividualGroup(arguments));
+        }
+        else {
+          return MaterialPageRoute(builder: (context) => ErrorScreen());
+        }
+      case maestroScreen:
+        var arguments = settings.arguments;
+        if (arguments is String) {
+          return MaterialPageRoute(builder: (context) => MaestroScreen(passcode: arguments));
+        }
+        else {
+          return MaterialPageRoute(builder: (context) => ErrorScreen());
+        }
+      case performerScreen:
+        var arguments = settings.arguments;
+        if (arguments is String) {
+          return MaterialPageRoute(builder: (context) => PerformerScreen(passcode: arguments));
         }
         else {
           return MaterialPageRoute(builder: (context) => ErrorScreen());

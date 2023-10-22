@@ -113,66 +113,76 @@ class _ConcertsState extends State<ConcertsScreen> {
                 ],
               ),
             ),
-            if (upcoming.groupID != -1)
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(5),
-                decoration: BoxDecoration(
-                  color: mainSchemeColor,
-                  border: Border.all(color: black, width: 3),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    Text(
-                      'Upcoming Concert',
-                      style: TextStyle(
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(5),
+              decoration: BoxDecoration(
+                color: mainSchemeColor,
+                border: Border.all(color: black, width: 3),
+              ),
+              child: upcoming.groupID != -1 ? Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Text(
+                    'Upcoming Concert',
+                    style: TextStyle(
+                      fontSize: headingFontSize,
+                      color: buttonTextColor,
+                    ),
+                  ),
+                  Text(
+                    "Session Date and Time: ${upcoming.date}",
+                    style: TextStyle(
+                      fontSize: infoFontSize,
+                      color: buttonTextColor,
+                    ),
+                  ),
+                  Text(
+                    "Group Leader: ${upcoming.maestro}",
+                    style: TextStyle(
+                      fontSize: infoFontSize,
+                      color: buttonTextColor,
+                    ),
+                  ),
+                  Text(
+                    "Tags: ${upcoming.tags.split('`').join(', ')}",
+                    style: TextStyle(
+                      fontSize: infoFontSize,
+                      color: buttonTextColor,
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pushNamed(
+                          context, '/group/group',
+                          arguments: upcoming);
+                    },
+                    style: TextButton.styleFrom(
+                      textStyle: const TextStyle(
                         fontSize: headingFontSize,
-                        color: buttonTextColor,
+                        color: Color(0xff2483f0),
+                        fontStyle: FontStyle.italic,
+                        decoration: TextDecoration.underline,
                       ),
                     ),
-                    Text(
-                      "Session Date and Time: ${upcoming.date}",
-                      style: TextStyle(
-                        fontSize: infoFontSize,
-                        color: buttonTextColor,
-                      ),
+                    child: const Text(
+                      "Check it out ->",
                     ),
-                    Text(
-                      "Group Leader: ${upcoming.maestro}",
-                      style: TextStyle(
-                        fontSize: infoFontSize,
-                        color: buttonTextColor,
-                      ),
-                    ),
-                    Text(
-                      "Tags: ${upcoming.tags.split('`').join(', ')}",
-                      style: TextStyle(
-                        fontSize: infoFontSize,
-                        color: buttonTextColor,
-                      ),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pushNamed(
-                            context, '/group/group',
-                            arguments: upcoming);
-                      },
-                      style: TextButton.styleFrom(
-                        textStyle: const TextStyle(
-                          fontSize: headingFontSize,
-                          color: Color(0xff2483f0),
-                          fontStyle: FontStyle.italic,
-                          decoration: TextDecoration.underline,
-                        ),
-                      ),
-                      child: const Text(
-                        "Check it out ->",
-                      ),
-                    ),
-                  ],
+                  ),
+                ],
+              ) : Container(
+                padding: const EdgeInsets.all(5),
+                width: double.infinity,
+                child: Text(
+                  'No upcoming concerts at this time. Go schedule one by going to the "Schedule" tab!',
+                  style: TextStyle(
+                    fontSize: headingFontSize,
+                    color: buttonTextColor,
+                  ),
+                  textAlign: TextAlign.center,
                 ),
               ),
+            ),
             SizedBox(
               width: double.infinity,
               height: blockHeight,
@@ -280,7 +290,6 @@ class _ConcertsState extends State<ConcertsScreen> {
     if (searchQuery != oldQuery) {
       page = 0;
     }
-    searchResults = [];
 
     var data = json.decode(res.body);
     if (!data.containsKey('searchResults')) {
@@ -292,8 +301,9 @@ class _ConcertsState extends State<ConcertsScreen> {
       page--;
       totalPages = page;
       _showSnack(context);
-      return getConcertList(oldQuery);
+      return true;
     }
+    searchResults = [];
 
     for (var map in data['searchResults']) {
       Concert newConcert = Concert.searchedSong(map);

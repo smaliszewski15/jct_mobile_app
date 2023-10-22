@@ -8,6 +8,7 @@ import '../components/player.dart';
 import '../components/socket_listener.dart';
 import '../utils/colors.dart';
 import '../utils/globals.dart';
+import '../utils/user.dart';
 
 final Uint8List silence = Uint8List(5000);
 
@@ -40,7 +41,7 @@ class _ListenScreenState extends State<ListenScreen> {
   }
 
   Future<void> connectListenSocket() async {
-    socket = SocketConnect(SocketType.listener);
+    socket = SocketConnect(SocketType.listener, user.logged ? user.username : 'jeff', '');
     socket!.socket.stream.listen(
           (data) {
             String s = splitHeader(data);

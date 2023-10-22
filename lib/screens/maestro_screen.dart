@@ -2,14 +2,19 @@ import 'dart:async';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
+
 import '../APIfunctions/api_globals.dart';
 import '../components/player.dart';
 import '../components/recorder.dart';
 import '../components/socket_listener.dart';
 import '../utils/colors.dart';
 import '../utils/globals.dart';
+import '../utils/user.dart';
 
 class MaestroScreen extends StatefulWidget {
+  late final String passcode;
+
+  MaestroScreen({required this.passcode});
 
   @override
   _MaestroScreenState createState() => _MaestroScreenState();
@@ -66,7 +71,7 @@ class _MaestroScreenState extends State<MaestroScreen> {
   }
 
   Future<void> connect() async {
-    socket = SocketConnect(SocketType.maestro);
+    socket = SocketConnect(SocketType.maestro, user.username, widget.passcode);
     socket!.socket.stream.listen(
           (data) {
         String s = splitHeader(data);

@@ -48,7 +48,6 @@ class _IndividualGroupState extends State<IndividualGroup> {
   final _passcode = TextEditingController();
   bool passcodeUnfilled = false;
   bool titleUnfilled = false;
-  //late Group group;
   Future<bool>? done;
 
   bool created() {
@@ -849,7 +848,7 @@ class _IndividualGroupState extends State<IndividualGroup> {
       'performerPasscode': _passcode.value.text,
     };
 
-    final res = await GroupsAPI.prepare(query);
+    final res = await GroupsAPI.validatePerformer(query);
     if (res.statusCode != 200) {
       print(res.body);
       var message = json.decode(res.body);
