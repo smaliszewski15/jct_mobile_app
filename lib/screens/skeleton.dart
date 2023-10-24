@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'audi_test.dart';
 import 'concerts_screen.dart';
 import 'home_screen.dart';
 import 'schedule_screen.dart';
@@ -200,8 +199,6 @@ class _SkeletonState extends State<Skeleton> {
                       return ScheduleScreen(_scheduleManager);
                     case NavState.admin:
                       return Container();
-                    case NavState.audi:
-                      return AudioTest();
                   }
                 },
               ),
@@ -318,43 +315,6 @@ class _SkeletonState extends State<Skeleton> {
                             navBarTextSize, //user.isAdmin ? navBarTextSize,
                             color: _navManager.buttonNotifier.value ==
                                 NavState.schedule
-                                ? mainSchemeColor
-                                : white,
-                          ),
-                          textAlign: TextAlign.center,
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-                Expanded(
-                  flex: 2,
-                  child: OutlinedButton(
-                    onPressed: () {
-                      if (_navManager.buttonNotifier.value !=
-                          NavState.audi) {
-                        _navManager.audi();
-                        setState(() {});
-                      }
-                    },
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Icon(
-                          Icons.build,
-                          size: bottomIconSize,
-                          color: _navManager.buttonNotifier.value ==
-                              NavState.audi
-                              ? mainSchemeColor
-                              : white,
-                        ),
-                        Text(
-                          'Audi',
-                          style: TextStyle(
-                            fontSize:
-                            navBarTextSize, //navBarTextSize,
-                            color: _navManager.buttonNotifier.value ==
-                                NavState.concert
                                 ? mainSchemeColor
                                 : white,
                           ),

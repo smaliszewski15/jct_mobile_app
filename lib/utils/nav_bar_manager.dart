@@ -28,11 +28,6 @@ class NavStateManager {
     buttonNotifier.value = NavState.schedule;
   }
 
-  void audi() {
-    title = 'Audio Vis Test';
-    buttonNotifier.value = NavState.audi;
-  }
-
   void admin() {
     title = 'Admin Page';
     buttonNotifier.value = NavState.admin;
@@ -40,5 +35,5 @@ class NavStateManager {
 }
 
 enum NavState{
-  home, concert, schedule, admin, audi
+  home, concert, schedule, admin
 }
