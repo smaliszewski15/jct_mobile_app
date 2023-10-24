@@ -17,6 +17,7 @@ class Group {
   Group({this.groupID = -1, this.members, this.maestro = '', this.maestroID = -1, this.tags = '', this.title = '', this.description = '', this.date, this.passcodes, this.groupName});
 
   factory Group.fromNextJson(Map json) {
+    print(json);
     String leader = json['GroupLeaderName'] ?? '';
     String title = json['Title'] ?? '';
     int groupID = json['GroupID'] ?? -1;

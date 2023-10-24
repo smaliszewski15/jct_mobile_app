@@ -8,7 +8,7 @@ class UserProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     try {
-      if (user!.logged == true) {
+      if (user.logged == true) {
         return Profile();
       }
       return notLogged(context);
@@ -168,7 +168,7 @@ class _ProfileState extends State<Profile> {
                                 Radius.circular(roundedCorners)),
                           ),
                           child: Text(
-                            user!.name == '' ? 'No Name' : user!.name,
+                            user.name == '' ? 'No Name' : user.name,
                             style: TextStyle(
                               fontSize: smallFontSize,
                               color: buttonTextColor,
@@ -201,7 +201,7 @@ class _ProfileState extends State<Profile> {
                                 Radius.circular(roundedCorners)),
                           ),
                           child: Text(
-                            user!.username == '' ? 'No User Name' : user!.username,
+                            user.username == '' ? 'No User Name' : user.username,
                             style: TextStyle(
                               fontSize: smallFontSize,
                               color: buttonTextColor,
@@ -234,7 +234,7 @@ class _ProfileState extends State<Profile> {
                                 Radius.circular(roundedCorners)),
                           ),
                           child: Text(
-                            user!.email == '' ? 'No Email' : user!.email,
+                            user.email == '' ? 'No Email' : user.email,
                             style: TextStyle(
                               fontSize: smallFontSize,
                               color: buttonTextColor,
@@ -268,7 +268,7 @@ class _ProfileState extends State<Profile> {
                                 Radius.circular(roundedCorners)),
                           ),
                           child: Text(
-                            user!.phoneNumber == '' ? 'No Phone Number' : user!.phoneNumber,
+                            user.phoneNumber == '' ? 'No Phone Number' : user.phoneNumber,
                             style: TextStyle(
                               fontSize: smallFontSize,
                               color: buttonTextColor,

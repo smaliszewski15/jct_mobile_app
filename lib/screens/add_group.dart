@@ -390,9 +390,11 @@ class _AddGroupState extends State<AddGroup> {
     String date = DateFormat('yyyy-MM-dd').format(widget.date!.toUtc()).toString();
     String time = DateFormat('Hms').format(widget.date!.toUtc()).toString();
 
+    String tags = _tags.value.text.split(', ').join('`');
+
     Map<String,dynamic> package = {
       'concertTitle': _title.value.text,
-      'concertTags': _tags.value.text,
+      'concertTags': tags,
       'concertDescription': _description.value.text,
       'date': date,
       'time': time,

@@ -80,6 +80,7 @@ class User {
 
       final res = await UserAPI.login(entries);
       if (res.statusCode != 200) {
+        print(res.statusCode);
         print(res.body);
         return toRet;
       }
@@ -118,6 +119,9 @@ class User {
         }
 
         User toRet = await User._loginUser(userData);
+        if (toRet.logged == false) {
+          await prefs.clear();
+        }
 
         return toRet;
       } catch (e) {

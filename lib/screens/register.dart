@@ -19,8 +19,7 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   void initState() {
     fields = {
-      'name': CustomTextField(minLength: 10, maxLength: 100, fieldName: 'Name', fieldEntry: '', tooltipKey: GlobalKey<TooltipState>()),
-      'username' : CustomTextField(minLength: 10, maxLength: 255, fieldName: 'Username', fieldEntry: '', tooltipKey: GlobalKey<TooltipState>()),
+      'username' : CustomTextField(minLength: 2, maxLength: 255, fieldName: 'Username', fieldEntry: '', tooltipKey: GlobalKey<TooltipState>()),
       'email' : CustomTextField(minLength: 10, maxLength: 255, fieldName: 'Email', fieldEntry: '', tooltipKey: GlobalKey<TooltipState>()),
       'phone_number' : CustomTextField(minLength: 10, maxLength: 10, fieldName: 'Phone Number', fieldEntry: '', tooltipKey: GlobalKey<TooltipState>(), keyboardType: TextInputType.phone),
       'password' : CustomTextField(minLength: 4, maxLength: 60, fieldName: 'Password', fieldEntry: '', tooltipKey: GlobalKey<TooltipState>()),
@@ -143,32 +142,6 @@ class _RegisterPageState extends State<RegisterPage> {
                                 ),
                                 textAlign: TextAlign.center,
                               ),
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                Text(
-                                  'Name',
-                                  style: TextStyle(
-                                    fontSize: smallFontSize,
-                                    color: textColor,
-                                  ),
-                                ),
-                                Text(
-                                  '*',
-                                  style: TextStyle(
-                                    fontSize: smallFontSize,
-                                    color: invalidColor,
-                                  ),
-                                ),
-                                BasicTooltip(message: "Names must be\n2-100 characters long and\ncan only contain\nASCII characters", tooltipkey: fields['name']!.tooltipKey),
-                              ]
-                            ),
-                            Container(
-                              width: MediaQuery.of(context).size.width,
-                              height: 40,
-                              margin: const EdgeInsets.only(bottom: 5),
-                              child: fields['name']!,
                             ),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -398,7 +371,6 @@ class _RegisterPageState extends State<RegisterPage> {
 
   Future<bool> register() async {
     Map<String, dynamic> package = {
-      'Name': fields['name']!.editor.value.text,
       'UserName': fields['username']!.editor.value.text,
       'Email': fields['email']!.editor.value.text,
       'Password': fields['password']!.editor.value.text,
@@ -413,7 +385,7 @@ class _RegisterPageState extends State<RegisterPage> {
     }
 
     user = User.userFromJson(data);
-    user!.setPassword(fields['password']!.editor.value.text);
+    user.setPassword(fields['password']!.editor.value.text);
     return true;
   }
 
@@ -424,6 +396,7 @@ class _RegisterPageState extends State<RegisterPage> {
         if (value.isUnfilled() || !value.validate()) {
           toReturn = false;
           value.showToolTip();
+          errorMessage = 'Fields are invalid';
         }
       } else {
         if (!value.isUnfilled()) {

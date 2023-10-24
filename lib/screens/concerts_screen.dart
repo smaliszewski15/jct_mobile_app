@@ -325,6 +325,7 @@ class _ConcertsState extends State<ConcertsScreen> {
     if (!data.containsKey('nextConcertGroup')) {
       return false;
     }
+    data = data['nextConcertGroup'];
 
     upcoming = Group.fromNextJson(data);
     setState(() {});
