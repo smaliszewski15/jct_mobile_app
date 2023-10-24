@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 
 import '../APIfunctions/api_globals.dart';
+import '../components/audio_wavepainter.dart';
 import '../components/player.dart';
 import '../components/recorder.dart';
 import '../components/socket_listener.dart';
@@ -26,9 +27,8 @@ class _PerformerScreenState extends State<PerformerScreen> {
 
   final Player _mPlayer = Player();
   final Recorder _mRecorder = Recorder();
-  StreamSubscription? _audioDetectedSubscription;
   StreamSubscription? _mRecordingDataSubscription;
-  bool audioDetected = false;
+  StreamController? audio;
   bool muted = false;
   bool started = false;
   List<String> participants = [];
@@ -46,7 +46,7 @@ class _PerformerScreenState extends State<PerformerScreen> {
   }
 
   Future<void> connectPerformSocket() async {
-    performSocket = SocketConnect(SocketType.performer, user.logged ? user.username : 'jeff', widget.passcode);
+    performSocket = SocketConnect(SocketType.performer, user.username != '' ? user.username : 'Anonymous User', widget.passcode);
     performSocket!.socket.stream.listen(
       (data) {
         String s = splitHeader(data);
@@ -99,15 +99,10 @@ class _PerformerScreenState extends State<PerformerScreen> {
 
   Future<void>? stopRecorder() async {
     await _mRecorder.stopRecorder();
-    if (_audioDetectedSubscription != null) {
-      await _audioDetectedSubscription!.cancel();
-      _audioDetectedSubscription = null;
-    }
     if (_mRecordingDataSubscription != null) {
       await _mRecordingDataSubscription!.cancel();
       _mRecordingDataSubscription = null;
     }
-    audioDetected = false;
     return;
   }
 
@@ -125,17 +120,12 @@ class _PerformerScreenState extends State<PerformerScreen> {
       if (buffer is FoodData) {
         if (buffer.data != null) {
           performSocket!.socket.sink.add(musicHeader(buffer.data!));
+          var newData = Uint8List.fromList(buffer.data!);
+          audio!.add(newData);
         }
       }
     });
 
-    _audioDetectedSubscription = _mRecorder.mRecorder!.onProgress!.listen((e) {
-      if (e.decibels! > 20 && !audioDetected) {
-        setState(() => audioDetected = true);
-      } else if (e.decibels! < 20 && audioDetected) {
-        setState(() => audioDetected = false);
-      }
-    });
     await _mRecorder.record(recordingDataController);
     setState(() {});
   }
@@ -158,6 +148,7 @@ class _PerformerScreenState extends State<PerformerScreen> {
     return WillPopScope(
       onWillPop: () async {
         stopEverything();
+        user.username = '';
         return true;
       },
       child: Scaffold(
@@ -241,6 +232,29 @@ class _PerformerScreenState extends State<PerformerScreen> {
                     textAlign: TextAlign.center,
                   ),
                 ),
+                if (_mRecorder.isRecording)
+                  StreamBuilder(
+                    stream: audio!.stream,
+                    builder: (context, snapshot) {
+                      if (snapshot.data == null) return Container();
+
+                      final buffer = snapshot.data.buffer.asInt16List();
+
+                      return Container(
+                        width: double.infinity,
+                        height: 200,
+                        child: CustomPaint(
+                          painter: AudioWaveForms(
+                            waveData: buffer,
+                            color: black,
+                            numSamples: buffer.length,
+                            gap: 2,
+                          ),
+                          child: Container(),
+                        ),
+                      );
+                    },
+                  ),
                 const Spacer(),
               ],
             ),

@@ -929,6 +929,9 @@ class _IndividualGroupState extends State<IndividualGroup> {
                   );
                 }
             );
+            if (gotUsername == true) {
+              user.username = _username.editor.value.text;
+            }
           }
           if (context.mounted) {
             if (type == SocketType.maestro) {

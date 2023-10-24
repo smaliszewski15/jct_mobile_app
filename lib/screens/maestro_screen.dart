@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 
 import '../APIfunctions/api_globals.dart';
+import '../components/audio_wavepainter.dart';
 import '../components/player.dart';
 import '../components/recorder.dart';
 import '../components/socket_listener.dart';
@@ -26,11 +27,9 @@ class _MaestroScreenState extends State<MaestroScreen> {
 
   final Player _mPlayer = Player();
   final Recorder _mRecorder = Recorder();
-  StreamSubscription? _audioDetectedSubscription;
   StreamSubscription? _mRecordingDataSubscription;
-  bool audioDetected = false;
+  StreamController? audio;
   bool muted = false;
-  bool started = false;
   List<String> participants = [];
 
   @override
@@ -53,15 +52,10 @@ class _MaestroScreenState extends State<MaestroScreen> {
 
   Future<void>? stopRecorder() async {
     await _mRecorder.stopRecorder();
-    if (_audioDetectedSubscription != null) {
-      await _audioDetectedSubscription!.cancel();
-      _audioDetectedSubscription = null;
-    }
     if (_mRecordingDataSubscription != null) {
       await _mRecordingDataSubscription!.cancel();
       _mRecordingDataSubscription = null;
     }
-    audioDetected = false;
     return;
   }
 
@@ -104,7 +98,6 @@ class _MaestroScreenState extends State<MaestroScreen> {
     socket!.socket.sink.add(stop);
     await stopRecorder();
     await stopPlayer();
-    started = false;
   }
 
   Future<void> disconnect() async {
@@ -126,17 +119,13 @@ class _MaestroScreenState extends State<MaestroScreen> {
           if (buffer is FoodData) {
             if (buffer.data != null) {
               socket!.socket.sink.add(musicHeader(buffer.data!));
+
+              var newData = Uint8List.fromList(buffer.data!);
+              audio!.add(newData);
             }
           }
         });
 
-    _audioDetectedSubscription = _mRecorder.mRecorder!.onProgress!.listen((e) {
-      if (e.decibels! > 20 && !audioDetected) {
-        setState(() => audioDetected = true);
-      } else if (e.decibels! < 20 && audioDetected) {
-        setState(() => audioDetected = false);
-      }
-    });
     await _mRecorder.record(recordingDataController);
     socket!.socket.sink.add(start);
     _mRecorder.isRecording = true;
@@ -154,10 +143,8 @@ class _MaestroScreenState extends State<MaestroScreen> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        await stopRecorder();
-        if (socket != null) {
-          disconnect();
-        }
+        stopEverything();
+        user.username = '';
         return true;
       },
       child: Scaffold(
@@ -214,19 +201,16 @@ class _MaestroScreenState extends State<MaestroScreen> {
                     child: TextButton(
                       onPressed: () async {
                         if (!_mRecorder.mRecorderIsInited) {
-                          audioDetected = false;
                           return;
                         }
                         if (_mRecorder.isRecording) {
                           await stopEverything();
-                          started = false;
                         } else {
                           if (socket == null) {
                             connect();
                           }
                           await record();
                           await listenForSink();
-                          started = true;
                         }
                         setState((){});
                       },
@@ -265,18 +249,29 @@ class _MaestroScreenState extends State<MaestroScreen> {
                       ),
                     ),
                   ),
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(10),
-                    child: Text(
-                      started ? 'Started!' : '',
-                      style: TextStyle(
-                        fontSize: headingFontSize,
-                        color: textColor,
-                      ),
-                      textAlign: TextAlign.center,
+                  if (_mRecorder.isRecording)
+                    StreamBuilder(
+                      stream: audio!.stream,
+                      builder: (context, snapshot) {
+                        if (snapshot.data == null) return Container();
+
+                        final buffer = snapshot.data.buffer.asInt16List();
+
+                        return Container(
+                          width: double.infinity,
+                          height: 200,
+                          child: CustomPaint(
+                            painter: AudioWaveForms(
+                              waveData: buffer,
+                              color: black,
+                              numSamples: buffer.length,
+                              gap: 2,
+                            ),
+                            child: Container(),
+                          ),
+                        );
+                      },
                     ),
-                  ),
                   const Spacer(),
                 ],
               ),
