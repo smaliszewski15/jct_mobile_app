@@ -15,12 +15,6 @@ class EditUserProfilePage extends StatefulWidget {
 class _EditUserProfilePageState extends State<EditUserProfilePage> {
   @override
   void initState() {
-    name = CustomTextField(
-        minLength: 2,
-        maxLength: 100,
-        fieldName: 'Name',
-        fieldEntry: user.name,
-        tooltipKey: GlobalKey<TooltipState>());
     username = CustomTextField(
         minLength: 2,
         maxLength: 255,
