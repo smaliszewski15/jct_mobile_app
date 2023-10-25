@@ -46,7 +46,7 @@ class HomeScreen extends StatelessWidget {
                           'take a recording of any sound and mix them all into one song called a concert. It can be any sound such as '
                           'waves of a beach, birds chirping, sound of a metro passing by, and so much more.',
                       style: TextStyle(
-                          fontSize: bioTextSize,
+                          fontSize: smallFontSize,
                           color: textColor
                       ),
                       textAlign: TextAlign.center,
@@ -78,7 +78,7 @@ class HomeScreen extends StatelessWidget {
                             "With our project we wanted to encapsulate John Cage's philosophy that anything can be music. "
                             "We worked closely with our Sponsor Richard Leinecker to develop an application that can be used by anyone to make their own unique piece of music.",
                         style: TextStyle(
-                            fontSize: bioTextSize,
+                            fontSize: smallFontSize,
                             color: textColor
                         ),
                         textAlign: TextAlign.center,
@@ -254,7 +254,7 @@ class HomeScreen extends StatelessWidget {
                 ),
               ],
             ),
-            Padding(
+            Container(
               padding: const EdgeInsets.symmetric(vertical: 10),
               child: Text(
                 'About John Cage',
@@ -277,7 +277,7 @@ class HomeScreen extends StatelessWidget {
                             "He experimented with his works for dance and subsequent collaborations with the choreographer and dancer Merce Cunningham sparked a long creative and romantic partnership."
                             "\n\nIn the following years, Cage turned to Zen Buddhism and other Eastern philosophies which lead to his conclusion that all activities that makes up the music must be seen as part of a single natural process.",
                         style: TextStyle(
-                            fontSize: bioTextSize,
+                            fontSize: smallFontSize,
                             color: textColor
                         ),
                         textAlign: TextAlign.center,

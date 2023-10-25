@@ -80,7 +80,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
                 : globalDecoration.copyWith(
                 hintText: 'Enter ${widget.fieldName}'),
             style: TextStyle(
-              fontSize: bioTextSize + 2,
+              fontSize: smallFontSize,
               color: buttonTextColor,
             ),
             keyboardType: widget.keyboardType,

@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import '../APIFunctions/api_globals.dart';
@@ -8,9 +7,13 @@ class SocketConnect {
   late WebSocketChannel socket;
   late SocketType type;
   bool _isConnected = false;
+  late String name;
+  late String passcode;
 
-  SocketConnect(SocketType newType) {
+  SocketConnect(SocketType newType, String userName, String passCode) {
     type = newType;
+    name = userName;
+    passcode = passCode;
     _init();
   }
 
@@ -32,12 +35,12 @@ class SocketConnect {
   }
 
   Future<void> connectForMaestro() async {
-    socket = WebSocketChannel.connect(Uri.parse('ws://$API_PREFIX:8080/concert/performer/maestro?name=john='));
+    socket = WebSocketChannel.connect(Uri.parse('ws://$API_PREFIX:8080/concert/performer/maestro?name=$name=passcode=$passcode'));
     _isConnected = true;
   }
 
   Future<void> connectForRecording() async {
-    socket = WebSocketChannel.connect(Uri.parse('ws://$API_PREFIX:8080/concert/performer?name=jeff='));
+    socket = WebSocketChannel.connect(Uri.parse('ws://$API_PREFIX:8080/concert/performerSECURE?name=$name=passcode=$passcode'));
     _isConnected = true;
   }
 

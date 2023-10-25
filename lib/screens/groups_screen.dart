@@ -4,7 +4,6 @@ import 'dart:io';*/
 import 'package:flutter/material.dart';
 import '../utils/colors.dart';
 import '../utils/globals.dart';
-import 'individual_concert.dart';
 
 class GroupsScreen extends StatefulWidget {
   @override

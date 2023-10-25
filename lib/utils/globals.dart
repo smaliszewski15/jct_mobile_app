@@ -1,18 +1,22 @@
 import 'package:flutter/material.dart';
 import 'colors.dart';
 
+
+//Font Sizes
+const double bigButtonFontSize = 48;
 const double titleFontSize = 40;
 const double headingFontSize = 28;
+const double buttonFontSize = 28;
 const double infoFontSize = 20;
-const double bioTextSize = 18;
-const double smallerNavBarTextSize = 10;
+const double smallFontSize = 18;
+const double extraSmallFontSize = 16;
 const double navBarTextSize = 10;
+
+//Icon Sizes
 const double bottomIconSize = 40;
-const double bigButtonFontSize = 48;
+const double smallIconSize = 20;
+
 const double navBarHeight = 80;
-
-const double maxTextLength = 25;
-
 const double roundedCorners = 20;
 
 RegExp emailValidation = RegExp(
@@ -41,7 +45,7 @@ final titleTextStyle = TextStyle(
 TextStyle errorTextStyle = TextStyle(fontSize: 10, color: invalidColor);
 
 final globalDecoration = InputDecoration(
-    contentPadding: const EdgeInsets.symmetric(vertical: 5, horizontal: 1),
+    contentPadding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
     counterText: '',
     filled: true,
     fillColor: textFieldBackingColor,

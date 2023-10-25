@@ -70,19 +70,19 @@ class _GroupCardState extends State<GroupCard>
                               Text(
                                 widget.group!.maestro,
                                 style: TextStyle(
-                                  fontSize: bioTextSize,
+                                  fontSize: smallFontSize,
                                   color: textColor,
                                 ),
                               ),
                             ],
                           ),
                         const Spacer(),
-                        Text(
-                          '${widget.group!.members!.length}/4',
-                          style: TextStyle(
-                              fontSize: infoFontSize,
-                              color: widget.height == 60 ? textColor : black),
-                        ),
+                        // Text(
+                        //   '${widget.group!.members!.length}/4',
+                        //   style: TextStyle(
+                        //       fontSize: infoFontSize,
+                        //       color: widget.height == 60 ? textColor : black),
+                        // ),
                       ],
                     ),
                     if (widget.clickable)
@@ -101,25 +101,25 @@ class _GroupCardState extends State<GroupCard>
                               Text(
                                 widget.group!.maestro,
                                 style: const TextStyle(
-                                  fontSize: bioTextSize,
+                                  fontSize: smallFontSize,
                                   color: black,
                                 ),
                               ),
                             ],
                           ),
                           const Spacer(),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: widget.group!.members!
-                                .map((entry) => Text(
-                                      entry,
-                                      style: TextStyle(
-                                        fontSize: bioTextSize,
-                                        color: black,
-                                      ),
-                                    ))
-                                .toList(),
-                          ),
+                          // Column(
+                          //   mainAxisAlignment: MainAxisAlignment.end,
+                          //   children: widget.group!.members!
+                          //       .map((entry) => Text(
+                          //             entry,
+                          //             style: const TextStyle(
+                          //               fontSize: smallFontSize,
+                          //               color: black,
+                          //             ),
+                          //           ))
+                          //       .toList(),
+                          // ),
                         ],
                       ),
                   ],

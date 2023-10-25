@@ -9,7 +9,7 @@ class GroupsAPI {
   static const String apiRoute = '/api/schedules';
 
   static final authHeader = {HttpHeaders.contentTypeHeader: 'application/json',
-      HttpHeaders.authorizationHeader: user!.authToken};
+      HttpHeaders.authorizationHeader: user.authToken};
 
   static Future<http.Response> getSchedule(Map<String, dynamic> query) async {
     http.Response response;
@@ -55,7 +55,34 @@ class GroupsAPI {
     return response;
   }
 
+  static Future<http.Response> validatePerformer(Map<String, dynamic> query) async {
+    http.Response response;
 
+    try {
+      response = await http.post(Uri.https(API_PREFIX, '${apiRoute}/validatePerformer'),
+          body: json.encode(query),
+          headers: authHeader);
+    } catch (e) {
+      print(e.toString());
+      throw Exception('Could not connect to server');
+    }
+
+    return response;
+  }
+
+  static Future<http.Response> getNextConcert() async {
+    http.Response response;
+
+    try {
+      response = await http.get(Uri.https(API_PREFIX, '${apiRoute}/getNextConcert'),
+          headers: baseHeader);
+    } catch (e) {
+      print(e.toString());
+      throw Exception('Could not connect to server');
+    }
+
+    return response;
+  }
 
   static Map<String, dynamic> getGroups = {
     'groupsData': [
@@ -112,17 +139,14 @@ class GroupsAPI {
 
   static Map<String, dynamic> getGroup = {
     'group': {
-      'title': 'Title 1',
-      'maestro': 'Paul',
-      'tags': 'soft`loud',
-      'date': '2023-9-10',
-      'time': '22:40',
-      'members': [
-        'Stephen',
-        'Paul',
-        'Kyle',
-      ],
-      'description': 'This is a description of the group and what will be the concert ig',
+      'Title': 'Title 1',
+      'GroupID': 2,
+      'GroupLeaderName': 'Paul',
+      'GroupLeaderID': 4,
+      'Description': 'This is a description',
+      'Tags': 'soft`loud',
+      'Date': '2023-9-10',
+      'Time': '22:40',
     },
   };
 }

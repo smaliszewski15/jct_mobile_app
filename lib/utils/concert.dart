@@ -1,3 +1,5 @@
+import '../APIfunctions/api_globals.dart';
+
 class Concert {
   late String title;
   late int id;
@@ -5,26 +7,34 @@ class Concert {
   late List<String> performers;
   late String tags;
   late String description;
-  late String date;
+  late DateTime? date;
 
 
-  Concert({this.title = '', this.id = -1, this.maestro = '', this.performers = const [], this.tags = '', this.description = '', this.date = '',});
+  Concert({this.title = '', this.id = -1, this.maestro = '', this.performers = const [], this.tags = '', this.description = '', this.date});
 
   factory Concert.searchedSong(Map json) {
-    if (json.containsKey('Title') && json.containsKey('GroupID') && json.containsKey('GroupLeaderName')) {
-      return Concert(title: json['Title'], id: json['GroupID'], maestro: json['GroupLeaderName']);
-    }
-    return Concert();
+    String title = json['Title'] ?? '';
+    int id = json['GroupID'] ?? -1;
+    String maestro = json['GroupLeaderName'] ?? '';
+    String tags = json['Tags'] ?? '';
+    String description = json['Description'] ?? '';
+    DateTime date = ConvertToDate(json['Date'], json['Time']);
+    Concert newConcert = Concert(title: title, id: id, maestro: maestro, tags: tags, description: description, date: date);
+    return newConcert;
   }
 
   static Concert songFromJson(Map<String, dynamic> json) {
-    String title = json.containsKey('Title') ? json['Title'] : '';
-    int id = json['GroupID'];
-    String maestro = json.containsKey('GroupLeaderName') ? json['GroupLeaderName'] : '';
+    String title = json['Title'] ?? '';
+    int id = json['GroupID'] ?? -1;
+    String maestro = json['GroupLeaderName'] ?? '';
     List<String> perfs = _getPerformers(json);
     String tags = json['Tags'] ?? '';
     String description = json.containsKey('Description') ? json['Description'] : '';
-    String date = json['Date'] ?? '';
+    List<String> dateParts = json['Date'].split('-');
+    int year = int.parse(dateParts[0]);
+    int month = int.parse(dateParts[1]);
+    int day = int.parse(dateParts[2]);
+    DateTime date = DateTime(year, month, day);
     Concert newConcert = Concert(title: title, id: id, maestro: maestro, performers: perfs, tags: tags, description: description, date: date);
     return newConcert;
   }
@@ -32,7 +42,6 @@ class Concert {
   static List<String> _getPerformers(Map json) {
     List<String> toRet = [];
     for (int i = 1; i <= 4; i++) {
-      print(json);
       if (json.containsKey('User${i}Name')) {
         toRet.add(json['User${i}Name'] ?? '');
         i++;

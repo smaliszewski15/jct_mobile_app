@@ -6,7 +6,6 @@ import '../utils/globals.dart';
 
 class User {
   late int id;
-  late String name;
   late String username;
   late String email;
   late String password;
@@ -16,13 +15,12 @@ class User {
   bool logged = false;
   late String authToken;
 
-  User({this.id = -1, this.username = '', this.email = '', this.password = '', this.phoneNumber = '', this.name = '', this.authToken = '', this.isAdmin = false, this.isVerified = false});
+  User({this.id = -1, this.username = '', this.email = '', this.password = '', this.phoneNumber = '', this.authToken = '', this.isAdmin = false, this.isVerified = false});
 
   factory User.userFromJson(Map<String, dynamic> json) {
     String token = json.containsKey('token') ? json['token'] : '';
     var data = json['user'];
     int id = data['ID'];
-    String name = data.containsKey('Name') ? data['Name'] : '';
     String username = data['UserName'];
     String email = data['Email'];
     String phonenumber = data.containsKey('Phone') ? data['Phone'] ?? '' : '';
@@ -38,7 +36,7 @@ class User {
     } else {
       isVarified = false;
     }
-    User newUser = User(id: id, name: name, username: username, phoneNumber: phonenumber, email: email, authToken: token, isAdmin: isAdmin, isVerified: isVarified);
+    User newUser = User(id: id, username: username, phoneNumber: phonenumber, email: email, authToken: token, isAdmin: isAdmin, isVerified: isVarified);
     newUser.logged = true;
     return newUser;
   }
@@ -80,6 +78,7 @@ class User {
 
       final res = await UserAPI.login(entries);
       if (res.statusCode != 200) {
+        print(res.statusCode);
         print(res.body);
         return toRet;
       }
@@ -109,7 +108,6 @@ class User {
       try {
         Map<String,dynamic> userData = {};
         for (var key in maps) {
-          print(key);
           if (key == 'ID') {
             userData[key] = prefs.getInt(key);
           } else {
@@ -118,6 +116,9 @@ class User {
         }
 
         User toRet = await User._loginUser(userData);
+        if (toRet.logged == false) {
+          await prefs.clear();
+        }
 
         return toRet;
       } catch (e) {
@@ -145,9 +146,9 @@ class User {
   }
 
   String toString() {
-    String user = 'Name: ${this.name}\nUsername: ${this.username}\nEmail: ${this.email}\nPassword: ${this.password}';
+    String user = 'Username: ${this.username}\nEmail: ${this.email}\nPassword: ${this.password}';
     return user;
   }
 }
 
-User? user;
+User user = User();

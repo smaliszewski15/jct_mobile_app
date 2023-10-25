@@ -4,16 +4,14 @@ import '../utils/globals.dart';
 import '../utils/user.dart';
 
 class UserProfilePage extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     try {
-      if (user!.logged == true) {
+      if (user.logged == true) {
         return Profile();
       }
       return notLogged(context);
-    }
-    catch(e) {
+    } catch (e) {
       print(e.toString());
       return notLogged(context);
     }
@@ -99,13 +97,11 @@ class UserProfilePage extends StatelessWidget {
 }
 
 class Profile extends StatefulWidget {
-
   @override
   _ProfileState createState() => _ProfileState();
 }
 
 class _ProfileState extends State<Profile> {
-
   @override
   void initState() {
     super.initState();
@@ -135,7 +131,8 @@ class _ProfileState extends State<Profile> {
                 child: Container(
                   decoration: const BoxDecoration(
                     image: DecorationImage(
-                      image: AssetImage('assets/images/default-profile-image.jpg'),
+                      image:
+                          AssetImage('assets/images/default-profile-image.jpg'),
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -147,136 +144,95 @@ class _ProfileState extends State<Profile> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Column(
-                      children: <Widget>[
-                        Text(
-                          'Name',
-                          style: TextStyle(
-                            fontSize: bioTextSize,
-                            color: textColor,
-                          ),
-                          textAlign: TextAlign.center,
+                    Container(
+                      margin: const EdgeInsets.only(top: 20),
+                      child: Text(
+                        'Username',
+                        style: TextStyle(
+                          fontSize: smallFontSize,
+                          color: textColor,
                         ),
-                        Container(
-                          width: MediaQuery.of(context).size.width / 1.2,
-                          margin: const EdgeInsets.only(left: 10),
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 7),
-                          decoration: BoxDecoration(
-                            color: textFieldBackingColor,
-                            borderRadius: const BorderRadius.all(
-                                Radius.circular(roundedCorners)),
-                          ),
-                          child: Text(
-                            user!.name == '' ? 'No Name' : user!.name,
-                            style: TextStyle(
-                              fontSize: bioTextSize,
-                              color: buttonTextColor,
-                            ),
-                            textAlign: TextAlign.left,
-                          ),
-                        ),
-                      ],
+                        textAlign: TextAlign.center,
+                      ),
                     ),
-                    Column(
-                      children: <Widget>[
-                        Container(
-                          margin: const EdgeInsets.only(top: 20),
-                          child: Text(
-                            'Username',
-                            style: TextStyle(
-                              fontSize: bioTextSize,
-                              color: textColor,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
+                    Container(
+                      width: MediaQuery.of(context).size.width / 1.2,
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 10, horizontal: 5),
+                      decoration: BoxDecoration(
+                        color: textFieldBackingColor,
+                        borderRadius: const BorderRadius.all(
+                            Radius.circular(roundedCorners)),
+                      ),
+                      child: Text(
+                        user.username == '' ? 'No User Name' : user.username,
+                        style: TextStyle(
+                          fontSize: smallFontSize,
+                          color: buttonTextColor,
                         ),
-                        Container(
-                          width: MediaQuery.of(context).size.width / 1.2,
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 5),
-                          decoration: BoxDecoration(
-                            color: textFieldBackingColor,
-                            borderRadius: const BorderRadius.all(
-                                Radius.circular(roundedCorners)),
-                          ),
-                          child: Text(
-                            user!.username == '' ? 'No User Name' : user!.username,
-                            style: TextStyle(
-                              fontSize: bioTextSize,
-                              color: buttonTextColor,
-                            ),
-                            textAlign: TextAlign.left,
-                          ),
-                        ),
-                      ],
+                        textAlign: TextAlign.left,
+                      ),
                     ),
-                    Column(
-                      children: <Widget>[
-                        Container(
-                          margin: const EdgeInsets.only(top: 20),
-                          child: Text(
-                            'Email',
-                            style: TextStyle(
-                              fontSize: bioTextSize,
-                              color: textColor,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
+                    Container(
+                      margin: const EdgeInsets.only(top: 20),
+                      child: Text(
+                        'Email',
+                        style: TextStyle(
+                          fontSize: smallFontSize,
+                          color: textColor,
                         ),
-                        Container(
-                          width: MediaQuery.of(context).size.width / 1.2,
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 5),
-                          decoration: BoxDecoration(
-                            color: textFieldBackingColor,
-                            borderRadius: const BorderRadius.all(
-                                Radius.circular(roundedCorners)),
-                          ),
-                          child: Text(
-                            user!.email == '' ? 'No Email' : user!.email,
-                            style: TextStyle(
-                              fontSize: bioTextSize,
-                              color: buttonTextColor,
-                            ),
-                            textAlign: TextAlign.left,
-                          ),
-                        ),
-                      ],
+                        textAlign: TextAlign.center,
+                      ),
                     ),
-                    Column(
-                      children: <Widget>[
-                        Container(
-                          margin: const EdgeInsets.only(top: 20),
-                          child: Text(
-                            'Phone Number',
-                            style: TextStyle(
-                              fontSize: bioTextSize,
-                              color: textColor,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
+                    Container(
+                      width: MediaQuery.of(context).size.width / 1.2,
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 10, horizontal: 5),
+                      decoration: BoxDecoration(
+                        color: textFieldBackingColor,
+                        borderRadius: const BorderRadius.all(
+                            Radius.circular(roundedCorners)),
+                      ),
+                      child: Text(
+                        user.email == '' ? 'No Email' : user.email,
+                        style: TextStyle(
+                          fontSize: smallFontSize,
+                          color: buttonTextColor,
                         ),
-                        Container(
-                          width: MediaQuery.of(context).size.width / 1.2,
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 5),
-                          margin: const EdgeInsets.only(bottom: 5),
-                          decoration: BoxDecoration(
-                            color: textFieldBackingColor,
-                            borderRadius: const BorderRadius.all(
-                                Radius.circular(roundedCorners)),
-                          ),
-                          child: Text(
-                            user!.phoneNumber == '' ? 'No Phone Number' : user!.phoneNumber,
-                            style: TextStyle(
-                              fontSize: bioTextSize,
-                              color: buttonTextColor,
-                            ),
-                            textAlign: TextAlign.left,
-                          ),
+                        textAlign: TextAlign.left,
+                      ),
+                    ),
+                    Container(
+                      margin: const EdgeInsets.only(top: 20),
+                      child: Text(
+                        'Phone Number',
+                        style: TextStyle(
+                          fontSize: smallFontSize,
+                          color: textColor,
                         ),
-                      ],
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                    Container(
+                      width: MediaQuery.of(context).size.width / 1.2,
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 10, horizontal: 5),
+                      margin: const EdgeInsets.only(bottom: 5),
+                      decoration: BoxDecoration(
+                        color: textFieldBackingColor,
+                        borderRadius: const BorderRadius.all(
+                            Radius.circular(roundedCorners)),
+                      ),
+                      child: Text(
+                        user.phoneNumber == ''
+                            ? 'No Phone Number'
+                            : user.phoneNumber,
+                        style: TextStyle(
+                          fontSize: smallFontSize,
+                          color: buttonTextColor,
+                        ),
+                        textAlign: TextAlign.left,
+                      ),
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -284,7 +240,8 @@ class _ProfileState extends State<Profile> {
                         Expanded(
                           flex: 5,
                           child: Container(
-                            margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                            margin: const EdgeInsets.symmetric(
+                                vertical: 5, horizontal: 10),
                             padding: const EdgeInsets.all(5),
                             decoration: BoxDecoration(
                               color: gold,
@@ -292,7 +249,8 @@ class _ProfileState extends State<Profile> {
                             ),
                             child: OutlinedButton(
                               onPressed: () {
-                                Navigator.pushNamed(context, '/profile/edit/information');
+                                Navigator.pushNamed(
+                                    context, '/profile/edit/information');
                               },
                               child: Text(
                                 'Edit Information',
@@ -309,7 +267,8 @@ class _ProfileState extends State<Profile> {
                         Expanded(
                           flex: 5,
                           child: Container(
-                            margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                            margin: const EdgeInsets.symmetric(
+                                vertical: 5, horizontal: 10),
                             padding: const EdgeInsets.all(5),
                             decoration: BoxDecoration(
                               color: gold,

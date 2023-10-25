@@ -15,23 +15,17 @@ class EditUserProfilePage extends StatefulWidget {
 class _EditUserProfilePageState extends State<EditUserProfilePage> {
   @override
   void initState() {
-    name = CustomTextField(
-        minLength: 2,
-        maxLength: 100,
-        fieldName: 'Name',
-        fieldEntry: user!.name,
-        tooltipKey: GlobalKey<TooltipState>());
     username = CustomTextField(
         minLength: 2,
         maxLength: 255,
         fieldName: 'Username',
-        fieldEntry: user!.username,
+        fieldEntry: user.username,
         tooltipKey: GlobalKey<TooltipState>());
     phoneNumber = CustomTextField(
         minLength: 10,
         maxLength: 10,
         fieldName: 'Phone Number',
-        fieldEntry: user!.phoneNumber,
+        fieldEntry: user.phoneNumber,
         tooltipKey: GlobalKey<TooltipState>(),
         keyboardType: TextInputType.phone);
     password = CustomTextField(
@@ -110,40 +104,6 @@ class _EditUserProfilePageState extends State<EditUserProfilePage> {
                         width: double.infinity,
                         margin: const EdgeInsets.all(5),
                         child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                Text(
-                                  'Name',
-                                  style: TextStyle(
-                                    fontSize: bioTextSize,
-                                    color: textColor,
-                                  ),
-                                  textAlign: TextAlign.center,
-                                ),
-                                BasicTooltip(
-                                    message:
-                                        "Names must be\n0-100 characters long and\ncan only contain\nASCII characters",
-                                    tooltipkey: name.tooltipKey),
-                              ],
-                            ),
-                            Container(
-                              width: MediaQuery.of(context).size.width / 1.2,
-                              decoration: const BoxDecoration(
-                                borderRadius: BorderRadius.all(
-                                    Radius.circular(roundedCorners)),
-                              ),
-                              child: name,
-                            ),
-                          ],
-                        ),
-                      ),
-                      Container(
-                        width: double.infinity,
-                        margin: const EdgeInsets.all(5),
-                        child: Column(
                           children: <Widget>[
                             Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -151,7 +111,7 @@ class _EditUserProfilePageState extends State<EditUserProfilePage> {
                                   Text(
                                     'Username',
                                     style: TextStyle(
-                                      fontSize: bioTextSize,
+                                      fontSize: smallFontSize,
                                       color: textColor,
                                     ),
                                     textAlign: TextAlign.center,
@@ -183,7 +143,7 @@ class _EditUserProfilePageState extends State<EditUserProfilePage> {
                                 Text(
                                   'Phone Number',
                                   style: TextStyle(
-                                    fontSize: bioTextSize,
+                                    fontSize: smallFontSize,
                                     color: textColor,
                                   ),
                                   textAlign: TextAlign.left,
@@ -216,7 +176,7 @@ class _EditUserProfilePageState extends State<EditUserProfilePage> {
                                 Text(
                                   'Enter your password to confirm changes',
                                   style: TextStyle(
-                                    fontSize: bioTextSize,
+                                    fontSize: smallFontSize,
                                     color: textColor,
                                   ),
                                   textAlign: TextAlign.center,
@@ -275,22 +235,17 @@ class _EditUserProfilePageState extends State<EditUserProfilePage> {
                               final prefs =
                                   await SharedPreferences.getInstance();
 
-                              if (name.editor.value.text != user!.name) {
-                                prefs.setString(
-                                    'firstName', name.editor.value.text);
-                                user!.name = name.editor.value.text;
-                              }
                               if (username.editor.value.text !=
-                                  user!.username) {
+                                  user.username) {
                                 prefs.setString(
                                     'username', username.editor.value.text);
-                                user!.username = username.editor.value.text;
+                                user.username = username.editor.value.text;
                               }
                               if (phoneNumber.editor.value.text !=
-                                  user!.phoneNumber) {
+                                  user.phoneNumber) {
                                 prefs.setString('phone_number',
                                     phoneNumber.editor.value.text);
-                                user!.phoneNumber =
+                                user.phoneNumber =
                                     phoneNumber.editor.value.text;
                               }
 
@@ -302,7 +257,7 @@ class _EditUserProfilePageState extends State<EditUserProfilePage> {
                           child: Text(
                             'Confirm Changes',
                             style: TextStyle(
-                              fontSize: bioTextSize + 10,
+                              fontSize: bigButtonFontSize,
                               color: buttonTextColor,
                               fontWeight: FontWeight.w400,
                             ),
@@ -325,7 +280,7 @@ class _EditUserProfilePageState extends State<EditUserProfilePage> {
     if (password.isUnfilled()) {
       return false;
     }
-    if (password.editor.value.text != user!.password) {
+    if (password.editor.value.text != user.password) {
       return false;
     }
     return true;
@@ -501,7 +456,7 @@ class _EditPasswordPageState extends State<EditPasswordPage> {
                           return;
                         }
 
-                        if (oldPassword.editor.value.text != user!.password) {
+                        if (oldPassword.editor.value.text != user.password) {
                           oldPassword.unfilled.value = true;
                           setState(() {});
                           return;
@@ -528,7 +483,7 @@ class _EditPasswordPageState extends State<EditPasswordPage> {
                       child: Text(
                         'Confirm Changes',
                         style: TextStyle(
-                          fontSize: bioTextSize + 10,
+                          fontSize: bigButtonFontSize,
                           color: buttonTextColor,
                           fontWeight: FontWeight.w400,
                         ),

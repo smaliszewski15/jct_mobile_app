@@ -1,16 +1,21 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:john_cage_tribute/utils/concert_tags_manager.dart';
+import 'package:intl/intl.dart';
+//import '../utils/concert_tags_manager.dart';
 import '../APIfunctions/concertAPI.dart';
+import '../APIfunctions/groupsAPI.dart';
+import '../components/concert_card.dart';
 import '../utils/concert.dart';
 import '../utils/colors.dart';
+import '../utils/group.dart';
 import '../utils/globals.dart';
+import '../utils/schedule_manager.dart';
 
 class ConcertsScreen extends StatefulWidget {
-  late TagsUpdater tags;
+  late final ScheduleManager filter;
 
-  ConcertsScreen(this.tags);
+  ConcertsScreen(this.filter);
 
   @override
   _ConcertsState createState() => _ConcertsState();
@@ -20,6 +25,7 @@ class _ConcertsState extends State<ConcertsScreen> {
   @override
   void initState() {
     super.initState();
+    getNextConcert();
     done = getConcertList('');
     searchFocus.addListener(() => searchLostFocus());
   }
@@ -30,6 +36,7 @@ class _ConcertsState extends State<ConcertsScreen> {
     super.dispose();
   }
 
+  Group upcoming = Group();
   List<Concert> searchResults = [];
   String oldQuery = '';
   final _search = TextEditingController();
@@ -49,20 +56,19 @@ class _ConcertsState extends State<ConcertsScreen> {
   @override
   Widget build(BuildContext context) {
     double blockHeight = 50;
-    final bodyHeight = MediaQuery.of(context).size.height -
-        AppBar().preferredSize.height -
-        navBarHeight - 2 * blockHeight - 50;
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
-      child: SingleChildScrollView(
+      child: Container(
+        height: MediaQuery.of(context).size.height,
+        padding: const EdgeInsets.symmetric(horizontal: 5),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             Container(
-              width: 300,
-              height: 35,
-              padding: const EdgeInsets.all(5),
+              width: double.infinity,
+              height: blockHeight,
+              padding: const EdgeInsets.symmetric(horizontal: 10),
               margin: const EdgeInsets.symmetric(vertical: 5),
               decoration: BoxDecoration(
                 borderRadius: const BorderRadius.all(Radius.circular(20)),
@@ -81,12 +87,12 @@ class _ConcertsState extends State<ConcertsScreen> {
                         hintStyle: TextStyle(
                           color: buttonTextColor,
                           decoration: TextDecoration.underline,
-                          fontSize: 18,
+                          fontSize: infoFontSize,
                         ),
                       ),
                       style: TextStyle(
                         color: buttonTextColor,
-                        fontSize: 18,
+                        fontSize: infoFontSize,
                       ),
                       textInputAction: TextInputAction.done,
                       onSubmitted: (query) {
@@ -102,9 +108,79 @@ class _ConcertsState extends State<ConcertsScreen> {
                   const Icon(
                     Icons.search,
                     color: black,
-                    size: 15,
+                    size: smallIconSize,
                   ),
                 ],
+              ),
+            ),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(5),
+              decoration: BoxDecoration(
+                color: mainSchemeColor,
+                border: Border.all(color: black, width: 3),
+              ),
+              child: upcoming.groupID != -1 ? Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Text(
+                    'Upcoming Concert',
+                    style: TextStyle(
+                      fontSize: headingFontSize,
+                      color: buttonTextColor,
+                    ),
+                  ),
+                  Text(
+                    "Session Date and Time: ${upcoming.date}",
+                    style: TextStyle(
+                      fontSize: infoFontSize,
+                      color: buttonTextColor,
+                    ),
+                  ),
+                  Text(
+                    "Group Leader: ${upcoming.maestro}",
+                    style: TextStyle(
+                      fontSize: infoFontSize,
+                      color: buttonTextColor,
+                    ),
+                  ),
+                  Text(
+                    "Tags: ${upcoming.tags.split('`').join(', ')}",
+                    style: TextStyle(
+                      fontSize: infoFontSize,
+                      color: buttonTextColor,
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pushNamed(
+                          context, '/group/group',
+                          arguments: upcoming);
+                    },
+                    style: TextButton.styleFrom(
+                      textStyle: const TextStyle(
+                        fontSize: headingFontSize,
+                        color: Color(0xff2483f0),
+                        fontStyle: FontStyle.italic,
+                        decoration: TextDecoration.underline,
+                      ),
+                    ),
+                    child: const Text(
+                      "Check it out ->",
+                    ),
+                  ),
+                ],
+              ) : Container(
+                padding: const EdgeInsets.all(5),
+                width: double.infinity,
+                child: Text(
+                  'No upcoming concerts at this time. Go schedule one by going to the "Schedule" tab!',
+                  style: TextStyle(
+                    fontSize: headingFontSize,
+                    color: buttonTextColor,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
               ),
             ),
             SizedBox(
@@ -142,15 +218,18 @@ class _ConcertsState extends State<ConcertsScreen> {
                   ]
               ),
             ),
-            SizedBox(
-              width: double.infinity,
-              height: bodyHeight,
+            const Divider(
+              height: 5,
+              thickness: 1,
+              color: black,
+            ),
+            Expanded(
               child: ValueListenableBuilder<bool>(
-                valueListenable: widget.tags.changedNotifier,
+                valueListenable: widget.filter.changedNotifier,
                 builder: (_, value, __) {
                   if (value) {
                     done = getConcertList(_search.value.text);
-                    widget.tags.finUpdate();
+                    widget.filter.finUpdate();
                   }
                   return FutureBuilder(
                     future: done,
@@ -170,46 +249,7 @@ class _ConcertsState extends State<ConcertsScreen> {
                             physics: const AlwaysScrollableScrollPhysics(),
                             itemCount: searchResults.length,
                             itemBuilder: (context, index) {
-                              return Container(
-                                width: double.infinity,
-                                margin: const EdgeInsets.symmetric(
-                                    vertical: 5, horizontal: 10),
-                                padding: const EdgeInsets.all(10),
-                                color: accentColor,
-                                child: OutlinedButton(
-                                  onPressed: () {
-                                    Navigator.restorablePushNamed(
-                                        context, '/concerts/concert',
-                                        arguments: searchResults[index].id);
-                                  },
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: <Widget>[
-                                      Align(
-                                        alignment: Alignment.centerLeft,
-                                        child: Text(
-                                          searchResults[index].title,
-                                          style: TextStyle(
-                                            fontSize: 24,
-                                            color: textColor,
-                                          ),
-                                          textAlign: TextAlign.left,
-                                        ),
-                                      ),
-                                      Align(
-                                          alignment: Alignment.centerLeft,
-                                          child: Text(
-                                            searchResults[index].maestro,
-                                            style: TextStyle(
-                                              fontSize: infoFontSize,
-                                              color: textColor,
-                                            ),
-                                            textAlign: TextAlign.left,
-                                          )),
-                                    ],
-                                  ),
-                                ),
-                              );
+                              return ConcertCard(concert: searchResults[index]);
                             },
                           );
                       }
@@ -232,13 +272,13 @@ class _ConcertsState extends State<ConcertsScreen> {
     }
     queries['page'] = '$page';
 
-    // if (widget.tags.filteredTags.isNotEmpty) {
-    //   int count = 1;
-    //   for (var tag in widget.tags.filteredTags) {
-    //     queries['tag$count'] = '${tag.tagID}';
-    //     count++;
-    //   }
-    // }
+    DateTime fromDateTime = widget.filter.start.toUtc();
+    DateTime toDateTime = widget.filter.end.toUtc();
+    String fromDate = DateFormat("yyyy-MM-ddTHH:mm:ss").format(fromDateTime);
+    String toDate = DateFormat("yyyy-MM-ddTHH:mm:ss").format(toDateTime);
+
+    queries['fromDateTime'] = fromDate;
+    queries['toDateTime'] = toDate;
 
     final res = await ConcertsAPI.searchSongs(queries);
 
@@ -250,7 +290,6 @@ class _ConcertsState extends State<ConcertsScreen> {
     if (searchQuery != oldQuery) {
       page = 0;
     }
-    searchResults = [];
 
     var data = json.decode(res.body);
     if (!data.containsKey('searchResults')) {
@@ -262,12 +301,34 @@ class _ConcertsState extends State<ConcertsScreen> {
       page--;
       totalPages = page;
       _showSnack(context);
-      return getConcertList(oldQuery);
+      return true;
     }
+    searchResults = [];
 
     for (var map in data['searchResults']) {
-      searchResults.add(Concert.searchedSong(map));
+      Concert newConcert = Concert.searchedSong(map);
+      searchResults.add(newConcert);
     }
+    return true;
+  }
+
+  Future<bool> getNextConcert() async {
+
+    final res = await GroupsAPI.getNextConcert();
+
+    if (res.statusCode != 200) {
+      print(res.body);
+      return false;
+    }
+
+    var data = json.decode(res.body);
+    if (!data.containsKey('nextConcertGroup')) {
+      return false;
+    }
+    data = data['nextConcertGroup'];
+
+    upcoming = Group.fromNextJson(data);
+    setState(() {});
     return true;
   }
 
@@ -341,6 +402,7 @@ class _ConcertsState extends State<ConcertsScreen> {
     );
   }
 
+  //Old method of retrieving concerts, without API attached
 /*Future<bool> getConcertList() async {
     searchResults = [];
     var data = ConcertsAPI.searchSongs;

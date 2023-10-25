@@ -95,6 +95,7 @@ class _FilterDrawerState extends State<FilterDrawer> {
                   if (widget.filter.isStartChanged()) {
                     _startDateCon.text = DateFormat('E, MMM dd, yyyy').format(
                         widget.filter.toChangeStart);
+                    _endDateCon.text = DateFormat('E, MMM dd, yyyy').format(widget.filter.toChangeEnd);
                     setState(() {});
                   }
                 },
@@ -122,6 +123,8 @@ class _FilterDrawerState extends State<FilterDrawer> {
                 onTap: () async {
                   await widget.filter.selectEndDate(context);
                   if (widget.filter.isEndChanged()) {
+                    _startDateCon.text = DateFormat('E, MMM dd, yyyy').format(
+                        widget.filter.toChangeStart);
                     _endDateCon.text = DateFormat('E, MMM dd, yyyy').format(widget.filter.toChangeEnd);
                     setState(() {});
                   }

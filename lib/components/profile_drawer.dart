@@ -28,10 +28,10 @@ class _HomeDrawerState extends State<HomeDrawer> {
           Container(
             margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
             padding: const EdgeInsets.all(10),
-            child: user!.logged == false ? UserLogin(context) : UserProfile(context)
+            child: user.logged == false ? UserLogin(context) : UserProfile(context)
           ),
           const Spacer(),
-          if (user!.logged)
+          if (user.logged)
             Align(
               alignment: Alignment.bottomCenter,
               child: Container(
@@ -44,16 +44,16 @@ class _HomeDrawerState extends State<HomeDrawer> {
                 ),
                 child: TextButton(
                   onPressed: () async {
-                    bool loggedOut = await user!.logout();
+                    bool loggedOut = await user.logout();
                     if (loggedOut) {
-                      user!.logged = false;
+                      user.logged = false;
                     }
                     setState(() {});
                   },
                   child: Text(
                       'Sign Out',
                       style: TextStyle(
-                        fontSize: bioTextSize,
+                        fontSize: smallFontSize,
                         color: invalidColor,
                       )
                   ),
@@ -89,7 +89,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
                   ),
                 ),
                 Text(
-                  'Hello, ${user!.username}!',
+                  'Hello, ${user.username}!',
                   style: TextStyle(
                     fontSize: titleFontSize,
                     color: textColor,
@@ -146,7 +146,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
             child: Text(
               'Log in',
               style: TextStyle(
-                fontSize: bioTextSize,
+                fontSize: smallFontSize,
                 color: buttonTextColor,
                 fontWeight: FontWeight.w400,
               ),
@@ -175,7 +175,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
             child: Text(
               'Register',
               style: TextStyle(
-                fontSize: bioTextSize,
+                fontSize: smallFontSize,
                 color: buttonTextColor,
                 fontWeight: FontWeight.w400,
               ),

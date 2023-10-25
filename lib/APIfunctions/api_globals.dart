@@ -30,3 +30,16 @@ String splitHeader(Uint8List data) {
   header = String.fromCharCodes(data.sublist(0,index + 1));
   return header;
 }
+
+DateTime ConvertToDate(String date, String time) {
+  List<String> dateParts = date.split('-');
+  int year = int.parse(dateParts[0]);
+  int month = int.parse(dateParts[1]);
+  int day = int.parse(dateParts[2]);
+  List<String> timeParts = time.split(':');
+  int hour = int.parse(timeParts[0]);
+  int minute = int.parse(timeParts[1]);
+  DateTime toRet = DateTime.utc(year, month, day, hour, minute);
+  toRet = toRet.toLocal();
+  return toRet;
+}

@@ -4,28 +4,31 @@ import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 
 import '../APIfunctions/api_globals.dart';
+import '../components/audio_wavepainter.dart';
 import '../components/player.dart';
 import '../components/recorder.dart';
 import '../components/socket_listener.dart';
 import '../utils/colors.dart';
 import '../utils/globals.dart';
+import '../utils/user.dart';
 
 class PerformerScreen extends StatefulWidget {
+  late final String passcode;
+
+  PerformerScreen({required this.passcode});
+
   @override
   _PerformerScreenState createState() => _PerformerScreenState();
 }
 
 class _PerformerScreenState extends State<PerformerScreen> {
   final buttonNotifier = ValueNotifier<bool>(false);
-  SocketConnect? listenSocket;
   SocketConnect? performSocket;
 
   final Player _mPlayer = Player();
   final Recorder _mRecorder = Recorder();
-  StreamSubscription? _audioDetectedSubscription;
   StreamSubscription? _mRecordingDataSubscription;
-  bool audioDetected = false;
-  bool connectedForListen = false;
+  StreamController? audio;
   bool muted = false;
   bool started = false;
   List<String> participants = [];
@@ -33,18 +36,17 @@ class _PerformerScreenState extends State<PerformerScreen> {
   @override
   void initState() {
     super.initState();
+    connectPerformSocket();
   }
 
   @override
   void dispose() {
     release();
-    listenSocket!.disconnect();
-    performSocket!.disconnect();
     super.dispose();
   }
 
   Future<void> connectPerformSocket() async {
-    performSocket = SocketConnect(SocketType.performer);
+    performSocket = SocketConnect(SocketType.performer, user.username != '' ? user.username : 'Anonymous User', widget.passcode);
     performSocket!.socket.stream.listen(
       (data) {
         String s = splitHeader(data);
@@ -74,53 +76,15 @@ class _PerformerScreenState extends State<PerformerScreen> {
         }
       },
       onDone: () {
+        disconnect();
         print('done');
       },
       onError: (error) => print(error),
     );
-    connectedForListen = false;
-    setState(() {});
-  }
-
-  Future<void> connectListenSocket() async {
-    listenSocket = SocketConnect(SocketType.listener);
-    listenSocket!.socket.stream.listen(
-      (data) {
-        String s = String.fromCharCodes(data);
-        //Check if incoming header is start, then start recording
-        if (s == 'start') {
-          print('start');
-          started = true;
-          setState(() {});
-          return;
-        }
-        //Check if incoming header is participants. Then put performers into table
-        List<String> list = s.split(':');
-        if (list[0] == 'participants') {
-          print(s);
-          return;
-        }
-        //Else incoming data is audio data
-        print(data);
-        if (!muted) {
-          Uint8List music = data;
-          _mPlayer.mPlayer!.foodSink!.add(FoodData(music.sublist(1)));
-        }
-      },
-      onDone: () {
-        print('done');
-      },
-      onError: (error) => print(error),
-    );
-    connectedForListen = true;
     setState(() {});
   }
 
   Future<void> disconnect() async {
-    if (listenSocket != null) {
-      listenSocket!.disconnect();
-    }
-    listenSocket = null;
     if (performSocket != null) {
       performSocket!.disconnect();
     }
@@ -136,15 +100,10 @@ class _PerformerScreenState extends State<PerformerScreen> {
 
   Future<void>? stopRecorder() async {
     await _mRecorder.stopRecorder();
-    if (_audioDetectedSubscription != null) {
-      await _audioDetectedSubscription!.cancel();
-      _audioDetectedSubscription = null;
-    }
     if (_mRecordingDataSubscription != null) {
       await _mRecordingDataSubscription!.cancel();
       _mRecordingDataSubscription = null;
     }
-    audioDetected = false;
     return;
   }
 
@@ -162,17 +121,12 @@ class _PerformerScreenState extends State<PerformerScreen> {
       if (buffer is FoodData) {
         if (buffer.data != null) {
           performSocket!.socket.sink.add(musicHeader(buffer.data!));
+          var newData = Uint8List.fromList(buffer.data!);
+          audio!.add(newData);
         }
       }
     });
 
-    _audioDetectedSubscription = _mRecorder.mRecorder!.onProgress!.listen((e) {
-      if (e.decibels! > 20 && !audioDetected) {
-        setState(() => audioDetected = true);
-      } else if (e.decibels! < 20 && audioDetected) {
-        setState(() => audioDetected = false);
-      }
-    });
     await _mRecorder.record(recordingDataController);
     setState(() {});
   }
@@ -188,7 +142,6 @@ class _PerformerScreenState extends State<PerformerScreen> {
     await stopPlayer();
     disconnect();
     started = false;
-    connectedForListen = false;
   }
 
   @override
@@ -196,11 +149,15 @@ class _PerformerScreenState extends State<PerformerScreen> {
     return WillPopScope(
       onWillPop: () async {
         stopEverything();
+        user.username = '';
         return true;
       },
-      child: SingleChildScrollView(
-        child: Container(
-          width: MediaQuery.of(context).size.width,
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: backgroundColor,
+        ),
+        body: Container(
+          width: double.infinity,
           height: MediaQuery.of(context).size.height,
           color: backgroundColor,
           child: Align(
@@ -212,7 +169,7 @@ class _PerformerScreenState extends State<PerformerScreen> {
                   padding: const EdgeInsets.all(10),
                   width: double.infinity,
                   child: Text(
-                    'You are the performer. Click the connect button to connect to the socket, then you can wait for the maestro to start.'
+                    'You are the performer. The performance will start once the leader hits start.'
                         '\n\nYou can choose to hear the playback or not by clicking the mute playback button',
                     style: TextStyle(
                       fontSize: headingFontSize,
@@ -221,86 +178,27 @@ class _PerformerScreenState extends State<PerformerScreen> {
                     textAlign: TextAlign.center,
                   ),
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Expanded(
-                      flex: 6,
-                      child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Container(
-                              width: 100,
-                              height: 100,
-                              decoration: BoxDecoration(
-                                color: audioDetected ? Colors.green : white,
-                                shape: BoxShape.circle,
-                              ),
-                              child: TextButton(
-                                onPressed: () async {
-                                  if (!_mRecorder.mRecorderIsInited) {
-                                    return;
-                                  }
-                                  if (started) {
-                                    stopEverything();
-                                    started = false;
-                                  } else {
-                                    if (!connectedForListen) {
-                                      print('connect socket');
-                                      //await connectListenSocket();
-                                      await connectPerformSocket();
-                                      connectedForListen = true;
-                                    } else {
-                                      print('disconnect socket');
-                                      stopEverything();
-                                    }
-                                  }
-                                  setState(() {});
-                                },
-                                child: const Icon(
-                                  Icons.link,
-                                  color: black,
-                                  size: bottomIconSize + 20,
-                                ),
-                              ),
-                            ),
-                            Container(
-                              margin: const EdgeInsets.all(5),
-                              child: Text(
-                                performSocket != null ? 'Disconnect' : 'Connect',
-                                style: TextStyle(
-                                  color: buttonTextColor,
-                                  fontSize: titleFontSize,
-                                ),
-                              ),
-                            ),
-                          ]
-                      ),
-                    ),
-                    if (participants.isNotEmpty)
-                      Expanded(
-                        flex: 4,
-                        child: Container(
-                          height: 150,
-                          child: ListView.builder(
-                            itemCount: participants.length,
-                            itemBuilder: (context, index) {
-                              return Container(
-                                decoration: BoxDecoration(
-                                  color: accentColor,
-                                ),
-                                child: Text(
-                                  participants[index],
-                                  style: defaultTextStyle,
-                                  textAlign: TextAlign.center,
-                                ),
-                              );
-                            },
+                const Spacer(),
+                if (participants.isNotEmpty)
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: participants.length,
+                      itemBuilder: (context, index) {
+                        return Container(
+                          padding: const EdgeInsets.all(5),
+                          decoration: BoxDecoration(
+                            borderRadius: const BorderRadius.all(Radius.circular(roundedCorners)),
+                            color: accentColor,
                           ),
-                        ),
-                      ),
-                  ],
-                ),
+                          child: Text(
+                            participants[index],
+                            style: defaultTextStyle,
+                            textAlign: TextAlign.center,
+                          ),
+                        );
+                      },
+                    ),
+                  ),
                 Container(
                   margin: const EdgeInsets.all(5),
                   decoration: BoxDecoration(
@@ -335,6 +233,30 @@ class _PerformerScreenState extends State<PerformerScreen> {
                     textAlign: TextAlign.center,
                   ),
                 ),
+                if (_mRecorder.isRecording)
+                  StreamBuilder(
+                    stream: audio!.stream,
+                    builder: (context, snapshot) {
+                      if (snapshot.data == null) return Container();
+
+                      final buffer = snapshot.data.buffer.asInt16List();
+
+                      return Container(
+                        width: double.infinity,
+                        height: 200,
+                        child: CustomPaint(
+                          painter: AudioWaveForms(
+                            waveData: buffer,
+                            color: black,
+                            numSamples: buffer.length,
+                            gap: 2,
+                          ),
+                          child: Container(),
+                        ),
+                      );
+                    },
+                  ),
+                const Spacer(),
               ],
             ),
           ),
@@ -344,7 +266,7 @@ class _PerformerScreenState extends State<PerformerScreen> {
   }
 
   void parseParticipants(String participantsList) {
-    participants = participantsList.split('`');
+    participants = participantsList.split('`').sublist(1);
     print(participants);
   }
 }

@@ -1,3 +1,5 @@
+import '../APIfunctions/api_globals.dart';
+
 class Group {
   late int groupID;
   late String maestro;
@@ -6,30 +8,34 @@ class Group {
   late String tags;
   late String description;
 
+  late String? groupName;
   late List<String>? members;
   late DateTime? date;
   late List<int>? passcodes;
 
 
-  Group({this.groupID = -1, this.members = const [], this.maestro = '', this.maestroID = -1, this.tags = '', this.title = '', this.description = '', this.date, this.passcodes});
+  Group({this.groupID = -1, this.members, this.maestro = '', this.maestroID = -1, this.tags = '', this.title = '', this.description = '', this.date, this.passcodes, this.groupName});
 
-  factory Group.fromJson(Map json) {
-    List<String> members = json['members'];
-    String leader = json['maestro'];
-    String title = json['title'];
-    DateTime date = ConvertToDate(json['date'], json['time']);
-    String tags = json['tags'];
-    return Group(members: members, maestro: leader, title: title, date: date, tags: tags);
+  factory Group.fromNextJson(Map json) {
+    print(json);
+    String leader = json['GroupLeaderName'] ?? '';
+    String title = json['Title'] ?? '';
+    int groupID = json['GroupID'] ?? -1;
+    int maestroID = json['GroupLeaderID'] ?? -1;
+    String description = json['Description'] ?? '';
+    DateTime date = ConvertToDate(json['Date'], json['Time']);
+    String tags = json['Tags'] ?? '';
+    return Group(groupID: groupID, maestro: leader, maestroID: maestroID, title: title, date: date, tags: tags, description: description);
   }
 
   factory Group.fromScheduleJson(Map json) {
-    String leader = json['GroupLeaderName'];
-    String title = json['Title'];
-    int id = json['GroupID'];
-    int maestroID = json['GroupLeaderID'];
-    String description = json['Description'];
+    String leader = json['GroupLeaderName'] ?? '';
+    String title = json['Title'] ?? '';
+    int id = json['GroupID'] ?? -1;
+    int maestroID = json['GroupLeaderID'] ?? -1;
+    String description = json['Description'] ?? '';
     DateTime date = ConvertToDate(json['Date'], json['Time']);
-    String tags = json['Tags'];
+    String tags = json['Tags'] ?? '';
     return Group(groupID: id, maestro: leader, maestroID: maestroID, title: title, date: date, tags: tags, description: description);
   }
 
@@ -52,18 +58,7 @@ class Group {
     return toRet;
   }
 
-  static DateTime ConvertToDate(String date, String time) {
-    List<String> dateParts = date.split('-');
-    int year = int.parse(dateParts[0]);
-    int month = int.parse(dateParts[1]);
-    int day = int.parse(dateParts[2]);
-    List<String> timeParts = time.split(':');
-    int hour = int.parse(timeParts[0]);
-    int minute = int.parse(timeParts[1]);
-    DateTime toRet = DateTime.utc(year, month, day, hour, minute);
-    toRet = toRet.toLocal();
-    return toRet;
-  }
+
 
   String toString() {
     String group = '\nTitle: ${this.title}\nPerformers: ${this.members}\nTags: ${this.tags}\nDate: ${this.date}';

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
+import 'package:intl/intl.dart';
 import '../APIfunctions/concertAPI.dart';
 import '../utils/concert.dart';
 import '../utils/concert_player.dart';
@@ -67,9 +68,9 @@ class _ConcertPageState extends State<ConcertPage> {
                   if (snapshot.hasError) {
                     print('hereError');
                     return Text('Error: $snapshot.error}',
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: black,
-                          fontSize: bioTextSize,
+                          fontSize: smallFontSize,
                         ));
                   }
                   if (concert.id == -1) {
@@ -77,33 +78,67 @@ class _ConcertPageState extends State<ConcertPage> {
                     return Text("Error: Concert could not be retrieved");
                   }
                   return SingleChildScrollView(
-                    child: Container(
-                      width: MediaQuery.of(context).size.width,
-                      height: MediaQuery.of(context).size.height,
-                      color: backgroundColor,
-                      child: Column(
-                        children: <Widget>[
-                          Center(
-                            child: Container(
-                              margin: const EdgeInsets.symmetric(vertical: 40),
-                              child: Text(
-                                concert.title,
-                                style: TextStyle(
-                                  fontSize: titleFontSize,
-                                  color: textColor,
+                    child: Column(
+                      children: <Widget>[
+                        Container(
+                          width: MediaQuery.of(context).size.width,
+                          height: MediaQuery.of(context).size.height,
+                          color: backgroundColor,
+                          child: Column(
+                            children: <Widget>[
+                              Center(
+                                child: Container(
+                                  margin:
+                                      const EdgeInsets.symmetric(vertical: 30),
+                                  child: Text(
+                                    concert.title,
+                                    style: TextStyle(
+                                      fontSize: titleFontSize,
+                                      color: textColor,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
                                 ),
-                                textAlign: TextAlign.center,
                               ),
-                            ),
-                          ),
-                          Container(
-                            width: double.infinity,
-                            margin: const EdgeInsets.symmetric(
-                                vertical: 5, horizontal: 20),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: <Widget>[
-                                Text(
+                              Container(
+                                width: double.infinity,
+                                margin: const EdgeInsets.symmetric(
+                                    vertical: 5, horizontal: 20),
+                                child: Text(
+                                  'Description: ',
+                                  style: TextStyle(
+                                    fontSize: infoFontSize,
+                                    color: textColor,
+                                  ),
+                                  textAlign: TextAlign.left,
+                                ),
+                              ),
+                              Container(
+                                width: double.infinity,
+                                margin: const EdgeInsets.symmetric(
+                                    vertical: 5, horizontal: 20),
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 5, horizontal: 10),
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color: white,
+                                  ),
+                                  color: accentColor,
+                                ),
+                                child: Text(
+                                  concert.description,
+                                  style: TextStyle(
+                                    fontSize: infoFontSize,
+                                    color: textColor,
+                                  ),
+                                  textAlign: TextAlign.left,
+                                ),
+                              ),
+                              Container(
+                                width: double.infinity,
+                                margin: const EdgeInsets.symmetric(
+                                    vertical: 5, horizontal: 20),
+                                child: Text(
                                   'Group Leader: ',
                                   style: TextStyle(
                                     fontSize: headingFontSize,
@@ -111,7 +146,20 @@ class _ConcertPageState extends State<ConcertPage> {
                                   ),
                                   textAlign: TextAlign.left,
                                 ),
-                                Text(
+                              ),
+                              Container(
+                                width: double.infinity,
+                                margin: const EdgeInsets.symmetric(
+                                    vertical: 5, horizontal: 20),
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 5, horizontal: 10),
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color: white,
+                                  ),
+                                  color: accentColor,
+                                ),
+                                child: Text(
                                   concert.maestro,
                                   style: TextStyle(
                                     fontSize: infoFontSize,
@@ -119,151 +167,176 @@ class _ConcertPageState extends State<ConcertPage> {
                                   ),
                                   textAlign: TextAlign.left,
                                 ),
-                              ],
-                            ),
-                          ),
-                          Container(
-                            width: double.infinity,
-                            margin: const EdgeInsets.symmetric(
-                                vertical: 5, horizontal: 20),
-                            child: Text(
-                              'Recording Date: ',
-                              style: TextStyle(
-                                fontSize: headingFontSize,
-                                color: textColor,
                               ),
-                              textAlign: TextAlign.left,
-                            ),
-                          ),
-                          Container(
-                            width: double.infinity,
-                            margin: const EdgeInsets.symmetric(
-                                vertical: 5, horizontal: 20),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: <Widget>[
-                                Expanded(
-                                  child: Text(
-                                    concert.date != '' ? concert.date : 'No Date',
-                                    style: TextStyle(
-                                      fontSize: infoFontSize,
-                                      color: textColor,
-                                    ),
-                                    textAlign: TextAlign.left,
+                              Container(
+                                width: double.infinity,
+                                margin: const EdgeInsets.symmetric(
+                                    vertical: 5, horizontal: 20),
+                                child: Text(
+                                  'Recording Date: ',
+                                  style: TextStyle(
+                                    fontSize: headingFontSize,
+                                    color: textColor,
                                   ),
+                                  textAlign: TextAlign.left,
                                 ),
-                              ],
-                            ),
-                          ),
-                          Container(
-                            width: double.infinity,
-                            margin: const EdgeInsets.symmetric(
-                                vertical: 5, horizontal: 20),
-                            child: Text(
-                              'Performers: ',
-                              style: TextStyle(
-                                fontSize: headingFontSize,
-                                color: textColor,
                               ),
-                              textAlign: TextAlign.left,
-                            ),
-                          ),
-                          Container(
-                            width: double.infinity,
-                            margin: const EdgeInsets.symmetric(
-                                vertical: 5, horizontal: 20),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: <Widget>[
-                                Expanded(
-                                  child: Text(
-                                    concert.performers.toString(),
-                                    style: TextStyle(
-                                      fontSize: infoFontSize,
-                                      color: textColor,
-                                    ),
-                                    textAlign: TextAlign.left,
+                              Container(
+                                width: double.infinity,
+                                margin: const EdgeInsets.symmetric(
+                                    vertical: 5, horizontal: 20),
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 5, horizontal: 10),
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color: white,
                                   ),
+                                  color: accentColor,
                                 ),
-                              ],
-                            ),
-                          ),
-                          Container(
-                            width: double.infinity,
-                            margin: const EdgeInsets.symmetric(
-                                vertical: 5, horizontal: 20),
-                            child: Text(
-                              'Tags: ',
-                              style: TextStyle(
-                                fontSize: headingFontSize,
-                                color: textColor,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: <Widget>[
+                                    Expanded(
+                                      child: Text(
+                                        concert.date != null
+                                            ? DateFormat('yyyy-MM-dd HH:mm')
+                                                .format(concert.date!)
+                                            : 'No Date',
+                                        style: TextStyle(
+                                          fontSize: infoFontSize,
+                                          color: textColor,
+                                        ),
+                                        textAlign: TextAlign.left,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
-                              textAlign: TextAlign.left,
-                            ),
-                          ),
-                          Container(
-                            width: double.infinity,
-                            margin: const EdgeInsets.symmetric(
-                                vertical: 5, horizontal: 20),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: <Widget>[
-                                Expanded(
-                                  child: Text(
-                                    concert.tags.toString(),
-                                    style: TextStyle(
-                                      fontSize: infoFontSize,
-                                      color: textColor,
-                                    ),
-                                    textAlign: TextAlign.left,
+                              Container(
+                                width: double.infinity,
+                                margin: const EdgeInsets.symmetric(
+                                    vertical: 5, horizontal: 20),
+                                child: Text(
+                                  'Performers: ',
+                                  style: TextStyle(
+                                    fontSize: headingFontSize,
+                                    color: textColor,
                                   ),
+                                  textAlign: TextAlign.left,
                                 ),
-                              ],
-                            ),
-                          ),
-                          ValueListenableBuilder<ButtonState>(
-                              valueListenable: _pageManager.buttonNotifier,
-                              builder: (_, value, __) {
-                                switch (value) {
-                                  case ButtonState.loading:
+                              ),
+                              Container(
+                                width: double.infinity,
+                                margin: const EdgeInsets.symmetric(
+                                    vertical: 5, horizontal: 20),
+                                child: Column(
+                                  children: concert.performers.map((entry) {
                                     return Container(
-                                      margin: const EdgeInsets.all(8),
-                                      width: 250,
-                                      height: 250,
-                                      child: const CircularProgressIndicator(),
+                                        width: double.infinity,
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 5, horizontal: 10),
+                                        decoration: BoxDecoration(
+                                          border: Border.all(
+                                            color: white,
+                                          ),
+                                          color: accentColor,
+                                        ),
+                                        child: Text(
+                                          entry,
+                                          style: TextStyle(
+                                            fontSize: infoFontSize,
+                                            color: textColor,
+                                          ),
+                                          textAlign: TextAlign.left,
+                                        ));
+                                  }).toList(),
+                                ),
+                              ),
+                              Container(
+                                width: double.infinity,
+                                margin: const EdgeInsets.symmetric(
+                                    vertical: 5, horizontal: 20),
+                                child: Text(
+                                  'Tags: ',
+                                  style: TextStyle(
+                                    fontSize: headingFontSize,
+                                    color: textColor,
+                                  ),
+                                  textAlign: TextAlign.left,
+                                ),
+                              ),
+                              Container(
+                                width: double.infinity,
+                                margin: const EdgeInsets.symmetric(
+                                    vertical: 5, horizontal: 20),
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 5, horizontal: 10),
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color: white,
+                                  ),
+                                  color: accentColor,
+                                ),
+                                child: Text(
+                                  concert.tags.split('`').join(', '),
+                                  style: TextStyle(
+                                    fontSize: infoFontSize,
+                                    color: textColor,
+                                  ),
+                                  textAlign: TextAlign.left,
+                                ),
+                              ),
+                              ValueListenableBuilder<ButtonState>(
+                                  valueListenable: _pageManager.buttonNotifier,
+                                  builder: (_, value, __) {
+                                    switch (value) {
+                                      case ButtonState.loading:
+                                        return Container(
+                                          margin: const EdgeInsets.all(8),
+                                          width: 250,
+                                          height: 250,
+                                          child:
+                                              const CircularProgressIndicator(),
+                                        );
+                                      case ButtonState.paused:
+                                        return IconButton(
+                                          icon: Icon(
+                                            Icons.play_circle_filled,
+                                            color: mainSchemeColor,
+                                          ),
+                                          iconSize: 250,
+                                          onPressed: _pageManager.play,
+                                        );
+                                      case ButtonState.playing:
+                                        return IconButton(
+                                          icon: Icon(
+                                            Icons.pause,
+                                            color: mainSchemeColor,
+                                          ),
+                                          iconSize: 250,
+                                          onPressed: _pageManager.pause,
+                                        );
+                                    }
+                                  }),
+                              Container(
+                                margin:
+                                    const EdgeInsets.symmetric(horizontal: 10),
+                                padding: const EdgeInsets.all(10),
+                                child: ValueListenableBuilder<ProgressBarState>(
+                                  valueListenable:
+                                      _pageManager.progressNotifier,
+                                  builder: (_, value, __) {
+                                    return ProgressBar(
+                                      progress: value.current,
+                                      buffered: value.buffered,
+                                      total: value.total,
+                                      onSeek: _pageManager.seek,
                                     );
-                                  case ButtonState.paused:
-                                    return IconButton(
-                                      icon:
-                                          const Icon(Icons.play_circle_filled),
-                                      iconSize: 250,
-                                      onPressed: _pageManager.play,
-                                    );
-                                  case ButtonState.playing:
-                                    return IconButton(
-                                      icon: const Icon(Icons.pause),
-                                      iconSize: 250,
-                                      onPressed: _pageManager.pause,
-                                    );
-                                }
-                              }),
-                          Container(
-                            margin: const EdgeInsets.symmetric(horizontal: 10),
-                            padding: const EdgeInsets.all(10),
-                            child: ValueListenableBuilder<ProgressBarState>(
-                              valueListenable: _pageManager.progressNotifier,
-                              builder: (_, value, __) {
-                                return ProgressBar(
-                                  progress: value.current,
-                                  buffered: value.buffered,
-                                  total: value.total,
-                                  onSeek: _pageManager.seek,
-                                );
-                              },
-                            ),
-                          ),
-                          const Spacer(),
-                          Center(
+                                  },
+                                ),
+                              ),
+                              const Spacer(),
+                              /*Center(
                             child: Container(
                               padding: const EdgeInsets.all(5),
                               decoration: BoxDecoration(
@@ -295,9 +368,11 @@ class _ConcertPageState extends State<ConcertPage> {
                                 ),
                               ),
                             ),
+                          ),*/
+                            ],
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   );
               }
@@ -318,6 +393,7 @@ class _ConcertPageState extends State<ConcertPage> {
     }
 
     var data = json.decode(res.body);
+    print(data);
     if (!data.containsKey('group')) {
       return false;
     }
