@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:sliver_tools/sliver_tools.dart';
 import '../APIfunctions/groupsAPI.dart';
 import '../components/group_card.dart';
 import '../utils/colors.dart';
@@ -19,11 +20,10 @@ class ScheduleScreen extends StatefulWidget {
 
 class _ScheduleScreenState extends State<ScheduleScreen> {
   bool _reserveToggle = false;
-  late List<DateTime> tempList;
   int currentMonth = DateTime.now().month;
   int currentDay = DateTime.now().day;
   Future<bool>? done;
-  List<Group> groups = [];
+  List<List<Group>> groups = [];
   double totalHeight = 120;
   bool reserving = false;
   bool browsing = true;
@@ -31,20 +31,9 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
   @override
   void initState() {
     widget.filter.refreshFilter();
-    tempList = dateList();
+
     done = ParseGroups();
     super.initState();
-  }
-
-  List<DateTime> dateList() {
-    List<DateTime> toRet = [];
-    DateTime end = widget.filter.end.add(const Duration(days: 1));
-    for (DateTime start = widget.filter.start;
-        start != end;
-        start = start.add(const Duration(minutes: 20))) {
-      toRet.add(start);
-    }
-    return toRet;
   }
 
   @override
@@ -62,21 +51,22 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
               TextButton(
                 onPressed: !_reserveToggle
                     ? () {
-                        if (totalHeight != 120) {
-                          totalHeight == 120;
-                        }
+                        totalHeight == 50;
                         reserving = true;
                         browsing = false;
                         setState(() => _reserveToggle = true);
                       }
                     : null,
+                style: TextButton.styleFrom(
+                  padding: EdgeInsets.zero,
+                ),
                 child: Container(
-                    width: 100,
-                    height: toggleHeight,
-                    color: _reserveToggle ? mainSchemeColor : black,
-                    child: Align(
-                      alignment: Alignment.center,
-                      child: Text(
+                  width: 100,
+                  height: toggleHeight,
+                  color: _reserveToggle ? mainSchemeColor : black,
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: Text(
                       'Reserve',
                       style: TextStyle(
                         color: _reserveToggle ? black : white,
@@ -89,21 +79,22 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
               TextButton(
                 onPressed: _reserveToggle
                     ? () {
-                        if (totalHeight != 50) {
-                          totalHeight == 50;
-                        }
+                        totalHeight == 120;
                         reserving = false;
                         browsing = true;
                         setState(() => _reserveToggle = false);
                       }
                     : null,
+                style: TextButton.styleFrom(
+                  padding: EdgeInsets.zero,
+                ),
                 child: Container(
-                    width: 100,
-                    height: toggleHeight,
-                    color: _reserveToggle ? black : mainSchemeColor,
-                    child: Align(
-                      alignment: Alignment.center,
-                      child: Text(
+                  width: 100,
+                  height: toggleHeight,
+                  color: _reserveToggle ? black : mainSchemeColor,
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: Text(
                       'Browse',
                       style: TextStyle(
                         color: _reserveToggle ? white : black,
@@ -112,28 +103,6 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                     ),
                   ),
                 ),
-              ),
-            ],
-          ),
-          Column(
-            children: <Widget>[
-              Container(
-                key: ValueKey(currentDay),
-                padding: const EdgeInsets.symmetric(horizontal: 5),
-                width: double.infinity,
-                child: Text(
-                  DateFormat('MMMM, dd').format(DateTime(0, currentMonth, currentDay)),
-                  style: TextStyle(
-                    fontSize: 32,
-                    color: textColor,
-                  ),
-                  textAlign: TextAlign.left,
-                ),
-              ),
-              const Divider(
-                height: 5,
-                thickness: 1,
-                color: black,
               ),
             ],
           ),
@@ -157,93 +126,23 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                             if (snapshot.hasError) {
                               return Text('Error: $snapshot.error}');
                             }
-                            currentMonth = DateTime.now().month;
-                            currentDay = DateTime.now().day;
-                            int groupsList = 0;
-                            return ListView.builder(
-                              addAutomaticKeepAlives: true,
-                              itemCount: tempList.length,
-                              itemBuilder: (context, index) {
-                                if (groupsList < groups.length) {
-                                  while (groups[groupsList]
-                                      .date!
-                                      .isBefore(tempList[index])) {
-                                    groupsList++;
-                                    if (!(groupsList < groups.length)) {
-                                      break;
-                                    }
-                                  }
-                                }
-                                bool newDay = false;
-                                bool newMonth = false;
-                                if (tempList[index].month != currentMonth) {
-                                  currentMonth = tempList[index].month;
-                                  newMonth = true;
-                                }
-                                if (tempList[index].day != currentDay) {
-                                  currentDay = tempList[index].day;
-                                  newDay = true;
-                                }
-                                return Column(
-                                  children: <Widget>[
-                                    if (newMonth)
-                                      Container(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 5),
-                                        width: double.infinity,
-                                        child: Text(
-                                          DateFormat('MMMM').format(
-                                              DateTime(0, currentMonth)),
-                                          style: TextStyle(
-                                            fontSize: 32,
-                                            color: textColor,
-                                          ),
-                                          textAlign: TextAlign.left,
-                                        ),
-                                      ),
-                                    if (newMonth)
-                                      const Divider(
-                                        height: 5,
-                                        thickness: 1,
-                                        color: black,
-                                      ),
-                                    if (newDay)
-                                      Container(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 5),
-                                        width: double.infinity,
-                                        child: Text(
-                                          DateFormat('dd').format(
-                                              DateTime(0, 0, currentDay)),
-                                          style: TextStyle(
-                                            fontSize: 24,
-                                            color: textColor,
-                                          ),
-                                          textAlign: TextAlign.left,
-                                        ),
-                                      ),
-                                    if (newDay)
-                                      const Divider(
-                                        height: 5,
-                                        thickness: 1,
-                                        color: black,
-                                      ),
-                                    groupsList < groups.length &&
-                                            groupsList >= 0 &&
-                                            tempList[index] ==
-                                                groups[groupsList].date
-                                        ? GroupCard(
-                                            group: groups[groupsList++],
-                                            height: totalHeight,
-                                            clickable: browsing,
-                                          )
-                                        : GroupCard(
-                                            date: tempList[index],
-                                            height: totalHeight,
-                                            clickable: reserving),
-                                  ],
-                                );
-                              },
+                            int days = 0;
+
+                            return CustomScrollView(
+                              slivers: groups
+                                  .map((list) => Section(
+                                        currentMonth: widget.filter.start
+                                            .add(Duration(days: days))
+                                            .month,
+                                        currentDay: widget.filter.start
+                                            .add(Duration(days: days++))
+                                            .day,
+                                        groups: list,
+                                        reserving: reserving,
+                                        browsing: browsing,
+                                        totalHeight: totalHeight,
+                                      ))
+                                  .toList(),
                             );
                         }
                       });
@@ -260,6 +159,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
     DateTime end = widget.filter.end.add(const Duration(days: 1));
     Map<String, dynamic> queryDate = {};
 
+    int j = 0;
     for (DateTime start = widget.filter.start;
         start != end;
         start = start.add(const Duration(days: 1))) {
@@ -275,48 +175,122 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
       String date = DateFormat('yyyy-MM-dd').format(start);
 
       var data = json.decode(res.body);
+      groups.add(List.empty(growable: true));
 
       for (var concerts in data['scheduledTimes']) {
-        //Group newGroup = Group.fromJson(concerts);
         Group newGroup = Group.fromDateConcert(date, concerts);
         if (groups.isNotEmpty) {
           int place = 0;
-          for (int i = 0; i < groups.length; i++) {
-            if (newGroup.date!.isBefore(groups[i].date!)) {
+          for (int i = 0; i < groups[j].length; i++) {
+            if (newGroup.date!.isBefore(groups[j][i].date!)) {
               break;
             }
             place++;
           }
-          groups.insert(place, newGroup);
+          groups[j].insert(place, newGroup);
         } else {
-          groups.add(newGroup);
+          groups[j].add(newGroup);
         }
       }
+      j++;
     }
     return true;
   }
+}
 
-  // List<Group> ParseGroups() {
-  //   Map<String, dynamic> groupsJSON = GroupsAPI.getGroups;
-  //   if (!groupsJSON.containsKey('groupsData')) {
-  //     return [];
-  //   }
-  //   List<Group> toRet = [];
-  //
-  //   for (var data in groupsJSON['groupsData']) {
-  //     Group newGroup = Group.fromJson(data);
-  //     if (toRet.isNotEmpty) {
-  //       int place = 0;
-  //       for (int i = 0; i < toRet.length; i++) {
-  //         if (newGroup.date!.isAfter(toRet[i].date!)) {
-  //           break;
-  //         }
-  //       }
-  //       toRet.insert(place, newGroup);
-  //     } else {
-  //       toRet.add(newGroup);
-  //     }
-  //   }
-  //   return toRet;
-  // }
+class Section extends StatelessWidget {
+  final int currentMonth;
+  final int currentDay;
+  final List<Group> groups;
+  late final List<DateTime> tempList;
+  bool reserving;
+  bool browsing;
+  double totalHeight;
+
+  Section(
+      {required this.currentMonth,
+      required this.currentDay,
+      required this.groups,
+      required this.reserving,
+      required this.browsing,
+      required this.totalHeight}) {
+    tempList = dateList();
+  }
+
+  List<DateTime> dateList() {
+    DateTime date;
+    if (currentDay == DateTime.now().day) {
+      DateTime now = DateTime.now();
+      if (now.minute % 20 != 0) {
+        now = now.subtract(Duration(minutes: now.minute % 20));
+      }
+      date = DateTime(0, currentMonth, currentDay, now.hour, now.minute);
+    } else {
+      date = DateTime(0, currentMonth, currentDay);
+    }
+
+    List<DateTime> toRet = [];
+    int hoursUntilEndOfDay = 23 - date.hour;
+    int minutesUntilEndOfDay = 60 - date.minute;
+    DateTime end = date.add(Duration(hours: hoursUntilEndOfDay, minutes: minutesUntilEndOfDay));
+    for (DateTime start = date;
+        start != end;
+        start = start.add(const Duration(minutes: 20))) {
+      toRet.add(start);
+    }
+    return toRet;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    int groupList = 0;
+    return MultiSliver(
+      pushPinnedChildren: true,
+      children: <Widget>[
+        SliverPinnedHeader(
+            child: Column(children: <Widget>[
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 5),
+            width: double.infinity,
+            color: backgroundColor,
+            child: Text(
+              DateFormat('MMMM dd')
+                  .format(DateTime(0, currentMonth, currentDay)),
+              style: TextStyle(
+                fontSize: 32,
+                color: textColor,
+              ),
+              textAlign: TextAlign.left,
+            ),
+          ),
+          const Divider(
+            height: 5,
+            thickness: 1,
+            color: black,
+          ),
+        ])),
+        SliverList(
+            delegate: SliverChildBuilderDelegate(
+          (BuildContext context, int index) {
+            if (groupList < groups.length &&
+                groupList >= 0 &&
+                tempList[index] == groups[groupList].date) {
+              return GroupCard(
+                group: groups[groupList],
+                height: totalHeight,
+                clickable: browsing,
+              );
+            } else {
+              return GroupCard(
+                date: tempList[index],
+                height: totalHeight,
+                clickable: reserving,
+              );
+            }
+          },
+          childCount: tempList.length,
+        ))
+      ],
+    );
+  }
 }

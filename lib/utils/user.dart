@@ -108,7 +108,6 @@ class User {
       try {
         Map<String,dynamic> userData = {};
         for (var key in maps) {
-          print(key);
           if (key == 'ID') {
             userData[key] = prefs.getInt(key);
           } else {

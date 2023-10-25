@@ -68,6 +68,7 @@ class _ListenScreenState extends State<ListenScreen> {
             }
           },
           onDone: () {
+            disconnect();
             print('done');
           },
           onError: (error) => print(error),

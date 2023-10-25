@@ -28,10 +28,10 @@ class _HomeDrawerState extends State<HomeDrawer> {
           Container(
             margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
             padding: const EdgeInsets.all(10),
-            child: user!.logged == false ? UserLogin(context) : UserProfile(context)
+            child: user.logged == false ? UserLogin(context) : UserProfile(context)
           ),
           const Spacer(),
-          if (user!.logged)
+          if (user.logged)
             Align(
               alignment: Alignment.bottomCenter,
               child: Container(
@@ -44,9 +44,9 @@ class _HomeDrawerState extends State<HomeDrawer> {
                 ),
                 child: TextButton(
                   onPressed: () async {
-                    bool loggedOut = await user!.logout();
+                    bool loggedOut = await user.logout();
                     if (loggedOut) {
-                      user!.logged = false;
+                      user.logged = false;
                     }
                     setState(() {});
                   },
@@ -89,7 +89,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
                   ),
                 ),
                 Text(
-                  'Hello, ${user!.username}!',
+                  'Hello, ${user.username}!',
                   style: TextStyle(
                     fontSize: titleFontSize,
                     color: textColor,

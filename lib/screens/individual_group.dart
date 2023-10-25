@@ -356,23 +356,23 @@ class _IndividualGroupState extends State<IndividualGroup> {
                           child: TextButton(
                             onPressed: () async {
                               //UNCOMMENT WHEN NOT DOING UI SHIT
-                              // bool logged = await logMaestroIn();
-                              // if (!logged) {
-                              //   setState(() => errorMessage = "You must be logged in to start the concert");
-                              //   return;
-                              // }
-                              // bool pass = await getPasscode();
-                              // if (!pass) {
-                              //   setState(() => errorMessage = "You must enter your maestro passcode to start the concert");
-                              //   _passcode.clear();
-                              //   return;
-                              // }
-                              // bool succ = await checkMaestroPasscode();
-                              // if (!succ) {
-                              //   setState(() => errorMessage = "Password either incorrect or cannot connect to the server");
-                              //   _passcode.clear();
-                              //   return;
-                              // }
+                              bool logged = await logMaestroIn();
+                              if (!logged) {
+                                setState(() => errorMessage = "You must be logged in to start the concert");
+                                return;
+                              }
+                              bool pass = await getPasscode();
+                              if (!pass) {
+                                setState(() => errorMessage = "You must enter your maestro passcode to start the concert");
+                                _passcode.editor.clear();
+                                return;
+                              }
+                              bool succ = await checkMaestroPasscode();
+                              if (!succ) {
+                                setState(() => errorMessage = "Password either incorrect or cannot connect to the server");
+                                _passcode.editor.clear();
+                                return;
+                              }
                               if (context.mounted) {
                                 _showSnack(context, SocketType.maestro);
                                 return;
@@ -403,17 +403,17 @@ class _IndividualGroupState extends State<IndividualGroup> {
                           child: TextButton(
                             onPressed:  () async {
                               //UNCOMMENT WHEN NOT DOING UI SHIT
-                              // bool pass = await getPasscode();
-                              // if (!pass) {
-                              //   setState(() => errorMessage = "You must enter a passcode to start the concert");
-                              //   return;
-                              // }
-                              // bool succ = await checkPerformerPasscode();
-                              // if (!succ) {
-                              //   setState(() => errorMessage = "Password either incorrect or cannot connect to the server");
-                              //   _passcode.clear();
-                              //   return;
-                              // }
+                              bool pass = await getPasscode();
+                              if (!pass) {
+                                setState(() => errorMessage = "You must enter a passcode to start the concert");
+                                return;
+                              }
+                              bool succ = await checkPerformerPasscode();
+                              if (!succ) {
+                                setState(() => errorMessage = "Password either incorrect or cannot connect to the server");
+                                _passcode.editor.clear();
+                                return;
+                              }
                               if (context.mounted) {
                                 _showSnack(context, SocketType.performer);
                                 return;
@@ -738,7 +738,7 @@ class _IndividualGroupState extends State<IndividualGroup> {
   }
 
   Future<bool> logMaestroIn() async {
-    bool logged = await showDialog(context: context, builder: (context) {
+    var logged = await showDialog(context: context, builder: (context) {
       return AlertDialog(
         shape:  RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10)),
@@ -768,11 +768,16 @@ class _IndividualGroupState extends State<IndividualGroup> {
           children: <Widget>[
             Flexible(
                 child: Text(
-                    'You need to be logged in to be able to schedule a recording.')),
+                    'You need to be logged in to be able to start a recording.')),
           ],
         ),
       );
     });
+
+    if (logged == null) {
+      errorMessage = 'You must be logged in to start the concert';
+      return false;
+    }
 
     if (context.mounted) {
       Navigator.pushNamed(context, logged ? '/login' : '/register').then((entry) async {

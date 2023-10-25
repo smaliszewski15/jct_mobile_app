@@ -63,7 +63,7 @@ class UserAPI {
       response =
           await http.get(Uri.https(API_PREFIX, '${apiRoute}/$id'), headers: {
         HttpHeaders.contentTypeHeader: 'application/json',
-        HttpHeaders.authorizationHeader: user!.authToken
+        HttpHeaders.authorizationHeader: user.authToken
       });
     } catch (e) {
       print(e.toString());

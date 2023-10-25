@@ -76,6 +76,7 @@ class _PerformerScreenState extends State<PerformerScreen> {
         }
       },
       onDone: () {
+        disconnect();
         print('done');
       },
       onError: (error) => print(error),

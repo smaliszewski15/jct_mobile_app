@@ -18,7 +18,7 @@ class _LogInPageState extends State<LogInPage> {
 
   @override
   void initState() {
-    username  = CustomTextField(minLength: 2, maxLength: 255, fieldName: 'Username', fieldEntry: user == null ? '' : user!.username, tooltipKey: usernameKey);
+    username  = CustomTextField(minLength: 2, maxLength: 255, fieldName: 'Username', fieldEntry: user.username, tooltipKey: usernameKey);
     password  = CustomTextField(minLength: 4, maxLength: 60, fieldName: 'Password', fieldEntry: '', tooltipKey: passwordKey);
     super.initState();
   }
@@ -273,8 +273,8 @@ class _LogInPageState extends State<LogInPage> {
 
 
     user = User.userFromJson(data);
-    user!.setPassword(password.editor.value.text);
-    user!.putUserInStorage();
+    user.setPassword(password.editor.value.text);
+    user.putUserInStorage();
     return true;
   }
 }
