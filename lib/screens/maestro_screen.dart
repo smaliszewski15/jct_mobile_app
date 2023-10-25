@@ -87,6 +87,7 @@ class _MaestroScreenState extends State<MaestroScreen> {
         }
       },
       onDone: () {
+        disconnect();
         print('done');
       },
       onError: (error) => print(error),
