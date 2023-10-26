@@ -219,14 +219,14 @@ class Section extends StatelessWidget {
 
   List<DateTime> dateList() {
     DateTime date;
-    if (currentDay == DateTime.now().day) {
-      DateTime now = DateTime.now();
+    DateTime now = DateTime.now();
+    if (currentDay == now.day) {
       if (now.minute % 20 != 0) {
         now = now.subtract(Duration(minutes: now.minute % 20));
       }
-      date = DateTime(0, currentMonth, currentDay, now.hour, now.minute);
+      date = DateTime(now.year , currentMonth, currentDay, now.hour, now.minute);
     } else {
-      date = DateTime(0, currentMonth, currentDay);
+      date = DateTime(now.year, currentMonth, currentDay);
     }
 
     List<DateTime> toRet = [];

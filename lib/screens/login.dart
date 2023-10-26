@@ -264,8 +264,6 @@ class _LogInPageState extends State<LogInPage> {
 
     final res = await UserAPI.login(entries);
     var data = json.decode(res.body);
-    print(res.body);
-    print(res.statusCode);
     if (res.statusCode != 200) {
       errorMessage = data['message'];
       return false;
