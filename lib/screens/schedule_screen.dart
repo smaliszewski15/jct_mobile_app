@@ -51,7 +51,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
               TextButton(
                 onPressed: !_reserveToggle
                     ? () {
-                        totalHeight == 50;
+                        totalHeight = 60;
                         reserving = true;
                         browsing = false;
                         setState(() => _reserveToggle = true);
@@ -79,7 +79,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
               TextButton(
                 onPressed: _reserveToggle
                     ? () {
-                        totalHeight == 120;
+                        totalHeight = 120;
                         reserving = false;
                         browsing = true;
                         setState(() => _reserveToggle = false);
@@ -272,11 +272,14 @@ class Section extends StatelessWidget {
         SliverList(
             delegate: SliverChildBuilderDelegate(
           (BuildContext context, int index) {
+            while (groupList < groups.length && groups[groupList].date!.isBefore(tempList[index])) {
+              groupList++;
+            }
             if (groupList < groups.length &&
                 groupList >= 0 &&
                 tempList[index] == groups[groupList].date) {
               return GroupCard(
-                group: groups[groupList],
+                group: groups[groupList++],
                 height: totalHeight,
                 clickable: browsing,
               );

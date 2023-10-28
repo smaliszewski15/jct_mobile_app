@@ -213,27 +213,27 @@ class _ProfileState extends State<Profile> {
                         textAlign: TextAlign.center,
                       ),
                     ),
-                    Container(
-                      width: MediaQuery.of(context).size.width / 1.2,
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 10, horizontal: 5),
-                      margin: const EdgeInsets.only(bottom: 5),
-                      decoration: BoxDecoration(
-                        color: textFieldBackingColor,
-                        borderRadius: const BorderRadius.all(
-                            Radius.circular(roundedCorners)),
-                      ),
-                      child: Text(
-                        user.phoneNumber == ''
-                            ? 'No Phone Number'
-                            : user.phoneNumber,
-                        style: TextStyle(
-                          fontSize: smallFontSize,
-                          color: buttonTextColor,
-                        ),
-                        textAlign: TextAlign.left,
-                      ),
-                    ),
+                    // Container(
+                    //   width: MediaQuery.of(context).size.width / 1.2,
+                    //   padding: const EdgeInsets.symmetric(
+                    //       vertical: 10, horizontal: 5),
+                    //   margin: const EdgeInsets.only(bottom: 5),
+                    //   decoration: BoxDecoration(
+                    //     color: textFieldBackingColor,
+                    //     borderRadius: const BorderRadius.all(
+                    //         Radius.circular(roundedCorners)),
+                    //   ),
+                    //   child: Text(
+                    //     user.phoneNumber == ''
+                    //         ? 'No Phone Number'
+                    //         : user.phoneNumber,
+                    //     style: TextStyle(
+                    //       fontSize: smallFontSize,
+                    //       color: buttonTextColor,
+                    //     ),
+                    //     textAlign: TextAlign.left,
+                    //   ),
+                    // ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[

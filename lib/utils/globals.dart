@@ -4,7 +4,7 @@ import 'colors.dart';
 
 //Font Sizes
 const double bigButtonFontSize = 48;
-const double titleFontSize = 40;
+const double titleFontSize = 48;
 const double headingFontSize = 28;
 const double buttonFontSize = 28;
 const double infoFontSize = 20;

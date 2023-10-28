@@ -75,166 +75,157 @@ class _LogInPageState extends State<LogInPage> {
                     ),
                   ),
                 ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Container(
-                          padding: const EdgeInsets.all(10),
-                          width: MediaQuery.of(context).size.width / 1.6,
-                          height: MediaQuery.of(context).size.height / 2.3,
-                          decoration: BoxDecoration(
-                            borderRadius: const BorderRadius.all(Radius.circular(35)),
-                            color: Colors.black.withOpacity(.45),
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  width: MediaQuery.of(context).size.width / 1.6,
+                  height: 400,
+                  decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.all(Radius.circular(35)),
+                    color: Colors.black.withOpacity(.45),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width / 2,
+                        child: TextButton(
+                          style: TextButton.styleFrom(
+                            textStyle: TextStyle(
+                              fontSize: 18,
+                              color: mainSchemeColor,
+                              decoration: TextDecoration.underline,
+                            ),
                           ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
+                          onPressed: () {
+                            setState(() => Navigator.pop(context));
+                          },
+                          child: const Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
-                              TextButton(
-                                style: TextButton.styleFrom(
-                                  textStyle: TextStyle(
-                                    fontSize: 18,
-                                    color: mainSchemeColor,
-                                    decoration: TextDecoration.underline,
-                                  ),
-                                ),
-                                onPressed: () {
-                                  setState(() {
-                                    Navigator.pop(context);
-                                  });
-                                },
-                                child: const Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
-                                    Icon(
-                                      Icons.navigate_before,
-                                    ),
-                                    Text('Go Back'),
-                                  ],
-                                ),
+                              Icon(
+                                Icons.navigate_before,
                               ),
-                              const Spacer(),
-                              SizedBox(
-                                width: 210,
-                                child: Row(
-                                  children: <Widget>[
-                                    Text(
-                                      'Username',
-                                      style: TextStyle(
-                                        fontSize: smallFontSize,
-                                        color: textColor,
-                                      ),
-                                      textAlign: TextAlign.left,
-                                    ),
-                                    BasicTooltip(message: "Username cannot be left blank", tooltipkey: usernameKey),
-                                  ]
-                                ),
+                              Text('Go Back'),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const Spacer(),
+                      SizedBox(
+                        width: 210,
+                        child: Row(
+                          children: <Widget>[
+                            Text(
+                              'Username',
+                              style: TextStyle(
+                                fontSize: smallFontSize,
+                                color: textColor,
                               ),
-                              Container(
-                                padding: const EdgeInsets.symmetric(vertical: 5),
-                                width: 210,
-                                child: username,
+                              textAlign: TextAlign.left,
+                            ),
+                            BasicTooltip(message: "Username cannot be left blank", tooltipkey: usernameKey),
+                          ]
+                        ),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.symmetric(vertical: 5),
+                        width: 210,
+                        child: username,
+                      ),
+                      SizedBox(
+                        width: 210,
+                        child: Row(
+                          children: <Widget>[
+                            Text(
+                              'Password',
+                              style: TextStyle(
+                                fontSize: smallFontSize,
+                                color: textColor,
                               ),
-                              SizedBox(
-                                width: 210,
-                                child: Row(
-                                  children: <Widget>[
-                                    Text(
-                                      'Password',
-                                      style: TextStyle(
-                                        fontSize: smallFontSize,
-                                        color: textColor,
-                                      ),
-                                      textAlign: TextAlign.left,
-                                    ),
-                                    BasicTooltip(message: "Password cannot be left blank", tooltipkey: passwordKey),
-                                  ]
-                                ),
-                              ),
-                              Container(
-                                padding: const EdgeInsets.symmetric(vertical: 5),
-                                width: 210,
-                                child: password,
-                              ),
-                              Container(
-                                width: MediaQuery.of(context).size.width,
-                                height: 20,
-                                margin: const EdgeInsets.all(5),
+                              textAlign: TextAlign.left,
+                            ),
+                            BasicTooltip(message: "Password cannot be left blank", tooltipkey: passwordKey),
+                          ]
+                        ),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.symmetric(vertical: 5),
+                        width: 210,
+                        child: password,
+                      ),
+                      Container(
+                        width: MediaQuery.of(context).size.width,
+                        height: 20,
+                        margin: const EdgeInsets.all(5),
+                        child: Text(
+                            errorMessage,
+                            style: TextStyle(
+                              fontSize: smallFontSize,
+                              color: invalidColor,
+                            )
+                        ),
+                      ),
+                      const Spacer(),
+                      Container(
+                        margin: const EdgeInsets.symmetric(vertical: 5),
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        decoration: BoxDecoration(
+                          color: mainSchemeColor,
+                          border: Border.all(color: black, width: 3),
+                        ),
+                        child: TextButton(
+                          onPressed: () async {
+                            if (!allLoginFieldsValid()) {
+                              setState(() {});
+                              return;
+                            }
+                            bool success = await login();
+                            if (success && context.mounted) {
+                              Navigator.pop(context, true);
+                            }
+                            setState(() {});
+                          },
+                          child: Text(
+                            'Login',
+                            style: TextStyle(
+                              fontSize: buttonFontSize,
+                              color: buttonTextColor,
+                              fontWeight: FontWeight.w400,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width,
+                        child: TextButton(
+                          style: TextButton.styleFrom(
+                            textStyle: TextStyle(
+                              fontSize: 14,
+                              color: mainSchemeColor,
+                              fontStyle: FontStyle.italic,
+                              decoration: TextDecoration.underline,
+                            ),
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              Navigator.restorablePushReplacementNamed(
+                                  context, '/register');
+                            });
+                          },
+                          child: const Row(
+                            children: <Widget>[
+                              Flexible(
                                 child: Text(
-                                    errorMessage,
-                                    style: TextStyle(
-                                      fontSize: smallFontSize,
-                                      color: invalidColor,
-                                    )
-                                ),
-                              ),
-                              const Spacer(),
-                              Container(
-                                margin: const EdgeInsets.symmetric(vertical: 5),
-                                padding: const EdgeInsets.symmetric(horizontal: 20),
-                                decoration: BoxDecoration(
-                                  color: mainSchemeColor,
-                                  border: Border.all(color: black, width: 3),
-                                ),
-                                child: TextButton(
-                                  onPressed: () async {
-                                    if (!allLoginFieldsValid()) {
-                                      setState(() {});
-                                      return;
-                                    }
-                                    bool success = await login();
-                                    if (success && context.mounted) {
-                                      Navigator.pop(context, true);
-                                    }
-                                    setState(() {});
-                                  },
-                                  child: Text(
-                                    'Login',
-                                    style: TextStyle(
-                                      fontSize: buttonFontSize,
-                                      color: buttonTextColor,
-                                      fontWeight: FontWeight.w400,
-                                    ),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ),
-                              ),
-                              SizedBox(
-                                width: MediaQuery.of(context).size.width,
-                                child: TextButton(
-                                  style: TextButton.styleFrom(
-                                    textStyle: TextStyle(
-                                      fontSize: 14,
-                                      color: mainSchemeColor,
-                                      fontStyle: FontStyle.italic,
-                                      decoration: TextDecoration.underline,
-                                    ),
-                                  ),
-                                  onPressed: () {
-                                    setState(() {
-                                      Navigator.restorablePushReplacementNamed(
-                                          context, '/register');
-                                    });
-                                  },
-                                  child: const Row(
-                                    children: <Widget>[
-                                      Flexible(
-                                        child: Text(
-                                            "Don't have an account? Create one now!"),
-                                      ),
-                                    ],
-                                  ),
-                                ),
+                                    "Don't have an account? Create one now!"),
                               ),
                             ],
                           ),
                         ),
-                      ],
-                    ),
-                  ],
-                )
+                      ),
+                    ],
+                  ),
+                ),
               ],
             ),
           ),

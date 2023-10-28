@@ -34,6 +34,16 @@ class HomeScreen extends StatelessWidget {
                   fit: BoxFit.fitHeight
               ),
             ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10),
+              child: Text(
+                'What is this?',
+                style: TextStyle(
+                  fontSize: titleFontSize,
+                  color: textColor,
+                ),
+              ),
+            ),
             Container(
               width: MediaQuery.of(context).size.width,
               padding: const EdgeInsets.all(15),
@@ -103,7 +113,6 @@ class HomeScreen extends StatelessWidget {
               children: <Widget>[
                 Container(
                   width: MediaQuery.of(context).size.width / 4,
-                  //height: MediaQuery.of(context).size.height / 3,
                   margin: const EdgeInsets.symmetric(vertical: 30),
                   child: Image.asset(
                       'assets/images/Kyle.jpg',
@@ -117,6 +126,7 @@ class HomeScreen extends StatelessWidget {
                     fontSize: infoFontSize,
                     fontWeight: FontWeight.w600,
                   ),
+                  textAlign: TextAlign.center,
                 ),
                 Text(
                   'Project Manager & Backend Developer',
@@ -132,7 +142,7 @@ class HomeScreen extends StatelessWidget {
                   //height: MediaQuery.of(context).size.height / 3,
                   margin: const EdgeInsets.symmetric(vertical: 30),
                   child: Image.asset(
-                      'assets/images/default-profile-image.jpg',
+                      'assets/images/Demetri.jpg',
                       fit: BoxFit.fitWidth
                   ),
                 ),

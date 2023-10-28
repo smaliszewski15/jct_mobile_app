@@ -21,7 +21,6 @@ class _RegisterPageState extends State<RegisterPage> {
     fields = {
       'username' : CustomTextField(minLength: 2, maxLength: 255, fieldName: 'Username', fieldEntry: '', tooltipKey: GlobalKey<TooltipState>()),
       'email' : CustomTextField(minLength: 10, maxLength: 255, fieldName: 'Email', fieldEntry: '', tooltipKey: GlobalKey<TooltipState>()),
-      'phone_number' : CustomTextField(minLength: 10, maxLength: 10, fieldName: 'Phone Number', fieldEntry: '', tooltipKey: GlobalKey<TooltipState>(), keyboardType: TextInputType.phone),
       'password' : CustomTextField(minLength: 4, maxLength: 60, fieldName: 'Password', fieldEntry: '', tooltipKey: GlobalKey<TooltipState>()),
       'confirmPassword' : CustomTextField(minLength: 4, maxLength: 60, fieldName: 'Confirm Password', fieldEntry: '', tooltipKey: GlobalKey<TooltipState>()),
     };
@@ -96,7 +95,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       Container(
-                        padding: const EdgeInsets.symmetric(vertical: 10),
+                        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
                         width: MediaQuery.of(context).size.width,
                         height: MediaQuery.of(context).size.height / 1.5,
                         decoration: BoxDecoration(
@@ -144,65 +143,32 @@ class _RegisterPageState extends State<RegisterPage> {
                               ),
                             ),
                             Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
-                                Column(
-                                  children: <Widget>[
-                                    Row(
-                                      children: <Widget>[
-                                        Text(
-                                          'Username',
-                                          style: TextStyle(
-                                            fontSize: smallFontSize,
-                                            color: textColor,
-                                          ),
-                                          textAlign: TextAlign.left,
-                                        ),
-                                        Text(
-                                            '*',
-                                            style: TextStyle(
-                                              fontSize: smallFontSize,
-                                              color: invalidColor,
-                                            )
-                                        ),
-                                        BasicTooltip(message: "Usernames must be\n2-24 characters long and\ncan only contain\nASCII characters", tooltipkey: fields['username']!.tooltipKey),
-                                      ],
-                                    ),
-                                    Container(
-                                      width: MediaQuery.of(context).size.width / 2,
-                                      height: 40,
-                                      margin: const EdgeInsets.only(bottom: 5),
-                                      child: fields['username']!,
-                                    ),
-                                  ],
+                                Text(
+                                  'Username',
+                                  style: TextStyle(
+                                    fontSize: smallFontSize,
+                                    color: textColor,
+                                  ),
+                                  textAlign: TextAlign.left,
                                 ),
-                                Column(
-                                  children: <Widget>[
-                                    Row(
-                                      children: <Widget>[
-                                        Text(
-                                          'Phone Number',
-                                          style: TextStyle(
-                                            fontSize: smallFontSize,
-                                            color: textColor,
-                                          ),
-                                          textAlign: TextAlign.left,
-                                        ),
-                                        BasicTooltip(message: "Please enter a valid phone number", tooltipkey: fields['phone_number']!.tooltipKey),
-                                      ],
-                                    ),
-                                    Container(
-                                      width: MediaQuery.of(context).size.width / 2,
-                                      height: 40,
-                                      margin: const EdgeInsets.only(bottom: 5),
-                                      child: fields['phone_number']!,
-                                    ),
-                                  ],
+                                Text(
+                                    '*',
+                                    style: TextStyle(
+                                      fontSize: smallFontSize,
+                                      color: invalidColor,
+                                    )
                                 ),
+                                BasicTooltip(message: "Usernames must be 2-24 characters long and\ncan only contain ASCII characters", tooltipkey: fields['username']!.tooltipKey),
                               ],
                             ),
+                            Container(
+                              width: double.infinity,
+                              height: 40,
+                              margin: const EdgeInsets.only(bottom: 5),
+                              child: fields['username']!,
+                            ),
                             Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
                                 Text(
                                   'Email',
@@ -229,7 +195,6 @@ class _RegisterPageState extends State<RegisterPage> {
                               child: fields['email']!,
                             ),
                             Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
                                 Text(
                                   'Password',
@@ -246,7 +211,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                       color: invalidColor,
                                     )
                                 ),
-                                BasicTooltip(message: "Passwords must be\nat least 4 characters long and\ncan only contain\nASCII characters", tooltipkey: fields['password']!.tooltipKey),
+                                BasicTooltip(message: "Passwords must be at least 4 characters long and\ncan only contain ASCII characters", tooltipkey: fields['password']!.tooltipKey),
                               ],
                             ),
                             Container(
@@ -256,7 +221,6 @@ class _RegisterPageState extends State<RegisterPage> {
                               child: fields['password']!,
                             ),
                             Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
                                 Text(
                                   'Confirm Password',
@@ -392,19 +356,10 @@ class _RegisterPageState extends State<RegisterPage> {
   bool allRegisterFieldsValid() {
     bool toReturn = true;
     fields.forEach((key, value) {
-      if (key != 'phone_number') {
-        if (value.isUnfilled() || !value.validate()) {
-          toReturn = false;
-          value.showToolTip();
-          errorMessage = 'Fields are invalid';
-        }
-      } else {
-        if (!value.isUnfilled()) {
-          if (!value.validate()) {
-            toReturn = false;
-            value.showToolTip();
-          }
-        }
+      if (value.isUnfilled() || !value.validate()) {
+        toReturn = false;
+        value.showToolTip();
+        errorMessage = 'Fields are invalid';
       }
     });
 

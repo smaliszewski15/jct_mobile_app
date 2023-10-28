@@ -35,6 +35,7 @@ class SocketConnect {
   }
 
   Future<void> connectForMaestro() async {
+    print("Name: $name, Passcode: $passcode");
     socket = WebSocketChannel.connect(Uri.parse('ws://$API_PREFIX:8080/concert/performer/maestro?name=$name=passcode=$passcode'));
     _isConnected = true;
   }

@@ -9,13 +9,12 @@ class User {
   late String username;
   late String email;
   late String password;
-  late String phoneNumber;
   bool isAdmin = false;
   bool isVerified = false;
   bool logged = false;
   late String authToken;
 
-  User({this.id = -1, this.username = '', this.email = '', this.password = '', this.phoneNumber = '', this.authToken = '', this.isAdmin = false, this.isVerified = false});
+  User({this.id = -1, this.username = '', this.email = '', this.password = '', this.authToken = '', this.isAdmin = false, this.isVerified = false});
 
   factory User.userFromJson(Map<String, dynamic> json) {
     String token = json.containsKey('token') ? json['token'] : '';
@@ -23,7 +22,6 @@ class User {
     int id = data['ID'];
     String username = data['UserName'];
     String email = data['Email'];
-    String phonenumber = data.containsKey('Phone') ? data['Phone'] ?? '' : '';
     bool isAdmin;
     if (data['IsAdmin'] == 1) {
       isAdmin = true;
@@ -36,7 +34,7 @@ class User {
     } else {
       isVarified = false;
     }
-    User newUser = User(id: id, username: username, phoneNumber: phonenumber, email: email, authToken: token, isAdmin: isAdmin, isVerified: isVarified);
+    User newUser = User(id: id, username: username, email: email, authToken: token, isAdmin: isAdmin, isVerified: isVarified);
     newUser.logged = true;
     return newUser;
   }

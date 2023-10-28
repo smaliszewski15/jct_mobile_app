@@ -21,13 +21,6 @@ class _EditUserProfilePageState extends State<EditUserProfilePage> {
         fieldName: 'Username',
         fieldEntry: user.username,
         tooltipKey: GlobalKey<TooltipState>());
-    phoneNumber = CustomTextField(
-        minLength: 10,
-        maxLength: 10,
-        fieldName: 'Phone Number',
-        fieldEntry: user.phoneNumber,
-        tooltipKey: GlobalKey<TooltipState>(),
-        keyboardType: TextInputType.phone);
     password = CustomTextField(
         minLength: 4,
         maxLength: 60,
@@ -240,13 +233,6 @@ class _EditUserProfilePageState extends State<EditUserProfilePage> {
                                 prefs.setString(
                                     'username', username.editor.value.text);
                                 user.username = username.editor.value.text;
-                              }
-                              if (phoneNumber.editor.value.text !=
-                                  user.phoneNumber) {
-                                prefs.setString('phone_number',
-                                    phoneNumber.editor.value.text);
-                                user.phoneNumber =
-                                    phoneNumber.editor.value.text;
                               }
 
                               Navigator.pop(context);

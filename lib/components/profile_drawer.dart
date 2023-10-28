@@ -131,13 +131,13 @@ class _HomeDrawerState extends State<HomeDrawer> {
           textAlign: TextAlign.center,
         ),
         Container(
+          width: 100,
           margin: const EdgeInsets.all(10),
-          //padding: const EdgeInsets.all(5),
           decoration: BoxDecoration(
             color: gold,
             border: Border.all(color: black, width: 3),
           ),
-          child: OutlinedButton(
+          child: TextButton(
             onPressed: () {
               Navigator.pushNamed(context, '/login').then((entry) => {
                 setState(() {})
@@ -160,13 +160,13 @@ class _HomeDrawerState extends State<HomeDrawer> {
           textAlign: TextAlign.center,
         ),
         Container(
+          width: 100,
           margin: const EdgeInsets.all(10),
-          //padding: const EdgeInsets.all(5),
           decoration: BoxDecoration(
             color: gold,
             border: Border.all(color: black, width: 3),
           ),
-          child: OutlinedButton(
+          child: TextButton(
             onPressed: () {
               Navigator.pushNamed(context, '/register').then((entry) => {
                 setState(() {})

@@ -135,63 +135,62 @@ class _IndividualGroupState extends State<IndividualGroup> {
         backgroundColor: black,
         automaticallyImplyLeading: false,
       ),
+      backgroundColor: backgroundColor,
       body: GestureDetector(
         behavior: HitTestBehavior.translucent,
         onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
-        child: SingleChildScrollView(
-          child: Container(
-            width: double.infinity,
-            height: MediaQuery.of(context).size.height,
-            decoration: BoxDecoration(color: backgroundColor),
-            child: Column(
-              children: <Widget>[
-                Container(
-                  padding: const EdgeInsets.all(20),
-                  child: isEditing
-                      ? TextField(
-                    maxLines: 1,
-                    controller: _title,
-                    decoration: titleUnfilled
-                        ? InputDecoration(
-                      contentPadding: const EdgeInsets.all(5),
-                      counterText: '',
-                      filled: true,
-                      fillColor: mainSchemeColor,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(20),
-                        borderSide: const BorderSide(color: black),
-                      ),
-                    )
-                        : InputDecoration(
-                      contentPadding: const EdgeInsets.all(5),
-                      counterText: '',
-                      filled: true,
-                      fillColor: mainSchemeColor,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(20),
-                        borderSide: BorderSide(color: invalidColor),
-                      ),
+        child: CustomScrollView(
+          slivers:  <Widget>[
+            SliverToBoxAdapter(
+              child: Container(
+                padding: const EdgeInsets.all(20),
+                child: isEditing
+                    ? TextField(
+                  maxLines: 1,
+                  controller: _title,
+                  decoration: titleUnfilled
+                      ? InputDecoration(
+                    contentPadding: const EdgeInsets.all(5),
+                    counterText: '',
+                    filled: true,
+                    fillColor: mainSchemeColor,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20),
+                      borderSide: const BorderSide(color: black),
                     ),
-                    style: TextStyle(
-                      fontSize: titleFontSize,
-                      color: buttonTextColor,
-                    ),
-                    onChanged: (field) {
-                      if (field.isEmpty) {
-                        setState(() => titleUnfilled = true);
-                        return;
-                      }
-                      setState(() => titleUnfilled = false);
-                    },
-                    textAlign: TextAlign.center,
                   )
-                      : Text(
-                    widget.group.title,
-                    style: TextStyle(fontSize: 30, color: textColor),
-                    textAlign: TextAlign.center,
+                      : InputDecoration(
+                    contentPadding: const EdgeInsets.all(5),
+                    counterText: '',
+                    filled: true,
+                    fillColor: mainSchemeColor,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20),
+                      borderSide: BorderSide(color: invalidColor),
+                    ),
                   ),
+                  style: TextStyle(
+                    fontSize: titleFontSize,
+                    color: buttonTextColor,
+                  ),
+                  onChanged: (field) {
+                    if (field.isEmpty) {
+                      setState(() => titleUnfilled = true);
+                      return;
+                    }
+                    setState(() => titleUnfilled = false);
+                  },
+                  textAlign: TextAlign.center,
+                )
+                    : Text(
+                  widget.group.title,
+                  style: TextStyle(fontSize: 30, color: textColor),
+                  textAlign: TextAlign.center,
                 ),
-                Container(
+              ),
+            ),
+            SliverToBoxAdapter(
+                child: Container(
                   width: double.infinity,
                   margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                   child: Row(
@@ -210,7 +209,9 @@ class _IndividualGroupState extends State<IndividualGroup> {
                     ],
                   ),
                 ),
-                Container(
+            ),
+            SliverToBoxAdapter(
+                child: Container(
                   width: double.infinity,
                   margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                   child: Row(
@@ -219,41 +220,43 @@ class _IndividualGroupState extends State<IndividualGroup> {
                         'Mixing Method: ',
                         style: defaultTextStyle,
                       ),
-                      if (isEditing)
-                        Container(
-                            padding: const EdgeInsets.all(5),
-                            decoration: BoxDecoration(
-                              color: mainSchemeColor,
-                              borderRadius: BorderRadius.circular(20),
-                              border: Border.all(color: black),
-                            ),
-                            child: DropdownButton<String>(
-                                value: method,
-                                dropdownColor: mainSchemeColor,
-                                icon: const Icon(Icons.arrow_drop_down,
-                                    color: black),
-                                onChanged: (String? value) {
-                                  setState(() {
-                                    method = value!;
-                                  });
-                                },
-                                items: methods.map<DropdownMenuItem<String>>(
-                                      (String value) {
-                                    return DropdownMenuItem<String>(
-                                      value: value,
-                                      child: Text(value),
-                                    );
-                                  },
-                                ).toList()))
-                      else
-                        Text(
-                          method,
-                          style: defaultTextStyle,
-                        ),
+                      // if (isEditing)
+                      //   Container(
+                      //       padding: const EdgeInsets.all(5),
+                      //       decoration: BoxDecoration(
+                      //         color: mainSchemeColor,
+                      //         borderRadius: BorderRadius.circular(20),
+                      //         border: Border.all(color: black),
+                      //       ),
+                      //       child: DropdownButton<String>(
+                      //           value: method,
+                      //           dropdownColor: mainSchemeColor,
+                      //           icon: const Icon(Icons.arrow_drop_down,
+                      //               color: black),
+                      //           onChanged: (String? value) {
+                      //             setState(() {
+                      //               method = value!;
+                      //             });
+                      //           },
+                      //           items: methods.map<DropdownMenuItem<String>>(
+                      //                 (String value) {
+                      //               return DropdownMenuItem<String>(
+                      //                 value: value,
+                      //                 child: Text(value),
+                      //               );
+                      //             },
+                      //           ).toList()))
+                      // else
+                      Text(
+                        method,
+                        style: defaultTextStyle,
+                      ),
                     ],
                   ),
                 ),
-                Container(
+            ),
+            SliverToBoxAdapter(
+                child: Container(
                   width: double.infinity,
                   margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                   child: Text(
@@ -261,17 +264,22 @@ class _IndividualGroupState extends State<IndividualGroup> {
                     style: defaultTextStyle,
                   ),
                 ),
-                Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(5),
-                    margin:
-                    const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                    color: black,
-                    child: Text(
-                      widget.group.maestro,
-                      style: defaultTextStyle,
-                    )),
-                Container(
+            ),
+            SliverToBoxAdapter(
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(5),
+                  margin:
+                  const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                  color: black,
+                  child: Text(
+                    widget.group.maestro,
+                    style: defaultTextStyle,
+                  ),
+                ),
+            ),
+            SliverToBoxAdapter(
+                child: Container(
                   width: double.infinity,
                   margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                   child: Text(
@@ -279,17 +287,22 @@ class _IndividualGroupState extends State<IndividualGroup> {
                     style: defaultTextStyle,
                   ),
                 ),
-                Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(5),
-                    margin:
-                    const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                    color: black,
-                    child: Text(
-                      widget.group.tags,
-                      style: defaultTextStyle,
-                    )),
-                Container(
+            ),
+            SliverToBoxAdapter(
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(5),
+                  margin:
+                  const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                  color: black,
+                  child: Text(
+                    widget.group.tags.split('`').join(', '),
+                    style: defaultTextStyle,
+                  ),
+                ),
+            ),
+            SliverToBoxAdapter(
+                child: Container(
                   width: double.infinity,
                   margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                   child: Text(
@@ -297,18 +310,23 @@ class _IndividualGroupState extends State<IndividualGroup> {
                     style: defaultTextStyle,
                   ),
                 ),
-                Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(5),
-                    margin:
-                    const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                    color: black,
-                    child: Text(
-                      widget.group.description,
-                      style: defaultTextStyle,
-                    )),
-                if (widget.group.passcodes != null)
-                  Container(
+            ),
+            SliverToBoxAdapter(
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(5),
+                  margin:
+                  const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                  color: black,
+                  child: Text(
+                    widget.group.description,
+                    style: defaultTextStyle,
+                  ),
+                ),
+            ),
+            if (widget.group.passcodes != null)
+              SliverToBoxAdapter(
+                  child: Container(
                     width: double.infinity,
                     margin:
                     const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
@@ -317,8 +335,10 @@ class _IndividualGroupState extends State<IndividualGroup> {
                       style: defaultTextStyle,
                     ),
                   ),
-                if (widget.group.passcodes != null)
-                  ListView.builder(
+              ),
+            if (widget.group.passcodes != null)
+              SliverToBoxAdapter(
+                  child: ListView.builder(
                     shrinkWrap: true,
                     itemCount: widget.group.passcodes!.length,
                     itemBuilder: (context, index) {
@@ -328,13 +348,16 @@ class _IndividualGroupState extends State<IndividualGroup> {
                       );
                     },
                   ),
-                //if (widget.group.date!.difference(DateTime.now()).inMinutes < 40)
-                Column(
+              ),
+
+            //if (widget.group.date!.difference(DateTime.now()).inMinutes < 40)
+            SliverToBoxAdapter(
+                child: Column(
                   children: <Widget>[
                     Container(
                       padding: const EdgeInsets.all(5),
                       child: Text(
-                        'Want a break from the ads? Tap now to listen to 30 minutes of ad-free music...',
+                        'Are you the leader of this group? Or do you want to join in? Or do you just want to listen? Click one of buttons below!',
                         style: TextStyle(
                           fontSize: headingFontSize,
                           color: textColor,
@@ -345,54 +368,55 @@ class _IndividualGroupState extends State<IndividualGroup> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        Expanded(
-                          flex: 3,
-                          child: Container(
-                            margin: const EdgeInsets.all(4),
-                            decoration: BoxDecoration(
-                              color: gold,
-                              border: Border.all(color: black, width: 3),
-                            ),
-                            child: TextButton(
-                              onPressed: () async {
-                                //UNCOMMENT WHEN NOT DOING UI SHIT
-                                bool logged = await logMaestroIn();
-                                print(logged);
-                                if (!logged) {
-                                  setState(() => errorMessage = "You must be logged in to start the concert");
-                                  return;
-                                }
-                                bool pass = await getPasscode();
-                                if (!pass) {
-                                  setState(() => errorMessage = "You must enter your maestro passcode to start the concert");
+                        if (user.logged)
+                          Expanded(
+                            flex: 3,
+                            child: Container(
+                              margin: const EdgeInsets.all(4),
+                              decoration: BoxDecoration(
+                                color: gold,
+                                border: Border.all(color: black, width: 3),
+                              ),
+                              child: TextButton(
+                                onPressed: () async {
+                                  //UNCOMMENT WHEN NOT DOING UI SHIT
+                                  bool logged = await logMaestroIn();
+                                  print(logged);
+                                  if (!logged) {
+                                    setState(() => errorMessage = "You must be logged in to start the concert");
+                                    return;
+                                  }
+                                  bool pass = await getPasscode();
+                                  if (!pass) {
+                                    setState(() => errorMessage = "You must enter your maestro passcode to start the concert");
+                                    _passcode.editor.clear();
+                                    return;
+                                  }
+                                  bool succ = await checkMaestroPasscode();
+                                  if (!succ) {
+                                    setState(() => errorMessage = "Password either incorrect or cannot connect to the server");
+                                    _passcode.editor.clear();
+                                    return;
+                                  }
+                                  if (context.mounted) {
+                                    _showSnack(context, SocketType.maestro);
+                                    return;
+                                  }
                                   _passcode.editor.clear();
                                   return;
-                                }
-                                bool succ = await checkMaestroPasscode();
-                                if (!succ) {
-                                  setState(() => errorMessage = "Password either incorrect or cannot connect to the server");
-                                  _passcode.editor.clear();
-                                  return;
-                                }
-                                if (context.mounted) {
-                                  _showSnack(context, SocketType.maestro);
-                                  return;
-                                }
-                                _passcode.editor.clear();
-                                return;
-                              },
-                              child: Text(
-                                'Maestro',
-                                style: TextStyle(
-                                  fontSize: infoFontSize,
-                                  color: buttonTextColor,
-                                  fontWeight: FontWeight.w400,
+                                },
+                                child: Text(
+                                  'Maestro',
+                                  style: TextStyle(
+                                    fontSize: infoFontSize,
+                                    color: buttonTextColor,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                  textAlign: TextAlign.center,
                                 ),
-                                textAlign: TextAlign.center,
                               ),
                             ),
                           ),
-                        ),
                         Expanded(
                           flex: 3,
                           child: Container(
@@ -406,7 +430,7 @@ class _IndividualGroupState extends State<IndividualGroup> {
                                 //UNCOMMENT WHEN NOT DOING UI SHIT
                                 bool pass = await getPasscode();
                                 if (!pass) {
-                                  setState(() => errorMessage = "You must enter a passcode to start the concert");
+                                  setState(() => errorMessage = "You must enter a passcode to join the concert");
                                   return;
                                 }
                                 bool succ = await checkPerformerPasscode();
@@ -444,11 +468,11 @@ class _IndividualGroupState extends State<IndividualGroup> {
                             child: TextButton(
                               onPressed: () async {
                                 //UNCOMMENT WHEN NOT DOING UI SHIT
-                                // bool succ = await checkListenerPasscode();
-                                // if (!succ) {
-                                //   setState(() => errorMessage = "Password either incorrect or cannot connect to the server");
-                                //   return;
-                                // }
+                                bool succ = await checkListenerPasscode();
+                                if (!succ) {
+                                  setState(() => errorMessage = "Password either incorrect or cannot connect to the server");
+                                  return;
+                                }
                                 if (context.mounted) {
                                   _showSnack(context, SocketType.listener);
                                   return;
@@ -470,256 +494,258 @@ class _IndividualGroupState extends State<IndividualGroup> {
                     ),
                   ],
                 ),
+            ),
 
-                // if (!isCreator && widget.group.date!.difference(DateTime.now()).inMinutes < 40)
-                //   Container(
-                //     margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                //     padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 67),
-                //     decoration: BoxDecoration(
-                //       color: gold,
-                //       border: Border.all(color: black, width: 3),
-                //     ),
-                //     child: OutlinedButton(
-                //       onPressed: null,
-                //       child: Text(
-                //         'Join Session',
-                //         style: TextStyle(
-                //           fontSize: bigButtonFontSize,
-                //           color: buttonTextColor,
-                //           fontWeight: FontWeight.w400,
-                //         ),
-                //         textAlign: TextAlign.center,
-                //       ),
-                //     ),
-                //   ),
-                // if (!isEditing && isCreator)
-                //   Container(
-                //     margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                //     padding: const EdgeInsets.all(5),
-                //     decoration: BoxDecoration(
-                //       color: gold,
-                //       border: Border.all(color: black, width: 3),
-                //     ),
-                //     child: OutlinedButton(
-                //       onPressed: () {
-                //         setState(() => isEditing = true);
-                //       },
-                //       child: Text(
-                //         'Edit Details',
-                //         style: TextStyle(
-                //           fontSize: bigButtonFontSize,
-                //           color: buttonTextColor,
-                //           fontWeight: FontWeight.w400,
-                //         ),
-                //         textAlign: TextAlign.center,
-                //       ),
-                //     ),
-                //   ),
-                // if (!isEditing && !isCreator && (user!.logged ? widget.group.members!.contains(user!.username) : false))
-                //   Container(
-                //     margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                //     padding: const EdgeInsets.all(5),
-                //     decoration: BoxDecoration(
-                //       color: red,
-                //       border: Border.all(color: black, width: 3),
-                //     ),
-                //     child: OutlinedButton(
-                //       onPressed: () async {
-                //         bool confirm = await showDialog(
-                //           context: context,
-                //           barrierDismissible: false,
-                //           builder: (context) {
-                //             return AlertDialog(
-                //               title: const Text('Confirm', style: TextStyle(fontSize: titleFontSize, color: black)),
-                //               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                //               elevation: 15,
-                //               actions: <Widget>[
-                //                 TextButton(
-                //                   onPressed: () {
-                //                     Navigator.pop(context, false);
-                //                   },
-                //                   child: const Text(
-                //                     'Cancel',
-                //                     style: TextStyle(color: Colors.red, fontSize: 18),
-                //                   ),
-                //                 ),
-                //                 TextButton(
-                //                   onPressed: () {
-                //                     Navigator.pop(context, true);
-                //                   },
-                //                   child: const Text(
-                //                     'Confirm',
-                //                     style: TextStyle(color: black, fontSize: 18),
-                //                   ),
-                //                 )
-                //               ],
-                //               content:
-                //               const Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-                //                 Flexible(
-                //                     child: Text(
-                //                         'Are you sure you want to leave this group?')),
-                //               ]),
-                //             );
-                //           },
-                //         );
-                //         if (confirm && context.mounted) {
-                //           Navigator.pop(context);
-                //         }
-                //       },
-                //       child: Text(
-                //         'Leave Group',
-                //         style: TextStyle(
-                //           fontSize: bigButtonFontSize,
-                //           color: buttonTextColor,
-                //           fontWeight: FontWeight.w400,
-                //         ),
-                //         textAlign: TextAlign.center,
-                //       ),
-                //     ),
-                //   ),
-                // Container(
-                //   width: double.infinity,
-                //   padding: const EdgeInsets.all(5),
-                //   margin: const EdgeInsets.symmetric(horizontal: 5),
-                //   child: TextField(
-                //     maxLines: 1,
-                //     controller: _passcode,
-                //     decoration: passcodeUnfilled
-                //         ? invalidTextField.copyWith(hintText: 'Enter passcode')
-                //         : globalDecoration.copyWith(hintText: 'Enter passcode'),
-                //     style: TextStyle(
-                //       fontSize: bioTextSize + 2,
-                //       color: buttonTextColor,
-                //     ),
-                //     onChanged: (field) {
-                //       if (field.isEmpty) {
-                //         setState(() => passcodeUnfilled = true);
-                //         return;
-                //       }
-                //       setState(() => passcodeUnfilled = false);
-                //     },
-                //     textAlign: TextAlign.left,
-                //     textInputAction: TextInputAction.next,
-                //   ),
-                // ),
-                // Container(
-                //   margin: const EdgeInsets.all(10),
-                //   padding: const EdgeInsets.all(5),
-                //   child: TextButton(
-                //     onPressed: () async {
-                //       Map<String, dynamic> query = {
-                //         'maestroPasscode': _passcode.value.text,
-                //       };
-                //
-                //       final res = await GroupsAPI.prepare(query);
-                //       if (res.statusCode != 200) {
-                //         print(res.body);
-                //         var message = json.decode(res.body);
-                //         errorMessage = message.containsKey('message')
-                //             ? message['message']
-                //             : message['error'];
-                //         return;
-                //       }
-                //       if (context.mounted) {
-                //         _showSnack(context);
-                //       }
-                //     },
-                //     child: Text(
-                //       'Prepare concert',
-                //       style: buttonTextStyle,
-                //     ),
-                //   ),
-                // ),
-                //commented out because the buttons are not used rn
-                // if (isEditing && false)
-                //   Container(
-                //     margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                //     padding: const EdgeInsets.all(5),
-                //     decoration: BoxDecoration(
-                //       color: gold,
-                //       border: Border.all(color: black, width: 3),
-                //     ),
-                //     child: OutlinedButton(
-                //       onPressed: () async {
-                //         bool confirm = await showDialog(
-                //           context: context,
-                //           barrierDismissible: false,
-                //           builder: (context) {
-                //             return AlertDialog(
-                //               title: const Text('Confirm', style: TextStyle(fontSize: titleFontSize, color: black)),
-                //               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                //               elevation: 15,
-                //               actions: <Widget>[
-                //                 TextButton(
-                //                   onPressed: () {
-                //                     Navigator.pop(context, false);
-                //                   },
-                //                   child: const Text(
-                //                     'Cancel',
-                //                     style: TextStyle(color: Colors.red, fontSize: 18),
-                //                   ),
-                //                 ),
-                //                 TextButton(
-                //                   onPressed: () {
-                //                     Navigator.pop(context, true);
-                //                   },
-                //                   child: const Text(
-                //                     'Confirm',
-                //                     style: TextStyle(color: black, fontSize: 18),
-                //                   ),
-                //                 )
-                //               ],
-                //               content:
-                //               const Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-                //                 Flexible(
-                //                     child: Text(
-                //                         'Confirm changes made to the group?')),
-                //               ]),
-                //             );
-                //           },
-                //         );
-                //         if (!confirm) {
-                //           return;
-                //         }
-                //         widget.group.title = _title.text;
-                //         setState(() => isEditing = false);
-                //       },
-                //       child: Text(
-                //         'Confirm Changes',
-                //         style: TextStyle(
-                //           fontSize: bigButtonFontSize,
-                //           color: buttonTextColor,
-                //           fontWeight: FontWeight.w400,
-                //         ),
-                //         textAlign: TextAlign.center,
-                //       ),
-                //     ),
-                //   ),
-                // if (isEditing)
-                //   Container(
-                //     margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                //     padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 67),
-                //     decoration: BoxDecoration(
-                //       color: red,
-                //       border: Border.all(color: black, width: 3),
-                //     ),
-                //     child: OutlinedButton(
-                //       onPressed: () {
-                //         _title.text = widget.group.title;
-                //         setState(() => isEditing = false);
-                //       },
-                //       child: Text(
-                //         'Cancel Changes',
-                //         style: TextStyle(
-                //           fontSize: bigButtonFontSize,
-                //           color: buttonTextColor,
-                //           fontWeight: FontWeight.w400,
-                //         ),
-                //         textAlign: TextAlign.center,
-                //       ),
-                //     ),
-                //   ),
-                Container(
+            // if (!isCreator && widget.group.date!.difference(DateTime.now()).inMinutes < 40)
+            //   Container(
+            //     margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+            //     padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 67),
+            //     decoration: BoxDecoration(
+            //       color: gold,
+            //       border: Border.all(color: black, width: 3),
+            //     ),
+            //     child: OutlinedButton(
+            //       onPressed: null,
+            //       child: Text(
+            //         'Join Session',
+            //         style: TextStyle(
+            //           fontSize: bigButtonFontSize,
+            //           color: buttonTextColor,
+            //           fontWeight: FontWeight.w400,
+            //         ),
+            //         textAlign: TextAlign.center,
+            //       ),
+            //     ),
+            //   ),
+            // if (!isEditing && isCreator)
+            //   Container(
+            //     margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+            //     padding: const EdgeInsets.all(5),
+            //     decoration: BoxDecoration(
+            //       color: gold,
+            //       border: Border.all(color: black, width: 3),
+            //     ),
+            //     child: OutlinedButton(
+            //       onPressed: () {
+            //         setState(() => isEditing = true);
+            //       },
+            //       child: Text(
+            //         'Edit Details',
+            //         style: TextStyle(
+            //           fontSize: bigButtonFontSize,
+            //           color: buttonTextColor,
+            //           fontWeight: FontWeight.w400,
+            //         ),
+            //         textAlign: TextAlign.center,
+            //       ),
+            //     ),
+            //   ),
+            // if (!isEditing && !isCreator && (user!.logged ? widget.group.members!.contains(user!.username) : false))
+            //   Container(
+            //     margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+            //     padding: const EdgeInsets.all(5),
+            //     decoration: BoxDecoration(
+            //       color: red,
+            //       border: Border.all(color: black, width: 3),
+            //     ),
+            //     child: OutlinedButton(
+            //       onPressed: () async {
+            //         bool confirm = await showDialog(
+            //           context: context,
+            //           barrierDismissible: false,
+            //           builder: (context) {
+            //             return AlertDialog(
+            //               title: const Text('Confirm', style: TextStyle(fontSize: titleFontSize, color: black)),
+            //               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            //               elevation: 15,
+            //               actions: <Widget>[
+            //                 TextButton(
+            //                   onPressed: () {
+            //                     Navigator.pop(context, false);
+            //                   },
+            //                   child: const Text(
+            //                     'Cancel',
+            //                     style: TextStyle(color: Colors.red, fontSize: 18),
+            //                   ),
+            //                 ),
+            //                 TextButton(
+            //                   onPressed: () {
+            //                     Navigator.pop(context, true);
+            //                   },
+            //                   child: const Text(
+            //                     'Confirm',
+            //                     style: TextStyle(color: black, fontSize: 18),
+            //                   ),
+            //                 )
+            //               ],
+            //               content:
+            //               const Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+            //                 Flexible(
+            //                     child: Text(
+            //                         'Are you sure you want to leave this group?')),
+            //               ]),
+            //             );
+            //           },
+            //         );
+            //         if (confirm && context.mounted) {
+            //           Navigator.pop(context);
+            //         }
+            //       },
+            //       child: Text(
+            //         'Leave Group',
+            //         style: TextStyle(
+            //           fontSize: bigButtonFontSize,
+            //           color: buttonTextColor,
+            //           fontWeight: FontWeight.w400,
+            //         ),
+            //         textAlign: TextAlign.center,
+            //       ),
+            //     ),
+            //   ),
+            // Container(
+            //   width: double.infinity,
+            //   padding: const EdgeInsets.all(5),
+            //   margin: const EdgeInsets.symmetric(horizontal: 5),
+            //   child: TextField(
+            //     maxLines: 1,
+            //     controller: _passcode,
+            //     decoration: passcodeUnfilled
+            //         ? invalidTextField.copyWith(hintText: 'Enter passcode')
+            //         : globalDecoration.copyWith(hintText: 'Enter passcode'),
+            //     style: TextStyle(
+            //       fontSize: bioTextSize + 2,
+            //       color: buttonTextColor,
+            //     ),
+            //     onChanged: (field) {
+            //       if (field.isEmpty) {
+            //         setState(() => passcodeUnfilled = true);
+            //         return;
+            //       }
+            //       setState(() => passcodeUnfilled = false);
+            //     },
+            //     textAlign: TextAlign.left,
+            //     textInputAction: TextInputAction.next,
+            //   ),
+            // ),
+            // Container(
+            //   margin: const EdgeInsets.all(10),
+            //   padding: const EdgeInsets.all(5),
+            //   child: TextButton(
+            //     onPressed: () async {
+            //       Map<String, dynamic> query = {
+            //         'maestroPasscode': _passcode.value.text,
+            //       };
+            //
+            //       final res = await GroupsAPI.prepare(query);
+            //       if (res.statusCode != 200) {
+            //         print(res.body);
+            //         var message = json.decode(res.body);
+            //         errorMessage = message.containsKey('message')
+            //             ? message['message']
+            //             : message['error'];
+            //         return;
+            //       }
+            //       if (context.mounted) {
+            //         _showSnack(context);
+            //       }
+            //     },
+            //     child: Text(
+            //       'Prepare concert',
+            //       style: buttonTextStyle,
+            //     ),
+            //   ),
+            // ),
+            //commented out because the buttons are not used rn
+            // if (isEditing && false)
+            //   Container(
+            //     margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+            //     padding: const EdgeInsets.all(5),
+            //     decoration: BoxDecoration(
+            //       color: gold,
+            //       border: Border.all(color: black, width: 3),
+            //     ),
+            //     child: OutlinedButton(
+            //       onPressed: () async {
+            //         bool confirm = await showDialog(
+            //           context: context,
+            //           barrierDismissible: false,
+            //           builder: (context) {
+            //             return AlertDialog(
+            //               title: const Text('Confirm', style: TextStyle(fontSize: titleFontSize, color: black)),
+            //               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            //               elevation: 15,
+            //               actions: <Widget>[
+            //                 TextButton(
+            //                   onPressed: () {
+            //                     Navigator.pop(context, false);
+            //                   },
+            //                   child: const Text(
+            //                     'Cancel',
+            //                     style: TextStyle(color: Colors.red, fontSize: 18),
+            //                   ),
+            //                 ),
+            //                 TextButton(
+            //                   onPressed: () {
+            //                     Navigator.pop(context, true);
+            //                   },
+            //                   child: const Text(
+            //                     'Confirm',
+            //                     style: TextStyle(color: black, fontSize: 18),
+            //                   ),
+            //                 )
+            //               ],
+            //               content:
+            //               const Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+            //                 Flexible(
+            //                     child: Text(
+            //                         'Confirm changes made to the group?')),
+            //               ]),
+            //             );
+            //           },
+            //         );
+            //         if (!confirm) {
+            //           return;
+            //         }
+            //         widget.group.title = _title.text;
+            //         setState(() => isEditing = false);
+            //       },
+            //       child: Text(
+            //         'Confirm Changes',
+            //         style: TextStyle(
+            //           fontSize: bigButtonFontSize,
+            //           color: buttonTextColor,
+            //           fontWeight: FontWeight.w400,
+            //         ),
+            //         textAlign: TextAlign.center,
+            //       ),
+            //     ),
+            //   ),
+            // if (isEditing)
+            //   Container(
+            //     margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+            //     padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 67),
+            //     decoration: BoxDecoration(
+            //       color: red,
+            //       border: Border.all(color: black, width: 3),
+            //     ),
+            //     child: OutlinedButton(
+            //       onPressed: () {
+            //         _title.text = widget.group.title;
+            //         setState(() => isEditing = false);
+            //       },
+            //       child: Text(
+            //         'Cancel Changes',
+            //         style: TextStyle(
+            //           fontSize: bigButtonFontSize,
+            //           color: buttonTextColor,
+            //           fontWeight: FontWeight.w400,
+            //         ),
+            //         textAlign: TextAlign.center,
+            //       ),
+            //     ),
+            //   ),
+            SliverToBoxAdapter(
+                child: Container(
                   width: double.infinity,
                   padding: const EdgeInsets.all(10),
                   child: Text(
@@ -730,12 +756,11 @@ class _IndividualGroupState extends State<IndividualGroup> {
                     ),
                     textAlign: TextAlign.center,
                   ),
-                )
-              ],
+                ),
             ),
-          ),
-        ),
+          ],
       ),
+    ),
     );
   }
 

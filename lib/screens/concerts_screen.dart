@@ -155,7 +155,9 @@ class _ConcertsState extends State<ConcertsScreen> {
                     onPressed: () {
                       Navigator.pushNamed(
                           context, '/group/group',
-                          arguments: upcoming);
+                          arguments: upcoming).then((entry) {
+                            getNextConcert();
+                      });
                     },
                     style: TextButton.styleFrom(
                       textStyle: const TextStyle(

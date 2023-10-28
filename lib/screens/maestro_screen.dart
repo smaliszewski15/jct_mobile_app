@@ -31,6 +31,7 @@ class _MaestroScreenState extends State<MaestroScreen> {
   StreamController? audio;
   bool muted = false;
   List<String> participants = [];
+  bool isConnected = false;
 
   @override
   void initState() {
@@ -65,7 +66,9 @@ class _MaestroScreenState extends State<MaestroScreen> {
   }
 
   Future<void> connect() async {
+    print(user.username);
     socket = SocketConnect(SocketType.maestro, user.username, widget.passcode);
+    isConnected = true;
     socket!.socket.stream.listen(
           (data) {
         String s = splitHeader(data);
@@ -89,6 +92,7 @@ class _MaestroScreenState extends State<MaestroScreen> {
       onDone: () {
         disconnect();
         print('done');
+        setState(() {});
       },
       onError: (error) => print(error),
     );
@@ -107,6 +111,7 @@ class _MaestroScreenState extends State<MaestroScreen> {
     }
     socket = null;
     participants = [];
+    isConnected = false;
   }
 
   Future<void> record() async {
@@ -180,7 +185,9 @@ class _MaestroScreenState extends State<MaestroScreen> {
                         itemCount: participants.length,
                         itemBuilder: (context, index) {
                           return Container(
+                            padding: const EdgeInsets.all(5),
                             decoration: BoxDecoration(
+                              borderRadius: const BorderRadius.all(Radius.circular(roundedCorners)),
                               color: accentColor,
                             ),
                             child: Text(
@@ -191,6 +198,27 @@ class _MaestroScreenState extends State<MaestroScreen> {
                           );
                         },
                       ),
+                    ),
+                  if (!isConnected)
+                    Container(
+                      width: 100,
+                      height: 100,
+                      child: TextButton(
+                        onPressed: () async {
+                          await connect();
+                        },
+                        child: const Icon(
+                          Icons.link,
+                          color: black,
+                          size: bottomIconSize + 20,
+                        ),
+                      )
+                    ),
+                  if (!isConnected)
+                    Text(
+                      'Could not connect! Tap the microphone to reconnect',
+                      style: defaultTextStyle,
+                      textAlign: TextAlign.center,
                     ),
                   Container(
                     margin: const EdgeInsets.all(5),

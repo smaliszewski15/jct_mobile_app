@@ -49,18 +49,14 @@ class _AddGroupState extends State<AddGroup> {
         backgroundColor: black,
         automaticallyImplyLeading: false,
       ),
-      body: SingleChildScrollView(
-        child: GestureDetector(
+      backgroundColor: backgroundColor,
+      body: GestureDetector(
             behavior: HitTestBehavior.translucent,
             onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
-            child: Container(
-              width: double.infinity,
-              height: MediaQuery.of(context).size.height,
-              decoration: BoxDecoration(color: backgroundColor),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Container(
+            child: CustomScrollView(
+              slivers: <Widget>[
+                SliverToBoxAdapter(
+                  child: Container(
                     width: double.infinity,
                     margin: const EdgeInsets.all(10),
                     child: Row(
@@ -77,165 +73,181 @@ class _AddGroupState extends State<AddGroup> {
                       ],
                     ),
                   ),
-                  Container(
-                      padding: const EdgeInsets.all(20),
-                      child: Text(
-                        'Every concert must have a title. Enter yours here:',
-                        style: TextStyle(
-                          fontSize: headingFontSize,
-                          color: textColor,
-                        ),
-                        textAlign: TextAlign.center,
-                      )
-                  ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: TextField(
-                      maxLines: 1,
-                      controller: _title,
-                      decoration: titleUnfilled ?
-                      InputDecoration(
-                        contentPadding: const EdgeInsets.all(5),
-                        counterText: '',
-                        filled: true,
-                        fillColor: mainSchemeColor,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(20),
-                          borderSide: BorderSide(color: invalidColor),
-                        ),
-                      ) :
-                      InputDecoration(
-                        contentPadding: const EdgeInsets.all(5),
-                        counterText: '',
-                        filled: true,
-                        fillColor: mainSchemeColor,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(20),
-                          borderSide: const BorderSide(color: black),
-                        ),
-                      ),
-                      style: TextStyle(
-                        fontSize: titleFontSize,
-                        color: buttonTextColor,
-                      ),
-                      onChanged: (field) {
-                        if (field.isEmpty) {
-                          setState(() => titleUnfilled = true);
-                          return;
-                        } else {
-                          setState(() => titleUnfilled = false);
-                        }
-                      },
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  if (titleUnfilled)
-                    Text(
-                      'You must have a title for your concert',
-                      style: TextStyle(
-                        fontSize: smallFontSize,
-                        color: invalidColor,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  Container(
-                    width: double.infinity,
-                    margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                    child: Text(
-                      'Mixing Method: ',
-                      style: TextStyle(
-                        fontSize: headingFontSize,
-                        color: textColor,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.all(5),
-                    margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                    decoration: BoxDecoration(
-                      color: mainSchemeColor,
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: black),
-                    ),
-                    child: DropdownButton<String>(
-                      value: method,
-                      dropdownColor: mainSchemeColor,
-                      icon: const Icon(
-                          Icons.arrow_drop_down,
-                          color: black),
-                      onChanged: (String? value) {
-                        setState(() {
-                          method = value!;
-                        });
-                      },
-                      items: methods.map<DropdownMenuItem<String>>((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(
-                            value,
-                            style: const TextStyle(
-                              fontSize: smallFontSize,
-                            ),
+                ),
+                SliverToBoxAdapter(
+                    child: Container(
+                        padding: const EdgeInsets.all(20),
+                        child: Text(
+                          'Every concert must have a title. Enter yours here:',
+                          style: TextStyle(
+                            fontSize: headingFontSize,
+                            color: textColor,
                           ),
-                        );
-                      },
-                      ).toList(),
+                          textAlign: TextAlign.center,
+                        )
                     ),
-                  ),
-                  Container(
-                      padding: const EdgeInsets.all(20),
+                ),
+                SliverToBoxAdapter(
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: TextField(
+                        maxLines: 1,
+                        controller: _title,
+                        decoration: titleUnfilled ?
+                        InputDecoration(
+                          contentPadding: const EdgeInsets.all(5),
+                          counterText: '',
+                          filled: true,
+                          fillColor: mainSchemeColor,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(20),
+                            borderSide: BorderSide(color: invalidColor),
+                          ),
+                        ) :
+                        InputDecoration(
+                          contentPadding: const EdgeInsets.all(5),
+                          counterText: '',
+                          filled: true,
+                          fillColor: mainSchemeColor,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(20),
+                            borderSide: const BorderSide(color: black),
+                          ),
+                        ),
+                        style: TextStyle(
+                          fontSize: titleFontSize,
+                          color: buttonTextColor,
+                        ),
+                        onChanged: (field) {
+                          if (field.isEmpty) {
+                            setState(() => titleUnfilled = true);
+                            return;
+                          } else {
+                            setState(() => titleUnfilled = false);
+                          }
+                        },
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                ),
+                if (titleUnfilled)
+                  SliverToBoxAdapter(
                       child: Text(
-                        'Enter a description:',
+                        'You must have a title for your concert',
+                        style: TextStyle(
+                          fontSize: smallFontSize,
+                          color: invalidColor,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                  ),
+                SliverToBoxAdapter(
+                    child: Container(
+                      width: double.infinity,
+                      margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                      child: Text(
+                        'Mixing Method: ',
                         style: TextStyle(
                           fontSize: headingFontSize,
                           color: textColor,
                         ),
                         textAlign: TextAlign.center,
-                      )
-                  ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: TextField(
-                      maxLines: 3,
-                      controller: _description,
-                      decoration: descriptionUnfilled ?
-                      InputDecoration(
-                        contentPadding: const EdgeInsets.all(5),
-                        counterText: '',
-                        filled: true,
-                        fillColor: mainSchemeColor,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(20),
-                          borderSide: BorderSide(color: invalidColor),
-                        ),
-                      ) :
-                      InputDecoration(
-                        contentPadding: const EdgeInsets.all(5),
-                        counterText: '',
-                        filled: true,
-                        fillColor: mainSchemeColor,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(20),
-                          borderSide: const BorderSide(color: black),
-                        ),
                       ),
-                      style: TextStyle(
-                        fontSize: infoFontSize,
-                        color: buttonTextColor,
-                      ),
-                      onChanged: (field) {
-                        if (field.isEmpty) {
-                          setState(() => titleUnfilled = true);
-                          return;
-                        } else {
-                          setState(() => titleUnfilled = false);
-                        }
-                      },
-                      textAlign: TextAlign.center,
                     ),
-                  ),
-                  Container(
+                ),
+                SliverToBoxAdapter(
+                    child: Container(
+                      padding: const EdgeInsets.all(5),
+                      margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                      decoration: BoxDecoration(
+                        color: mainSchemeColor,
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(color: black),
+                      ),
+                      child: DropdownButton<String>(
+                        value: method,
+                        dropdownColor: mainSchemeColor,
+                        icon: const Icon(
+                            Icons.arrow_drop_down,
+                            color: black),
+                        onChanged: (String? value) {
+                          setState(() {
+                            method = value!;
+                          });
+                        },
+                        items: methods.map<DropdownMenuItem<String>>((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(
+                              value,
+                              style: const TextStyle(
+                                fontSize: smallFontSize,
+                              ),
+                            ),
+                          );
+                        },
+                        ).toList(),
+                      ),
+                    ),
+                ),
+                SliverToBoxAdapter(
+                    child: Container(
+                        padding: const EdgeInsets.all(20),
+                        child: Text(
+                          'Enter a description:',
+                          style: TextStyle(
+                            fontSize: headingFontSize,
+                            color: textColor,
+                          ),
+                          textAlign: TextAlign.center,
+                        )
+                    ),
+                ),
+                SliverToBoxAdapter(
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: TextField(
+                        maxLines: 3,
+                        controller: _description,
+                        decoration: descriptionUnfilled ?
+                        InputDecoration(
+                          contentPadding: const EdgeInsets.all(5),
+                          counterText: '',
+                          filled: true,
+                          fillColor: mainSchemeColor,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(20),
+                            borderSide: BorderSide(color: invalidColor),
+                          ),
+                        ) :
+                        InputDecoration(
+                          contentPadding: const EdgeInsets.all(5),
+                          counterText: '',
+                          filled: true,
+                          fillColor: mainSchemeColor,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(20),
+                            borderSide: const BorderSide(color: black),
+                          ),
+                        ),
+                        style: TextStyle(
+                          fontSize: infoFontSize,
+                          color: buttonTextColor,
+                        ),
+                        onChanged: (field) {
+                          if (field.isEmpty) {
+                            setState(() => titleUnfilled = true);
+                            return;
+                          } else {
+                            setState(() => titleUnfilled = false);
+                          }
+                        },
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                ),
+                SliverToBoxAdapter(
+                    child: Container(
                       padding: const EdgeInsets.all(10),
                       child: Text(
                         'And lastly, some tags to describe your concert:',
@@ -245,61 +257,65 @@ class _AddGroupState extends State<AddGroup> {
                         ),
                         textAlign: TextAlign.center,
                       ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.all(5),
-                    child: Text(
-                      'Enter as a list of comma separated words',
-                      style: TextStyle(
-                        fontSize: infoFontSize,
-                        color: textColor,
-                      ),
-                      textAlign: TextAlign.center,
                     ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                    child: TextField(
-                      maxLines: 1,
-                      controller: _tags,
-                      decoration: tagsUnfilled ?
-                      InputDecoration(
-                        contentPadding: const EdgeInsets.all(5),
-                        counterText: '',
-                        filled: true,
-                        fillColor: mainSchemeColor,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(20),
-                          borderSide: BorderSide(color: invalidColor),
+                ),
+                SliverToBoxAdapter(
+                    child: Container(
+                      padding: const EdgeInsets.all(5),
+                      child: Text(
+                        'Enter as a list of comma separated words',
+                        style: TextStyle(
+                          fontSize: infoFontSize,
+                          color: textColor,
                         ),
-                      ) :
-                      InputDecoration(
-                        contentPadding: const EdgeInsets.all(5),
-                        counterText: '',
-                        filled: true,
-                        fillColor: mainSchemeColor,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(20),
-                          borderSide: const BorderSide(color: black),
-                        ),
+                        textAlign: TextAlign.center,
                       ),
-                      style: TextStyle(
-                        fontSize: infoFontSize,
-                        color: buttonTextColor,
-                      ),
-                      onChanged: (field) {
-                        if (field.isEmpty) {
-                          setState(() => titleUnfilled = true);
-                          return;
-                        } else {
-                          setState(() => titleUnfilled = false);
-                        }
-                      },
-                      textAlign: TextAlign.center,
                     ),
-                  ),
-                  //const Spacer(),
-                  Flexible(
+                ),
+                SliverToBoxAdapter(
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                      child: TextField(
+                        maxLines: 1,
+                        controller: _tags,
+                        decoration: tagsUnfilled ?
+                        InputDecoration(
+                          contentPadding: const EdgeInsets.all(5),
+                          counterText: '',
+                          filled: true,
+                          fillColor: mainSchemeColor,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(20),
+                            borderSide: BorderSide(color: invalidColor),
+                          ),
+                        ) :
+                        InputDecoration(
+                          contentPadding: const EdgeInsets.all(5),
+                          counterText: '',
+                          filled: true,
+                          fillColor: mainSchemeColor,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(20),
+                            borderSide: const BorderSide(color: black),
+                          ),
+                        ),
+                        style: TextStyle(
+                          fontSize: infoFontSize,
+                          color: buttonTextColor,
+                        ),
+                        onChanged: (field) {
+                          if (field.isEmpty) {
+                            setState(() => titleUnfilled = true);
+                            return;
+                          } else {
+                            setState(() => titleUnfilled = false);
+                          }
+                        },
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                ),
+                SliverToBoxAdapter(
                     child: Text(
                       'Finished making your concert? Tap the button below to create your concert. The invitation codes will be sent to your email.',
                       style: TextStyle(
@@ -308,41 +324,41 @@ class _AddGroupState extends State<AddGroup> {
                       ),
                       textAlign: TextAlign.center,
                     ),
-                  ),
-                  Container(
-                    margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                    padding: const EdgeInsets.all(5),
-                    decoration: BoxDecoration(
-                      color: gold,
-                      border: Border.all(color: black, width: 3),
-                    ),
-                    child: TextButton(
-                      onPressed: () async {
-                        if (_title.value.text.isEmpty) {
-                          setState(() => titleUnfilled = true);
-                        } else {
-                          bool success = await scheduleGroup();
-                          if (!success) {
-                            print('Something went wrong!');
+                ),
+                SliverToBoxAdapter(
+                    child: Container(
+                      margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                      padding: const EdgeInsets.all(5),
+                      decoration: BoxDecoration(
+                        color: gold,
+                        border: Border.all(color: black, width: 3),
+                      ),
+                      child: TextButton(
+                        onPressed: () async {
+                          if (_title.value.text.isEmpty) {
+                            setState(() => titleUnfilled = true);
+                          } else {
+                            bool success = await scheduleGroup();
+                            if (!success) {
+                              print('Something went wrong!');
+                            }
                           }
-                        }
-                      },
-                      child: Text(
-                        'Create',
-                        style: TextStyle(
-                          fontSize: bigButtonFontSize,
-                          color: buttonTextColor,
-                          fontWeight: FontWeight.w400,
+                        },
+                        child: Text(
+                          'Create',
+                          style: TextStyle(
+                            fontSize: bigButtonFontSize,
+                            color: buttonTextColor,
+                            fontWeight: FontWeight.w400,
+                          ),
+                          textAlign: TextAlign.center,
                         ),
-                        textAlign: TextAlign.center,
                       ),
                     ),
-                  ),
-                ],
-              ),
-            )
+                ),
+              ],
+            ),
         ),
-      ),
     );
   }
 
@@ -374,10 +390,12 @@ class _AddGroupState extends State<AddGroup> {
         ],
         content: Column(
             mainAxisSize: MainAxisSize.min,
-            children: const <Widget>[
+            children: <Widget>[
               Flexible(
                   child: Text(
-                      'You need to be logged in to be able to schedule a recording.')),
+                      user.logged ? 'You must log in again to be able to schedule a recording.' : 'You must be logged in to be able to schedule a concert',
+                  ),
+              ),
             ],
         ),
       );
