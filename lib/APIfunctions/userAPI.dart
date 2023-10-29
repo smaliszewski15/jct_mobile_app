@@ -26,9 +26,6 @@ class UserAPI {
   static Future<http.Response> login(Map<String, dynamic> query) async {
     http.Response response;
 
-    var encoded = json.encode(query);
-    print(encoded);
-
     try {
       response = await http.post(
           Uri.https(API_PREFIX, '${apiRoute}/login'),

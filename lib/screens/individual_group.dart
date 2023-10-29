@@ -381,7 +381,6 @@ class _IndividualGroupState extends State<IndividualGroup> {
                                 onPressed: () async {
                                   //UNCOMMENT WHEN NOT DOING UI SHIT
                                   bool logged = await logMaestroIn();
-                                  print(logged);
                                   if (!logged) {
                                     setState(() => errorMessage = "You must be logged in to start the concert");
                                     return;
@@ -394,8 +393,9 @@ class _IndividualGroupState extends State<IndividualGroup> {
                                   }
                                   bool succ = await checkMaestroPasscode();
                                   if (!succ) {
-                                    setState(() => errorMessage = "Password either incorrect or cannot connect to the server");
+                                    //setState(() => errorMessage = "Password either incorrect or cannot connect to the server");
                                     _passcode.editor.clear();
+                                    setState(() {});
                                     return;
                                   }
                                   if (context.mounted) {

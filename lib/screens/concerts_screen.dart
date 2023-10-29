@@ -124,21 +124,29 @@ class _ConcertsState extends State<ConcertsScreen> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   Text(
-                    'Upcoming Concert',
+                    upcoming.date!.isBefore(DateTime.now()) ? 'Concert Playing Now!' : 'Upcoming Concert',
                     style: TextStyle(
                       fontSize: headingFontSize,
                       color: buttonTextColor,
                     ),
                   ),
                   Text(
-                    "Session Date and Time: ${upcoming.date}",
+                    "Title: ${upcoming.title}",
                     style: TextStyle(
                       fontSize: infoFontSize,
                       color: buttonTextColor,
                     ),
                   ),
                   Text(
-                    "Group Leader: ${upcoming.maestro}",
+                    "Concert Date and Time: ${DateFormat('yyyy-MM-dd HH:mm').format(upcoming.date!)}",
+                    style: TextStyle(
+                      fontSize: infoFontSize,
+                      color: buttonTextColor,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  Text(
+                    "Maestro: ${upcoming.maestro}",
                     style: TextStyle(
                       fontSize: infoFontSize,
                       color: buttonTextColor,

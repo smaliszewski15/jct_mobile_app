@@ -41,7 +41,7 @@ class SocketConnect {
   }
 
   Future<void> connectForRecording() async {
-    socket = WebSocketChannel.connect(Uri.parse('ws://$API_PREFIX:8080/concert/performerSECURE?name=$name=passcode=$passcode'));
+    socket = WebSocketChannel.connect(Uri.parse('ws://$API_PREFIX:8080/concert/performer?name=$name=passcode=$passcode'));
     _isConnected = true;
   }
 

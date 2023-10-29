@@ -52,13 +52,6 @@ class User {
       prefs.setString('Email', email);
       prefs.setString('Password', password);
 
-      String un = prefs.getString("UserName") ?? '';
-      if (un.isEmpty) {
-        print('Not Success');
-      } else {
-        print('Success');
-      }
-
       return true;
     } catch (e) {
       print("Unable to open preferences");

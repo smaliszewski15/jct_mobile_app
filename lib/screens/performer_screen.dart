@@ -32,6 +32,7 @@ class _PerformerScreenState extends State<PerformerScreen> {
   bool muted = false;
   bool started = false;
   List<String> participants = [];
+  bool isConnected = false;
 
   @override
   void initState() {
@@ -47,6 +48,7 @@ class _PerformerScreenState extends State<PerformerScreen> {
 
   Future<void> connectPerformSocket() async {
     performSocket = SocketConnect(SocketType.performer, user.username != '' ? user.username : 'Anonymous User', widget.passcode);
+    isConnected = true;
     performSocket!.socket.stream.listen(
       (data) {
         String s = splitHeader(data);
@@ -90,6 +92,7 @@ class _PerformerScreenState extends State<PerformerScreen> {
     }
     performSocket = null;
     participants = [];
+    isConnected = false;
     setState(() {});
   }
 
@@ -113,6 +116,7 @@ class _PerformerScreenState extends State<PerformerScreen> {
   }
 
   Future<void> record() async {
+    audio = StreamController<Uint8List>();
     var recordingDataController = StreamController<Food>();
     _mRecorder.mRecorder!
         .setSubscriptionDuration(const Duration(milliseconds: 100));
@@ -149,7 +153,9 @@ class _PerformerScreenState extends State<PerformerScreen> {
     return WillPopScope(
       onWillPop: () async {
         stopEverything();
-        user.username = '';
+        if (!user.logged) {
+          user.username = '';
+        }
         return true;
       },
       child: Scaffold(
@@ -179,6 +185,27 @@ class _PerformerScreenState extends State<PerformerScreen> {
                   ),
                 ),
                 const Spacer(),
+                if (!isConnected)
+                  Container(
+                      width: 100,
+                      height: 100,
+                      child: TextButton(
+                        onPressed: () async {
+                          await connectPerformSocket();
+                        },
+                        child: const Icon(
+                          Icons.link,
+                          color: black,
+                          size: bottomIconSize + 20,
+                        ),
+                      )
+                  ),
+                if (!isConnected)
+                  Text(
+                    'Could not connect! Tap the microphone to reconnect',
+                    style: defaultTextStyle,
+                    textAlign: TextAlign.center,
+                  ),
                 if (participants.isNotEmpty)
                   Expanded(
                     child: ListView.builder(

@@ -57,6 +57,9 @@ class _MaestroScreenState extends State<MaestroScreen> {
       await _mRecordingDataSubscription!.cancel();
       _mRecordingDataSubscription = null;
     }
+    if (audio != null) {
+      audio = null;
+    }
     return;
   }
 
@@ -71,6 +74,7 @@ class _MaestroScreenState extends State<MaestroScreen> {
     isConnected = true;
     socket!.socket.stream.listen(
           (data) {
+            print(data);
         String s = splitHeader(data);
         List<String> list = s.split(':');
         if (list[0] == 'participants') {
@@ -84,15 +88,21 @@ class _MaestroScreenState extends State<MaestroScreen> {
           stopEverything();
           return;
         }
+        if (s == 'start') {
+          print(s);
+          return;
+        }
         if (!muted) {
           Uint8List music = data;
           _mPlayer.mPlayer!.foodSink!.add(FoodData(music.sublist(1)));
         }
+
       },
       onDone: () {
-        disconnect();
-        print('done');
-        setState(() {});
+        print('hereDone');
+        stopEverything();
+        //print('done');
+
       },
       onError: (error) => print(error),
     );
@@ -100,9 +110,14 @@ class _MaestroScreenState extends State<MaestroScreen> {
   }
 
   Future<void> stopEverything() async {
-    socket!.socket.sink.add(stop);
+    if (isConnected) {
+      socket!.socket.sink.add(stop);
+    }
+
     await stopRecorder();
     await stopPlayer();
+    disconnect();
+    setState(() {});
   }
 
   Future<void> disconnect() async {
@@ -118,6 +133,7 @@ class _MaestroScreenState extends State<MaestroScreen> {
     if (socket == null) {
       return;
     }
+    audio = StreamController<Uint8List>();
     var recordingDataController = StreamController<Food>();
     _mRecorder.mRecorder!.setSubscriptionDuration(const Duration(milliseconds: 100));
     _mRecordingDataSubscription =
@@ -150,7 +166,6 @@ class _MaestroScreenState extends State<MaestroScreen> {
     return WillPopScope(
       onWillPop: () async {
         stopEverything();
-        user.username = '';
         return true;
       },
       child: Scaffold(
@@ -216,7 +231,7 @@ class _MaestroScreenState extends State<MaestroScreen> {
                     ),
                   if (!isConnected)
                     Text(
-                      'Could not connect! Tap the microphone to reconnect',
+                      'You are not currently connected. Tap the link button to connect.',
                       style: defaultTextStyle,
                       textAlign: TextAlign.center,
                     ),
