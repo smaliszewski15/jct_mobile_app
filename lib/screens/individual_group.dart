@@ -468,6 +468,11 @@ class _IndividualGroupState extends State<IndividualGroup> {
                             child: TextButton(
                               onPressed: () async {
                                 //UNCOMMENT WHEN NOT DOING UI SHIT
+                                bool pass = await getPasscode();
+                                if (!pass) {
+                                  setState(() => errorMessage = "You must enter a passcode to listen to the concert");
+                                  return;
+                                }
                                 bool succ = await checkListenerPasscode();
                                 if (!succ) {
                                   setState(() => errorMessage = "Password either incorrect or cannot connect to the server");
@@ -967,7 +972,7 @@ class _IndividualGroupState extends State<IndividualGroup> {
             } else if (type == SocketType.performer) {
               Navigator.restorablePushNamed(context, '/group/recording/performer', arguments: _passcode.editor.value.text);
             } else if (type == SocketType.listener) {
-              Navigator.restorablePushNamed(context, '/group/recording/listener');
+              Navigator.restorablePushNamed(context, '/group/recording/listener', arguments: _passcode.editor.value.text);
             }
           }
     });

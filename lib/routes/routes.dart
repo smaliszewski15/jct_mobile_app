@@ -41,7 +41,7 @@ class Routes {
     editPasswordScreen: (context) => EditPasswordPage(),
     login: (context) => LogInPage(),
     register: (context) => RegisterPage(),
-    listenScreen: (context) => ListenScreen(),
+
     //addGroupScreen: (context) => AddGroup(),
   };
 
@@ -83,6 +83,14 @@ class Routes {
         var arguments = settings.arguments;
         if (arguments is String) {
           return MaterialPageRoute(builder: (context) => PerformerScreen(passcode: arguments));
+        }
+        else {
+          return MaterialPageRoute(builder: (context) => ErrorScreen());
+        }
+      case listenScreen:
+        var arguments = settings.arguments;
+        if (arguments is String) {
+          return MaterialPageRoute(builder: (context) => ListenScreen(passcode: arguments));
         }
         else {
           return MaterialPageRoute(builder: (context) => ErrorScreen());

@@ -8,11 +8,13 @@ import '../components/player.dart';
 import '../components/socket_listener.dart';
 import '../utils/colors.dart';
 import '../utils/globals.dart';
-import '../utils/user.dart';
 
 final Uint8List silence = Uint8List(5000);
 
 class ListenScreen extends StatefulWidget {
+  late final String passcode;
+
+  ListenScreen({required this.passcode});
 
   @override
   _ListenScreenState createState() => _ListenScreenState();
@@ -41,7 +43,7 @@ class _ListenScreenState extends State<ListenScreen> {
   }
 
   Future<void> connectListenSocket() async {
-    socket = SocketConnect(SocketType.listener, user.logged ? user.username : 'jeff', '');
+    socket = SocketConnect(SocketType.listener, '', widget.passcode);
     socket!.socket.stream.listen(
           (data) {
             String s = splitHeader(data);
