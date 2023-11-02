@@ -12,7 +12,7 @@ class UserAPI {
 
     try {
       response = await http.post(
-          Uri.https(API_PREFIX, '${apiRoute}/register'),
+          Uri.http(API_PREFIX, '${apiRoute}/register'),
           body: json.encode(queries),
           headers: baseHeader);
     } catch (e) {
@@ -28,7 +28,7 @@ class UserAPI {
 
     try {
       response = await http.post(
-          Uri.https(API_PREFIX, '${apiRoute}/login'),
+          Uri.http(API_PREFIX, '${apiRoute}/login'),
           body: json.encode(query),
           headers: baseHeader);
     } catch (e) {
@@ -43,7 +43,7 @@ class UserAPI {
     http.Response response;
 
     try {
-      response = await http.get(Uri.https(API_PREFIX, '${apiRoute}/validate'),
+      response = await http.get(Uri.http(API_PREFIX, '${apiRoute}/validate'),
           headers: baseHeader);
     } catch (e) {
       print(e.toString());
@@ -58,7 +58,7 @@ class UserAPI {
 
     try {
       response =
-          await http.get(Uri.https(API_PREFIX, '${apiRoute}/$id'), headers: {
+          await http.get(Uri.http(API_PREFIX, '${apiRoute}/$id'), headers: {
         HttpHeaders.contentTypeHeader: 'application/json',
         HttpHeaders.authorizationHeader: user.authToken
       });

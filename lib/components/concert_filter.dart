@@ -3,10 +3,10 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import '../utils/colors.dart';
 import '../utils/globals.dart';
-import '../utils/schedule_manager.dart';
+import '../utils/concert_search_manager.dart';
 
 class ConcertFilterDrawer extends StatefulWidget {
-  late final ScheduleManager filter;
+  late final ConcertSearchManager filter;
 
   ConcertFilterDrawer(this.filter);
 

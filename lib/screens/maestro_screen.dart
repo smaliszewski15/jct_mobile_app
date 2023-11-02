@@ -165,6 +165,44 @@ class _MaestroScreenState extends State<MaestroScreen> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
+        var leave = await showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: const Text("Enter your passcode to join the session"),
+                shape:  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10)),
+                elevation: 15,
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context, false);
+                    },
+                    child: const Text(
+                      'Cancel',
+                      style: TextStyle(color: Colors.red, fontSize: 18),
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context, true);
+                    },
+                    child: const Text(
+                      'Leave',
+                      style: TextStyle(color: Colors.red, fontSize: 18),
+                    ),
+                  ),
+                ],
+                content: Text(
+                  "Are you sure you want to leave? This will end the session for all of the participants",
+                  style: defaultTextStyle,
+                ),
+              );
+            }
+        );
+        if (leave != true) {
+          return false;
+        }
         stopEverything();
         return true;
       },

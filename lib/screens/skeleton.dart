@@ -8,6 +8,7 @@ import '../components/profile_drawer.dart';
 //import '../utils/concert_tags_manager.dart';
 import '../utils/colors.dart';
 import '../utils/globals.dart';
+import '../utils/concert_search_manager.dart';
 import '../utils/schedule_manager.dart';
 import '../utils/nav_bar_manager.dart';
 import '../utils/user.dart';
@@ -20,7 +21,7 @@ class Skeleton extends StatefulWidget {
 class _SkeletonState extends State<Skeleton> {
   late final NavStateManager _navManager;
   //late final TagsUpdater _tagManager;
-  late final ScheduleManager _concertFilterManager;
+  late final ConcertSearchManager _concertFilterManager;
   late final ScheduleManager _scheduleManager;
   Future<bool>? done;
 
@@ -29,7 +30,7 @@ class _SkeletonState extends State<Skeleton> {
     super.initState();
     _navManager = NavStateManager();
     //_tagManager = TagsUpdater();
-    _concertFilterManager = ScheduleManager();
+    _concertFilterManager = ConcertSearchManager();
     _scheduleManager = ScheduleManager();
     done = getUser();
   }

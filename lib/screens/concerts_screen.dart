@@ -10,10 +10,10 @@ import '../utils/concert.dart';
 import '../utils/colors.dart';
 import '../utils/group.dart';
 import '../utils/globals.dart';
-import '../utils/schedule_manager.dart';
+import '../utils/concert_search_manager.dart';
 
 class ConcertsScreen extends StatefulWidget {
-  late final ScheduleManager filter;
+  late final ConcertSearchManager filter;
 
   ConcertsScreen(this.filter);
 
@@ -284,8 +284,9 @@ class _ConcertsState extends State<ConcertsScreen> {
 
     DateTime fromDateTime = widget.filter.start.toUtc();
     DateTime toDateTime = widget.filter.end.toUtc();
-    String fromDate = DateFormat("yyyy-MM-ddTHH:mm:ss").format(fromDateTime);
-    String toDate = DateFormat("yyyy-MM-ddTHH:mm:ss").format(toDateTime);
+    String fromDate = DateFormat("yyyy-MM-ddTHH\:mm\:ss").format(fromDateTime);
+    String toDate = DateFormat("yyyy-MM-ddTHH\:mm\:ss").format(toDateTime);
+    print("From Date: $fromDate, To Date: $toDate");
 
     queries['fromDateTime'] = fromDate;
     queries['toDateTime'] = toDate;
@@ -296,6 +297,7 @@ class _ConcertsState extends State<ConcertsScreen> {
       print(res.body);
       return false;
     }
+    print(res.body);
 
     if (searchQuery != oldQuery) {
       page = 0;
@@ -308,7 +310,9 @@ class _ConcertsState extends State<ConcertsScreen> {
 
     if (data['searchResults'].isEmpty) {
       hadMore = false;
-      page--;
+      if (page != 0) {
+        page--;
+      }
       totalPages = page;
       _showSnack(context);
       return true;

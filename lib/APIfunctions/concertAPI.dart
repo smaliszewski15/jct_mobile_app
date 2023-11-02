@@ -7,9 +7,12 @@ class ConcertsAPI {
   static Future<http.Response> searchSongs(Map<String, dynamic> queries) async {
     http.Response response;
 
+    var encoded = Uri.http(API_PREFIX, '${apiRoute}/searchSongs', queries);
+    print(encoded);
+
     try {
       //URI encodes : into %3A. If the date filter doesn't work, its probably this
-      response = await http.get(Uri.https(API_PREFIX, '${apiRoute}/searchSongs', queries),
+      response = await http.get(encoded,
           headers: baseHeader);
     } catch (e) {
       print(e.toString());
@@ -24,7 +27,7 @@ class ConcertsAPI {
     print(query);
 
     try {
-      response = await http.get(Uri.https(API_PREFIX, '${apiRoute}/getSongData', query),
+      response = await http.get(Uri.http(API_PREFIX, '${apiRoute}/getSongData', query),
           headers: baseHeader);
     } catch (e) {
       print(e.toString());
@@ -38,7 +41,7 @@ class ConcertsAPI {
     http.Response response;
 
     try {
-      response = await http.get(Uri.https(API_PREFIX, '${apiRoute}/getTags'),
+      response = await http.get(Uri.http(API_PREFIX, '${apiRoute}/getTags'),
           headers: baseHeader);
     } catch (e) {
       print(e.toString());
