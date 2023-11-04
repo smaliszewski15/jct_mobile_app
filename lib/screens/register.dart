@@ -95,7 +95,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       Container(
-                        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+                        padding: const EdgeInsets.all(10),
                         width: MediaQuery.of(context).size.width,
                         height: MediaQuery.of(context).size.height / 1.5,
                         decoration: BoxDecoration(

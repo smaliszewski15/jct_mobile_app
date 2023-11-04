@@ -110,7 +110,7 @@ class _LogInPageState extends State<LogInPage> {
                       ),
                       const Spacer(),
                       SizedBox(
-                        width: 210,
+                        width: double.infinity,
                         child: Row(
                           children: <Widget>[
                             Text(
@@ -124,11 +124,11 @@ class _LogInPageState extends State<LogInPage> {
                       ),
                       Container(
                         padding: const EdgeInsets.symmetric(vertical: 5),
-                        width: 210,
+                        width: double.infinity,
                         child: username,
                       ),
                       SizedBox(
-                        width: 210,
+                        width: double.infinity,
                         child: Row(
                           children: <Widget>[
                             Text(
@@ -142,7 +142,7 @@ class _LogInPageState extends State<LogInPage> {
                       ),
                       Container(
                         padding: const EdgeInsets.symmetric(vertical: 5),
-                        width: 210,
+                        width: double.infinity,
                         child: password,
                       ),
                       Container(

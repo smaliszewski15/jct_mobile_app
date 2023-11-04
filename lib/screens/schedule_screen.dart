@@ -171,7 +171,6 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
         print(res.statusCode);
         return false;
       }
-      print(res.body);
       String date = DateFormat('yyyy-MM-dd').format(start);
 
       var data = json.decode(res.body);

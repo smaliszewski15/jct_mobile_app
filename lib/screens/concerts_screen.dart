@@ -285,7 +285,6 @@ class _ConcertsState extends State<ConcertsScreen> {
     if (!data.containsKey('searchResults')) {
       return false;
     }
-    print(data);
 
     // if (data['searchResults'].isEmpty) {
     //   hadMore = false;
