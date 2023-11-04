@@ -65,9 +65,9 @@ class _GroupCardState extends State<GroupCard>
                             widget.group!.date != null
                                 ? DateFormat('jm').format(widget.group!.date!)
                                 : DateFormat('jm').format(DateTime.now()),
-                            style: TextStyle(
-                                fontSize: infoFontSize,
-                                color: !widget.clickable ? textColor : black),
+                            style: defaultTextStyle.copyWith(
+                              color: !widget.clickable ? textColor : black,
+                            ),
                           ),
                           const Spacer(),
                           if (!widget.clickable)
@@ -76,17 +76,11 @@ class _GroupCardState extends State<GroupCard>
                               children: <Widget>[
                                 Text(
                                   widget.group!.title,
-                                  style: TextStyle(
-                                    fontSize: infoFontSize,
-                                    color: textColor,
-                                  ),
+                                  style: defaultTextStyle,
                                 ),
                                 Text(
                                   widget.group!.maestro,
-                                  style: TextStyle(
-                                    fontSize: smallFontSize,
-                                    color: textColor,
-                                  ),
+                                  style: smallTextStyle,
                                 ),
                               ],
                             ),
@@ -107,17 +101,11 @@ class _GroupCardState extends State<GroupCard>
                               children: <Widget>[
                                 Text(
                                   widget.group!.title,
-                                  style: const TextStyle(
-                                    fontSize: infoFontSize,
-                                    color: black,
-                                  ),
+                                  style: blackDefaultTextStyle,
                                 ),
                                 Text(
                                   widget.group!.maestro,
-                                  style: const TextStyle(
-                                    fontSize: smallFontSize,
-                                    color: black,
-                                  ),
+                                  style: smallTextStyle.copyWith(color: black),
                                 ),
                               ],
                             ),
@@ -164,8 +152,7 @@ class _GroupCardState extends State<GroupCard>
                     alignment: Alignment.centerLeft,
                     child: Text(
                       DateFormat('jm').format(widget.date!),
-                      style: TextStyle(
-                        fontSize: infoFontSize,
+                      style: defaultTextStyle.copyWith(
                         color: widget.clickable ? black : textColor,
                       ),
                     ),

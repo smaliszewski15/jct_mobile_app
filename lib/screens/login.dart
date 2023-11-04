@@ -90,9 +90,7 @@ class _LogInPageState extends State<LogInPage> {
                         width: MediaQuery.of(context).size.width / 2,
                         child: TextButton(
                           style: TextButton.styleFrom(
-                            textStyle: TextStyle(
-                              fontSize: 18,
-                              color: mainSchemeColor,
+                            textStyle: smallTextStyle.copyWith(
                               decoration: TextDecoration.underline,
                             ),
                           ),
@@ -117,10 +115,7 @@ class _LogInPageState extends State<LogInPage> {
                           children: <Widget>[
                             Text(
                               'Username',
-                              style: TextStyle(
-                                fontSize: smallFontSize,
-                                color: textColor,
-                              ),
+                              style: smallTextStyle,
                               textAlign: TextAlign.left,
                             ),
                             BasicTooltip(message: "Username cannot be left blank", tooltipkey: usernameKey),
@@ -138,10 +133,7 @@ class _LogInPageState extends State<LogInPage> {
                           children: <Widget>[
                             Text(
                               'Password',
-                              style: TextStyle(
-                                fontSize: smallFontSize,
-                                color: textColor,
-                              ),
+                              style: smallTextStyle,
                               textAlign: TextAlign.left,
                             ),
                             BasicTooltip(message: "Password cannot be left blank", tooltipkey: passwordKey),
@@ -159,10 +151,7 @@ class _LogInPageState extends State<LogInPage> {
                         margin: const EdgeInsets.all(5),
                         child: Text(
                             errorMessage,
-                            style: TextStyle(
-                              fontSize: smallFontSize,
-                              color: invalidColor,
-                            )
+                            style: invalidTextStyle,
                         ),
                       ),
                       const Spacer(),
@@ -187,11 +176,7 @@ class _LogInPageState extends State<LogInPage> {
                           },
                           child: Text(
                             'Login',
-                            style: TextStyle(
-                              fontSize: buttonFontSize,
-                              color: buttonTextColor,
-                              fontWeight: FontWeight.w400,
-                            ),
+                            style: buttonTextStyle,
                             textAlign: TextAlign.center,
                           ),
                         ),
@@ -200,9 +185,7 @@ class _LogInPageState extends State<LogInPage> {
                         width: MediaQuery.of(context).size.width,
                         child: TextButton(
                           style: TextButton.styleFrom(
-                            textStyle: TextStyle(
-                              fontSize: 14,
-                              color: mainSchemeColor,
+                            textStyle: smallTextStyle.copyWith(
                               fontStyle: FontStyle.italic,
                               decoration: TextDecoration.underline,
                             ),

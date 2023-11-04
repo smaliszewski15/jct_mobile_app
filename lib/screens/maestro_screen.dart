@@ -77,8 +77,8 @@ class _MaestroScreenState extends State<MaestroScreen> {
             print(data);
         String s = splitHeader(data);
         List<String> list = s.split(':');
-        if (list[0] == 'participants') {
-          parseParticipants(list[1]);
+        if (list.length > 1) {
+          parseParticipants(list.sublist(1).join(':'));
           print(s);
           setState(() {});
           return;
@@ -169,7 +169,7 @@ class _MaestroScreenState extends State<MaestroScreen> {
             context: context,
             builder: (context) {
               return AlertDialog(
-                title: const Text("Enter your passcode to join the session"),
+                title: const Text("Before you leave..."),
                 shape:  RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10)),
                 elevation: 15,
@@ -178,24 +178,24 @@ class _MaestroScreenState extends State<MaestroScreen> {
                     onPressed: () {
                       Navigator.pop(context, false);
                     },
-                    child: const Text(
+                    child: Text(
                       'Cancel',
-                      style: TextStyle(color: Colors.red, fontSize: 18),
+                      style: invalidTextStyle,
                     ),
                   ),
                   TextButton(
                     onPressed: () {
                       Navigator.pop(context, true);
                     },
-                    child: const Text(
+                    child: Text(
                       'Leave',
-                      style: TextStyle(color: Colors.red, fontSize: 18),
+                      style: invalidTextStyle,
                     ),
                   ),
                 ],
                 content: Text(
                   "Are you sure you want to leave? This will end the session for all of the participants",
-                  style: defaultTextStyle,
+                  style: blackDefaultTextStyle,
                 ),
               );
             }
@@ -224,10 +224,7 @@ class _MaestroScreenState extends State<MaestroScreen> {
                     width: double.infinity,
                     child: Text(
                       'You are the maestro. Click the start recording when you wish to begin.',
-                      style: TextStyle(
-                        fontSize: headingFontSize,
-                        color: textColor,
-                      ),
+                      style: headingTextStyle,
                       textAlign: TextAlign.center,
                     ),
                   ),

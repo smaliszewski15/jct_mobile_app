@@ -38,10 +38,7 @@ class _ConcertCardState extends State<ConcertCard> {
               alignment: Alignment.centerLeft,
               child: Text(
                 widget.concert.title,
-                style: TextStyle(
-                  fontSize: 24,
-                  color: textColor,
-                ),
+                style: headingTextStyle,
                 textAlign: TextAlign.left,
               ),
             ),
@@ -49,10 +46,7 @@ class _ConcertCardState extends State<ConcertCard> {
               alignment: Alignment.centerLeft,
               child: Text(
                 "By: ${widget.concert.maestro}",
-                style: TextStyle(
-                  fontSize: infoFontSize,
-                  color: textColor,
-                ),
+                style: defaultTextStyle,
                 textAlign: TextAlign.left,
               ),
             ),
@@ -60,10 +54,7 @@ class _ConcertCardState extends State<ConcertCard> {
               alignment: Alignment.centerLeft,
               child: Text(
                 "Tags: ${widget.concert.tags.split('`').join(', ')}",
-                style: TextStyle(
-                  fontSize: infoFontSize,
-                  color: textColor,
-                ),
+                style: defaultTextStyle,
                 textAlign: TextAlign.left,
               ),
             ),
@@ -71,10 +62,7 @@ class _ConcertCardState extends State<ConcertCard> {
               alignment: Alignment.centerLeft,
               child: Text(
                 "Recorded on: ${DateFormat('yyyy-MM-dd HH:mm').format(widget.concert.date!)}",
-                style: TextStyle(
-                  fontSize: infoFontSize,
-                  color: textColor,
-                ),
+                style: defaultTextStyle,
                 textAlign: TextAlign.left,
               ),
             ),

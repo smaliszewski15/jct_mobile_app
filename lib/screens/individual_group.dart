@@ -169,10 +169,7 @@ class _IndividualGroupState extends State<IndividualGroup> {
                       borderSide: BorderSide(color: invalidColor),
                     ),
                   ),
-                  style: TextStyle(
-                    fontSize: titleFontSize,
-                    color: buttonTextColor,
-                  ),
+                  style: titleTextStyle.copyWith(color: textfieldTextColor),
                   onChanged: (field) {
                     if (field.isEmpty) {
                       setState(() => titleUnfilled = true);
@@ -184,7 +181,7 @@ class _IndividualGroupState extends State<IndividualGroup> {
                 )
                     : Text(
                   widget.group.title,
-                  style: TextStyle(fontSize: 30, color: textColor),
+                  style: titleTextStyle,
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -358,10 +355,7 @@ class _IndividualGroupState extends State<IndividualGroup> {
                       padding: const EdgeInsets.all(5),
                       child: Text(
                         'Are you the leader of this group? Or do you want to join in? Or do you just want to listen? Click one of buttons below!',
-                        style: TextStyle(
-                          fontSize: headingFontSize,
-                          color: textColor,
-                        ),
+                        style: headingTextStyle,
                         textAlign: TextAlign.center,
                       ),
                     ),
@@ -407,9 +401,7 @@ class _IndividualGroupState extends State<IndividualGroup> {
                                 },
                                 child: Text(
                                   'Maestro',
-                                  style: TextStyle(
-                                    fontSize: infoFontSize,
-                                    color: buttonTextColor,
+                                  style: blackDefaultTextStyle.copyWith(
                                     fontWeight: FontWeight.w400,
                                   ),
                                   textAlign: TextAlign.center,
@@ -447,9 +439,7 @@ class _IndividualGroupState extends State<IndividualGroup> {
                               },
                               child: Text(
                                 'Performer',
-                                style: TextStyle(
-                                  fontSize: infoFontSize,
-                                  color: buttonTextColor,
+                                style: blackDefaultTextStyle.copyWith(
                                   fontWeight: FontWeight.w400,
                                 ),
                                 textAlign: TextAlign.center,
@@ -485,9 +475,7 @@ class _IndividualGroupState extends State<IndividualGroup> {
                               },
                               child: Text(
                                 'Listener',
-                                style: TextStyle(
-                                  fontSize: infoFontSize,
-                                  color: buttonTextColor,
+                                style: blackDefaultTextStyle.copyWith(
                                   fontWeight: FontWeight.w400,
                                 ),
                                 textAlign: TextAlign.center,
@@ -755,9 +743,8 @@ class _IndividualGroupState extends State<IndividualGroup> {
                   padding: const EdgeInsets.all(10),
                   child: Text(
                     errorMessage,
-                    style: TextStyle(
+                    style: invalidTextStyle.copyWith(
                       fontSize: headingFontSize,
-                      color: invalidColor,
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -783,18 +770,18 @@ class _IndividualGroupState extends State<IndividualGroup> {
             onPressed: () {
               Navigator.pop(context, false);
             },
-            child: const Text(
+            child: Text(
               'Register',
-              style: TextStyle(color: Colors.red, fontSize: 18),
+              style: invalidTextStyle,
             ),
           ),
           TextButton(
             onPressed: () {
               Navigator.pop(context, true);
             },
-            child: const Text(
+            child: Text(
               'Login',
-              style: TextStyle(color: Colors.red, fontSize: 18),
+              style: invalidTextStyle,
             ),
           ),
         ],
@@ -833,9 +820,9 @@ class _IndividualGroupState extends State<IndividualGroup> {
               onPressed: () {
                 Navigator.pop(context, false);
               },
-              child: const Text(
+              child: Text(
                 'Cancel',
-                style: TextStyle(color: Colors.red, fontSize: 18),
+                style: invalidTextStyle,
               ),
             ),
             TextButton(
@@ -845,9 +832,9 @@ class _IndividualGroupState extends State<IndividualGroup> {
                 }
                 Navigator.pop(context, true);
               },
-              child: const Text(
+              child: Text(
                 'Submit',
-                style: TextStyle(color: Colors.red, fontSize: 18),
+                style: invalidTextStyle,
               ),
             ),
           ],
@@ -943,18 +930,18 @@ class _IndividualGroupState extends State<IndividualGroup> {
                         onPressed: () {
                           Navigator.pop(context, false);
                         },
-                        child: const Text(
+                        child: Text(
                           'Be anonymous',
-                          style: TextStyle(color: Colors.red, fontSize: 18),
+                          style: invalidTextStyle,
                         ),
                       ),
                       TextButton(
                         onPressed: () {
                           Navigator.pop(context, true);
                         },
-                        child: const Text(
+                        child: Text(
                           'Enter name',
-                          style: TextStyle(color: Colors.red, fontSize: 18),
+                          style: invalidTextStyle,
                         ),
                       ),
                     ],
@@ -1015,10 +1002,7 @@ class _PasscodeAlertState extends State<PasscodeAlert> {
           : globalDecoration.copyWith(
           hintText: 'Enter your passcode'),
 
-      style: TextStyle(
-        fontSize: smallFontSize,
-        color: buttonTextColor,
-      ),
+      style: smallTextFieldTextStyle,
       onChanged: (field) {
         if (field.isEmpty) {
           setState(() => widget.unfilled = true);

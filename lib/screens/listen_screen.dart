@@ -129,10 +129,7 @@ class _ListenScreenState extends State<ListenScreen> {
                   width: double.infinity,
                   child: Text(
                     'You are a listener. You can choose to mute the concert if you wish.',
-                    style: TextStyle(
-                      fontSize: headingFontSize,
-                      color: textColor,
-                    ),
+                    style: headingTextStyle,
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -184,10 +181,7 @@ class _ListenScreenState extends State<ListenScreen> {
                   padding: const EdgeInsets.all(10),
                   child: Text(
                     started ? 'Started!' : '',
-                    style: TextStyle(
-                      fontSize: headingFontSize,
-                      color: textColor,
-                    ),
+                    style: headingTextStyle,
                     textAlign: TextAlign.center,
                   ),
                 ),

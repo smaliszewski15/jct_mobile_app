@@ -44,7 +44,6 @@ class _ConcertsState extends State<ConcertsScreen> {
   FocusNode searchFocus = FocusNode();
   int page = 0;
   int totalPages = 50;
-  bool hadMore = true;
 
   void searchLostFocus() {
     if (!searchFocus.hasFocus && _search.value.text != oldQuery) {
@@ -84,16 +83,9 @@ class _ConcertsState extends State<ConcertsScreen> {
                       controller: _search,
                       decoration: InputDecoration.collapsed(
                         hintText: 'Search...',
-                        hintStyle: TextStyle(
-                          color: buttonTextColor,
-                          decoration: TextDecoration.underline,
-                          fontSize: infoFontSize,
-                        ),
+                        hintStyle: searchTextStyle.copyWith(decoration: TextDecoration.underline),
                       ),
-                      style: TextStyle(
-                        color: buttonTextColor,
-                        fontSize: infoFontSize,
-                      ),
+                      style: searchTextStyle,
                       textInputAction: TextInputAction.done,
                       onSubmitted: (query) {
                         if (oldQuery.isEmpty || oldQuery != query) {
@@ -125,39 +117,24 @@ class _ConcertsState extends State<ConcertsScreen> {
                 children: <Widget>[
                   Text(
                     upcoming.date!.isBefore(DateTime.now()) ? 'Concert Playing Now!' : 'Upcoming Concert',
-                    style: TextStyle(
-                      fontSize: headingFontSize,
-                      color: buttonTextColor,
-                    ),
+                    style: blackHeadingTextStyle,
                   ),
                   Text(
                     "Title: ${upcoming.title}",
-                    style: TextStyle(
-                      fontSize: infoFontSize,
-                      color: buttonTextColor,
-                    ),
+                    style: blackDefaultTextStyle,
                   ),
                   Text(
-                    "Concert Date and Time: ${DateFormat('yyyy-MM-dd HH:mm').format(upcoming.date!)}",
-                    style: TextStyle(
-                      fontSize: infoFontSize,
-                      color: buttonTextColor,
-                    ),
+                    "Concert Date: ${DateFormat('yyyy-MM-dd HH:mm').format(upcoming.date!)}",
+                    style: blackDefaultTextStyle,
                     textAlign: TextAlign.center,
                   ),
                   Text(
                     "Maestro: ${upcoming.maestro}",
-                    style: TextStyle(
-                      fontSize: infoFontSize,
-                      color: buttonTextColor,
-                    ),
+                    style: blackDefaultTextStyle,
                   ),
                   Text(
                     "Tags: ${upcoming.tags.split('`').join(', ')}",
-                    style: TextStyle(
-                      fontSize: infoFontSize,
-                      color: buttonTextColor,
-                    ),
+                    style: blackDefaultTextStyle,
                   ),
                   TextButton(
                     onPressed: () {
@@ -185,10 +162,7 @@ class _ConcertsState extends State<ConcertsScreen> {
                 width: double.infinity,
                 child: Text(
                   'No upcoming concerts at this time. Go schedule one by going to the "Schedule" tab!',
-                  style: TextStyle(
-                    fontSize: headingFontSize,
-                    color: buttonTextColor,
-                  ),
+                  style: blackHeadingTextStyle,
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -211,8 +185,12 @@ class _ConcertsState extends State<ConcertsScreen> {
                           style: defaultTextStyle,
                         ),
                       ),
-                    PageCounter(),
-                    if (hadMore || page != totalPages)
+                    //PageCounter(),
+                    Text(
+                      " $page ",
+                      style: defaultTextStyle,
+                    ),
+                    if (page != totalPages)
                       ElevatedButton(
                         onPressed: () async {
                           page++;
@@ -297,7 +275,7 @@ class _ConcertsState extends State<ConcertsScreen> {
       print(res.body);
       return false;
     }
-    print(res.body);
+    //print(res.body);
 
     if (searchQuery != oldQuery) {
       page = 0;
@@ -307,17 +285,19 @@ class _ConcertsState extends State<ConcertsScreen> {
     if (!data.containsKey('searchResults')) {
       return false;
     }
+    print(data);
 
-    if (data['searchResults'].isEmpty) {
-      hadMore = false;
-      if (page != 0) {
-        page--;
-      }
-      totalPages = page;
-      _showSnack(context);
-      return true;
-    }
+    // if (data['searchResults'].isEmpty) {
+    //   hadMore = false;
+    //   if (page != 0) {
+    //     page--;
+    //   }
+    //   totalPages = page;
+    //   _showSnack(context);
+    //   return true;
+    // }
     searchResults = [];
+    totalPages = data['pages'] ?? 50;
 
     for (var map in data['searchResults']) {
       Concert newConcert = Concert.searchedSong(map);
@@ -346,81 +326,81 @@ class _ConcertsState extends State<ConcertsScreen> {
     return true;
   }
 
-  Widget PageCounter() {
-    if (page == 0) {
-      if (totalPages + 1 == 1) {
-        return Text(
-          ' 1 ',
-          style: defaultTextStyle,
-        );
-      }
-      if (page + 1 == totalPages) {
-        return Text(
-          ' 1,2 ',
-          style: defaultTextStyle,
-        );
-      }
-      return Text(
-        ' 1,... ',
-        style: defaultTextStyle,
-      );
-    }
-    if (page == totalPages) {
-      if (totalPages == 1) {
-        return Text(
-          ' 1,2 ',
-          style: defaultTextStyle,
-        );
-      }
-      return Text(
-        ' 1,...,${totalPages+1} ',
-        style: defaultTextStyle,
-      );
-    }
-    if (page == 1) {
-      if (totalPages - page == 1) {
-        return Text(
-          ' 1,2,3 ',
-          style: defaultTextStyle,
-        );
-      }
-      return Text(
-        ' 1,2,... ',
-        style: defaultTextStyle,
-      );
-    }
-    if (totalPages - page == 1) {
-      if (totalPages - page == 1) {
-        return Text(
-          ' 1,2,3 ',
-          style: defaultTextStyle,
-        );
-      }
-      return Text(
-        ' 1,...,${page+1},${totalPages+1} ',
-        style: defaultTextStyle,
-      );
-    }
-    return Text(
-      ' 1,...,${page+1},...,${totalPages+1} ',
-      style: defaultTextStyle,
-    );
-  }
+  // Widget PageCounter() {
+  //   if (page == 0) {
+  //     if (totalPages + 1 == 1) {
+  //       return Text(
+  //         ' 1 ',
+  //         style: defaultTextStyle,
+  //       );
+  //     }
+  //     if (page + 1 == totalPages) {
+  //       return Text(
+  //         ' 1,2 ',
+  //         style: defaultTextStyle,
+  //       );
+  //     }
+  //     return Text(
+  //       ' 1,... ',
+  //       style: defaultTextStyle,
+  //     );
+  //   }
+  //   if (page == totalPages) {
+  //     if (totalPages == 1) {
+  //       return Text(
+  //         ' 1,2 ',
+  //         style: defaultTextStyle,
+  //       );
+  //     }
+  //     return Text(
+  //       ' 1,...,${totalPages+1} ',
+  //       style: defaultTextStyle,
+  //     );
+  //   }
+  //   if (page == 1) {
+  //     if (totalPages - page == 1) {
+  //       return Text(
+  //         ' 1,2,3 ',
+  //         style: defaultTextStyle,
+  //       );
+  //     }
+  //     return Text(
+  //       ' 1,2,... ',
+  //       style: defaultTextStyle,
+  //     );
+  //   }
+  //   if (totalPages - page == 1) {
+  //     if (totalPages - page == 1) {
+  //       return Text(
+  //         ' 1,2,3 ',
+  //         style: defaultTextStyle,
+  //       );
+  //     }
+  //     return Text(
+  //       ' 1,...,${page+1},${totalPages+1} ',
+  //       style: defaultTextStyle,
+  //     );
+  //   }
+  //   return Text(
+  //     ' 1,...,${page+1},...,${totalPages+1} ',
+  //     style: defaultTextStyle,
+  //   );
+  // }
 
-  void _showSnack(BuildContext context) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: WillPopScope(
-          onWillPop: () async {
-            ScaffoldMessenger.of(context).removeCurrentSnackBar();
-            return true;
-          },
-          child: const Text('No more concerts to view'),
-        ),
-        duration: Duration(seconds: 3),
-      ),
-    );
-  }
+  // void _showSnack(BuildContext context) {
+  //   ScaffoldMessenger.of(context).showSnackBar(
+  //     SnackBar(
+  //       content: WillPopScope(
+  //         onWillPop: () async {
+  //           ScaffoldMessenger.of(context).removeCurrentSnackBar();
+  //           return true;
+  //         },
+  //         child: const Text('No more concerts to view'),
+  //       ),
+  //       duration: Duration(seconds: 3),
+  //     ),
+  //   );
+  // }
 
   //Old method of retrieving concerts, without API attached
 /*Future<bool> getConcertList() async {

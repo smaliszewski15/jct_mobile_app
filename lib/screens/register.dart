@@ -110,9 +110,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               width: MediaQuery.of(context).size.width / 2,
                               child: TextButton(
                                 style: TextButton.styleFrom(
-                                  textStyle: TextStyle(
-                                    fontSize: 18,
-                                    color: mainSchemeColor,
+                                  textStyle: smallTextStyle.copyWith(
                                     decoration: TextDecoration.underline,
                                   ),
                                 ),
@@ -135,10 +133,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               margin: const EdgeInsets.all(5),
                               child: Text(
                                 '* = Required',
-                                style: TextStyle(
-                                  fontSize: smallFontSize,
-                                  color: invalidColor,
-                                ),
+                                style: invalidTextStyle,
                                 textAlign: TextAlign.center,
                               ),
                             ),
@@ -146,18 +141,12 @@ class _RegisterPageState extends State<RegisterPage> {
                               children: <Widget>[
                                 Text(
                                   'Username',
-                                  style: TextStyle(
-                                    fontSize: smallFontSize,
-                                    color: textColor,
-                                  ),
+                                  style: smallTextStyle,
                                   textAlign: TextAlign.left,
                                 ),
                                 Text(
                                     '*',
-                                    style: TextStyle(
-                                      fontSize: smallFontSize,
-                                      color: invalidColor,
-                                    )
+                                    style: smallTextStyle,
                                 ),
                                 BasicTooltip(message: "Usernames must be 2-24 characters long and\ncan only contain ASCII characters", tooltipkey: fields['username']!.tooltipKey),
                               ],
@@ -172,18 +161,12 @@ class _RegisterPageState extends State<RegisterPage> {
                               children: <Widget>[
                                 Text(
                                   'Email',
-                                  style: TextStyle(
-                                    fontSize: smallFontSize,
-                                    color: textColor,
-                                  ),
+                                  style: smallTextStyle,
                                   textAlign: TextAlign.left,
                                 ),
                                 Text(
                                     '*',
-                                    style: TextStyle(
-                                      fontSize: smallFontSize,
-                                      color: invalidColor,
-                                    )
+                                    style: smallTextStyle,
                                 ),
                                 BasicTooltip(message: "Emails must be in the correct email format", tooltipkey: fields['email']!.tooltipKey),
                               ],
@@ -198,18 +181,12 @@ class _RegisterPageState extends State<RegisterPage> {
                               children: <Widget>[
                                 Text(
                                   'Password',
-                                  style: TextStyle(
-                                    fontSize: smallFontSize,
-                                    color: textColor,
-                                  ),
+                                  style: smallTextStyle,
                                   textAlign: TextAlign.left,
                                 ),
                                 Text(
                                     '*',
-                                    style: TextStyle(
-                                      fontSize: smallFontSize,
-                                      color: invalidColor,
-                                    )
+                                    style: smallTextStyle,
                                 ),
                                 BasicTooltip(message: "Passwords must be at least 4 characters long and\ncan only contain ASCII characters", tooltipkey: fields['password']!.tooltipKey),
                               ],
@@ -224,18 +201,12 @@ class _RegisterPageState extends State<RegisterPage> {
                               children: <Widget>[
                                 Text(
                                   'Confirm Password',
-                                  style: TextStyle(
-                                    fontSize: smallFontSize,
-                                    color: textColor,
-                                  ),
+                                  style: smallTextStyle,
                                   textAlign: TextAlign.left,
                                 ),
                                 Text(
                                     '*',
-                                    style: TextStyle(
-                                      fontSize: smallFontSize,
-                                      color: invalidColor,
-                                    )
+                                    style: smallTextStyle,
                                 ),
                                 BasicTooltip(message: "Please confirm your password", tooltipkey: fields['confirmPassword']!.tooltipKey),
                               ],
@@ -252,10 +223,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               margin: const EdgeInsets.all(5),
                               child: Text(
                                 errorMessage,
-                                style: TextStyle(
-                                  fontSize: smallFontSize,
-                                  color: invalidColor,
-                                )
+                                style: smallTextStyle,
                               ),
                             ),
                             const Spacer(),
@@ -281,11 +249,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                 },
                                 child: Text(
                                   'Register',
-                                  style: TextStyle(
-                                    fontSize: buttonFontSize,
-                                    color: buttonTextColor,
-                                    fontWeight: FontWeight.w400,
-                                  ),
+                                  style: buttonTextStyle,
                                   textAlign: TextAlign.center,
                                 ),
                               ),
@@ -294,9 +258,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               width: MediaQuery.of(context).size.width,
                               child: TextButton(
                                 style: TextButton.styleFrom(
-                                  textStyle: TextStyle(
-                                    fontSize: 14,
-                                    color: mainSchemeColor,
+                                  textStyle: smallTextStyle.copyWith(
                                     fontStyle: FontStyle.italic,
                                     decoration: TextDecoration.underline,
                                   ),

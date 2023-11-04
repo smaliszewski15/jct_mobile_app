@@ -26,23 +26,137 @@ bool isEmail(email) {
   return emailValidation.hasMatch(email);
 }
 
-final buttonTextStyle = TextStyle(
-  fontSize: infoFontSize,
+//Text Styles
+TextStyle buttonTextStyle = TextStyle(
+  fontSize: buttonFontSize,
   color: buttonTextColor,
   fontWeight: FontWeight.w400,
 );
 
-final defaultTextStyle = TextStyle(
+TextStyle bigButtonTextStyle = TextStyle(
+  fontSize: bigButtonFontSize,
+  color: buttonTextColor,
+  fontWeight: FontWeight.w400,
+);
+
+TextStyle headingTextStyle = TextStyle(
+  fontSize: headingFontSize,
+  color: textColor,
+);
+
+TextStyle blackHeadingTextStyle = TextStyle(
+  fontSize: headingFontSize,
+  color: textfieldTextColor,
+);
+
+TextStyle defaultTextStyle = TextStyle(
   fontSize: infoFontSize,
   color: textColor,
 );
 
-final titleTextStyle = TextStyle(
+TextStyle smallTextStyle = TextStyle(
+  fontSize: smallFontSize,
+  color: textColor,
+);
+
+TextStyle blackDefaultTextStyle = TextStyle(
+  fontSize: infoFontSize,
+  color: textfieldTextColor,
+);
+
+TextStyle titleTextStyle = TextStyle(
   fontSize: titleFontSize,
   color: textColor,
 );
 
+TextStyle buttonTitleTextStyle = TextStyle(
+  fontSize: titleFontSize,
+  color: textfieldTextColor,
+);
+
+TextStyle invalidTextStyle = TextStyle(
+  fontSize: smallFontSize,
+  color: invalidColor,
+);
+
+TextStyle smallTextFieldTextStyle = TextStyle(
+  fontSize: smallFontSize,
+  color: buttonTextColor,
+);
+
+TextStyle searchTextStyle = TextStyle(
+  color: buttonTextColor,
+  fontSize: infoFontSize,
+);
+
 TextStyle errorTextStyle = TextStyle(fontSize: 10, color: invalidColor);
+
+void updateTextStyles(double scaler) {
+  buttonTextStyle = TextStyle(
+    fontSize: buttonFontSize / scaler,
+    color: buttonTextColor,
+    fontWeight: FontWeight.w400,
+  );
+
+  bigButtonTextStyle = TextStyle(
+    fontSize: bigButtonFontSize / scaler,
+    color: buttonTextColor,
+    fontWeight: FontWeight.w400,
+  );
+
+  headingTextStyle = TextStyle(
+    fontSize: headingFontSize / scaler,
+    color: textColor,
+  );
+
+  blackHeadingTextStyle = TextStyle(
+    fontSize: headingFontSize / scaler,
+    color: textfieldTextColor,
+  );
+
+  defaultTextStyle = TextStyle(
+    fontSize: infoFontSize / scaler,
+    color: textColor,
+  );
+
+  smallTextStyle = TextStyle(
+    fontSize: smallFontSize / scaler,
+    color: textColor,
+  );
+
+  blackDefaultTextStyle = TextStyle(
+    fontSize: infoFontSize / scaler,
+    color: textfieldTextColor,
+  );
+
+  titleTextStyle = TextStyle(
+    fontSize: titleFontSize / scaler,
+    color: textColor,
+  );
+
+  buttonTitleTextStyle = TextStyle(
+    fontSize: titleFontSize / scaler,
+    color: textfieldTextColor,
+  );
+
+  invalidTextStyle = TextStyle(
+    fontSize: smallFontSize / scaler,
+    color: invalidColor,
+  );
+
+  smallTextFieldTextStyle = TextStyle(
+    fontSize: smallFontSize / scaler,
+    color: buttonTextColor,
+  );
+
+  searchTextStyle = TextStyle(
+    color: buttonTextColor,
+    fontSize: infoFontSize / scaler,
+  );
+  updatedTextStyles = true;
+}
+
+bool updatedTextStyles = false;
 
 final globalDecoration = InputDecoration(
     contentPadding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),

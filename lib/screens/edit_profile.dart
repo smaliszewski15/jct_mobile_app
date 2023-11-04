@@ -45,7 +45,7 @@ class _EditUserProfilePageState extends State<EditUserProfilePage> {
       appBar: AppBar(
         title: Text(
           'Edit Profile',
-          style: TextStyle(fontSize: titleFontSize, color: textColor),
+          style: titleTextStyle,
         ),
         centerTitle: true,
         backgroundColor: accentColor,
@@ -103,10 +103,7 @@ class _EditUserProfilePageState extends State<EditUserProfilePage> {
                                 children: <Widget>[
                                   Text(
                                     'Username',
-                                    style: TextStyle(
-                                      fontSize: smallFontSize,
-                                      color: textColor,
-                                    ),
+                                    style: defaultTextStyle,
                                     textAlign: TextAlign.center,
                                   ),
                                   BasicTooltip(
@@ -134,44 +131,8 @@ class _EditUserProfilePageState extends State<EditUserProfilePage> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
                                 Text(
-                                  'Phone Number',
-                                  style: TextStyle(
-                                    fontSize: smallFontSize,
-                                    color: textColor,
-                                  ),
-                                  textAlign: TextAlign.left,
-                                ),
-                                BasicTooltip(
-                                    message:
-                                        "Please enter a valid phone number",
-                                    tooltipkey: phoneNumber.tooltipKey),
-                              ],
-                            ),
-                            Container(
-                              width: MediaQuery.of(context).size.width / 1.2,
-                              decoration: const BoxDecoration(
-                                borderRadius: BorderRadius.all(
-                                    Radius.circular(roundedCorners)),
-                              ),
-                              child: phoneNumber,
-                            ),
-                          ],
-                        ),
-                      ),
-                      Container(
-                        width: double.infinity,
-                        margin: const EdgeInsets.all(5),
-                        child: Column(
-                          children: <Widget>[
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                Text(
                                   'Enter your password to confirm changes',
-                                  style: TextStyle(
-                                    fontSize: smallFontSize,
-                                    color: textColor,
-                                  ),
+                                  style: defaultTextStyle,
                                   textAlign: TextAlign.center,
                                 ),
                                 BasicTooltip(
@@ -242,11 +203,7 @@ class _EditUserProfilePageState extends State<EditUserProfilePage> {
                           },
                           child: Text(
                             'Confirm Changes',
-                            style: TextStyle(
-                              fontSize: bigButtonFontSize,
-                              color: buttonTextColor,
-                              fontWeight: FontWeight.w400,
-                            ),
+                            style: bigButtonTextStyle,
                             textAlign: TextAlign.center,
                           ),
                         ),
@@ -315,7 +272,7 @@ class _EditPasswordPageState extends State<EditPasswordPage> {
       appBar: AppBar(
         title: Text(
           'Edit Password',
-          style: TextStyle(fontSize: titleFontSize, color: textColor),
+          style: titleTextStyle,
         ),
         centerTitle: true,
         backgroundColor: accentColor,
@@ -349,10 +306,7 @@ class _EditPasswordPageState extends State<EditPasswordPage> {
                       children: <Widget>[
                         Text(
                           'Old password',
-                          style: TextStyle(
-                            fontSize: infoFontSize,
-                            color: textColor,
-                          ),
+                          style: defaultTextStyle,
                           textAlign: TextAlign.center,
                         ),
                         BasicTooltip(
@@ -364,9 +318,8 @@ class _EditPasswordPageState extends State<EditPasswordPage> {
                     margin: const EdgeInsets.only(bottom: 20),
                     padding:
                         const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
-                    decoration: BoxDecoration(
-                      color: mainSchemeColor,
-                      borderRadius: const BorderRadius.all(
+                    decoration: const BoxDecoration(
+                      borderRadius: BorderRadius.all(
                           Radius.circular(roundedCorners)),
                     ),
                     child: oldPassword,
@@ -376,10 +329,7 @@ class _EditPasswordPageState extends State<EditPasswordPage> {
                       children: <Widget>[
                         Text(
                           'New Password',
-                          style: TextStyle(
-                            fontSize: infoFontSize,
-                            color: textColor,
-                          ),
+                          style: defaultTextStyle,
                           textAlign: TextAlign.center,
                         ),
                         BasicTooltip(
@@ -393,7 +343,6 @@ class _EditPasswordPageState extends State<EditPasswordPage> {
                     padding:
                         const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
                     decoration: BoxDecoration(
-                      color: mainSchemeColor,
                       borderRadius: const BorderRadius.all(
                           Radius.circular(roundedCorners)),
                     ),
@@ -404,10 +353,7 @@ class _EditPasswordPageState extends State<EditPasswordPage> {
                       children: <Widget>[
                         Text(
                           'Confirm your new password',
-                          style: TextStyle(
-                            fontSize: infoFontSize,
-                            color: textColor,
-                          ),
+                          style: defaultTextStyle,
                           textAlign: TextAlign.center,
                         ),
                         BasicTooltip(
@@ -421,7 +367,6 @@ class _EditPasswordPageState extends State<EditPasswordPage> {
                     padding:
                         const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
                     decoration: BoxDecoration(
-                      color: mainSchemeColor,
                       borderRadius: const BorderRadius.all(
                           Radius.circular(roundedCorners)),
                     ),
@@ -468,11 +413,7 @@ class _EditPasswordPageState extends State<EditPasswordPage> {
                       },
                       child: Text(
                         'Confirm Changes',
-                        style: TextStyle(
-                          fontSize: bigButtonFontSize,
-                          color: buttonTextColor,
-                          fontWeight: FontWeight.w400,
-                        ),
+                        style: bigButtonTextStyle,
                         textAlign: TextAlign.center,
                       ),
                     ),

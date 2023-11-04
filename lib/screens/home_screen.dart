@@ -18,10 +18,7 @@ class HomeScreen extends StatelessWidget {
               padding: const EdgeInsets.symmetric(vertical: 10),
               child: Text(
                 'Welcome to John Cage Tribute!',
-                style: TextStyle(
-                  fontSize: titleFontSize,
-                  color: textColor,
-                ),
+                style: titleTextStyle,
                 textAlign: TextAlign.center,
               ),
             ),
@@ -38,10 +35,7 @@ class HomeScreen extends StatelessWidget {
               padding: const EdgeInsets.symmetric(vertical: 10),
               child: Text(
                 'What is this?',
-                style: TextStyle(
-                  fontSize: titleFontSize,
-                  color: textColor,
-                ),
+                style: titleTextStyle,
               ),
             ),
             Container(
@@ -55,10 +49,7 @@ class HomeScreen extends StatelessWidget {
                           'You and up to 4 other friends can sign up and schedule a session. From there, everyone in the session can'
                           'take a recording of any sound and mix them all into one song called a concert. It can be any sound such as '
                           'waves of a beach, birds chirping, sound of a metro passing by, and so much more.',
-                      style: TextStyle(
-                          fontSize: smallFontSize,
-                          color: textColor
-                      ),
+                      style: smallTextStyle,
                       textAlign: TextAlign.center,
                     ),
                   ),
@@ -69,10 +60,7 @@ class HomeScreen extends StatelessWidget {
               padding: const EdgeInsets.symmetric(vertical: 10),
               child: Text(
                 'About Us',
-                style: TextStyle(
-                  fontSize: titleFontSize,
-                  color: textColor,
-                ),
+                style: titleTextStyle,
               ),
             ),
             Center(
@@ -87,10 +75,7 @@ class HomeScreen extends StatelessWidget {
                             "This is the third iteration of the John Cage Tribute Senior Design Project. "
                             "With our project we wanted to encapsulate John Cage's philosophy that anything can be music. "
                             "We worked closely with our Sponsor Richard Leinecker to develop an application that can be used by anyone to make their own unique piece of music.",
-                        style: TextStyle(
-                            fontSize: smallFontSize,
-                            color: textColor
-                        ),
+                        style: smallTextStyle,
                         textAlign: TextAlign.center,
                       ),
                     ),
@@ -102,10 +87,7 @@ class HomeScreen extends StatelessWidget {
               padding: const EdgeInsets.symmetric(vertical: 10),
               child: Text(
                 'Meet Our Team',
-                style: TextStyle(
-                  fontSize: titleFontSize,
-                  color: textColor,
-                ),
+                style: titleTextStyle,
               ),
             ),
             Column(
@@ -121,9 +103,7 @@ class HomeScreen extends StatelessWidget {
                 ),
                 Text(
                   'Kyle Mason',
-                  style: TextStyle(
-                    color: textColor,
-                    fontSize: infoFontSize,
+                  style: defaultTextStyle.copyWith(
                     fontWeight: FontWeight.w600,
                   ),
                   textAlign: TextAlign.center,
@@ -148,9 +128,7 @@ class HomeScreen extends StatelessWidget {
                 ),
                 Text(
                   'Demetri',
-                  style: TextStyle(
-                    color: textColor,
-                    fontSize: infoFontSize,
+                  style: defaultTextStyle.copyWith(
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -174,9 +152,7 @@ class HomeScreen extends StatelessWidget {
                 ),
                 Text(
                   'Rayyan',
-                  style: TextStyle(
-                    color: textColor,
-                    fontSize: infoFontSize,
+                  style: defaultTextStyle.copyWith(
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -200,9 +176,7 @@ class HomeScreen extends StatelessWidget {
                 ),
                 Text(
                   'Himil',
-                  style: TextStyle(
-                    color: textColor,
-                    fontSize: infoFontSize,
+                  style: defaultTextStyle.copyWith(
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -226,9 +200,7 @@ class HomeScreen extends StatelessWidget {
                 ),
                 Text(
                   'Stephen Maliszewski',
-                  style: TextStyle(
-                    color: textColor,
-                    fontSize: infoFontSize,
+                  style: defaultTextStyle.copyWith(
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -252,9 +224,7 @@ class HomeScreen extends StatelessWidget {
                 ),
                 Text(
                   'Paul',
-                  style: TextStyle(
-                    color: textColor,
-                    fontSize: infoFontSize,
+                  style: defaultTextStyle.copyWith(
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -268,10 +238,7 @@ class HomeScreen extends StatelessWidget {
               padding: const EdgeInsets.symmetric(vertical: 10),
               child: Text(
                 'About John Cage',
-                style: TextStyle(
-                  fontSize: titleFontSize,
-                  color: textColor,
-                ),
+                style: titleTextStyle,
               ),
             ),
             Center(
@@ -286,10 +253,7 @@ class HomeScreen extends StatelessWidget {
                     "\n\nWhile teaching in Seattle (1938-40), Cage organized percussion ensembles to perform his compositions. "
                             "He experimented with his works for dance and subsequent collaborations with the choreographer and dancer Merce Cunningham sparked a long creative and romantic partnership."
                             "\n\nIn the following years, Cage turned to Zen Buddhism and other Eastern philosophies which lead to his conclusion that all activities that makes up the music must be seen as part of a single natural process.",
-                        style: TextStyle(
-                            fontSize: smallFontSize,
-                            color: textColor
-                        ),
+                        style: smallTextStyle,
                         textAlign: TextAlign.center,
                       ),
                     ),

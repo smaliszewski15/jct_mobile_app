@@ -18,7 +18,7 @@ class ConcertPlayer {
   late int id;
 
   ConcertPlayer(this.id) {
-    url = 'https://johncagetribute.org/api/concerts/getSongFile?id=$id';
+    url = 'http://johncagetribute.org/api/concerts/getSongFile?id=$id';
     _init();
   }
 

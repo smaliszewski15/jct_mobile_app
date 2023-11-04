@@ -53,8 +53,8 @@ class _PerformerScreenState extends State<PerformerScreen> {
       (data) {
         String s = splitHeader(data);
         List<String> split = s.split(':');
-        if (split[0] == 'participants') {
-          parseParticipants(split[1]);
+        if (split.length > 1) {
+          parseParticipants(split.sublist(1).join(':'));
           print(s);
           setState(() {});
         } else {
@@ -156,7 +156,7 @@ class _PerformerScreenState extends State<PerformerScreen> {
             context: context,
             builder: (context) {
               return AlertDialog(
-                title: const Text("Enter your passcode to join the session"),
+                title: const Text("Before you leave..."),
                 shape:  RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10)),
                 elevation: 15,
@@ -165,24 +165,24 @@ class _PerformerScreenState extends State<PerformerScreen> {
                     onPressed: () {
                       Navigator.pop(context, false);
                     },
-                    child: const Text(
+                    child: Text(
                       'Cancel',
-                      style: TextStyle(color: Colors.red, fontSize: 18),
+                      style: invalidTextStyle,
                     ),
                   ),
                   TextButton(
                     onPressed: () {
                       Navigator.pop(context, true);
                     },
-                    child: const Text(
+                    child: Text(
                       'Leave',
-                      style: TextStyle(color: Colors.red, fontSize: 18),
+                      style: invalidTextStyle,
                     ),
                   ),
                 ],
                 content: Text(
                   'Are you sure you want to leave? The session hasn\'t finished yet',
-                  style: defaultTextStyle,
+                  style: blackDefaultTextStyle,
                 ),
               );
             }
@@ -215,10 +215,7 @@ class _PerformerScreenState extends State<PerformerScreen> {
                   child: Text(
                     'You are the performer. The performance will start once the leader hits start.'
                         '\n\nYou can choose to hear the playback or not by clicking the mute playback button',
-                    style: TextStyle(
-                      fontSize: headingFontSize,
-                      color: textColor,
-                    ),
+                    style: headingTextStyle,
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -291,10 +288,7 @@ class _PerformerScreenState extends State<PerformerScreen> {
                   padding: const EdgeInsets.all(10),
                   child: Text(
                     started ? 'Started!' : '',
-                    style: TextStyle(
-                      fontSize: headingFontSize,
-                      color: textColor,
-                    ),
+                    style: headingTextStyle,
                     textAlign: TextAlign.center,
                   ),
                 ),

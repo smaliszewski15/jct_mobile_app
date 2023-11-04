@@ -79,10 +79,7 @@ class _AddGroupState extends State<AddGroup> {
                         padding: const EdgeInsets.all(20),
                         child: Text(
                           'Every concert must have a title. Enter yours here:',
-                          style: TextStyle(
-                            fontSize: headingFontSize,
-                            color: textColor,
-                          ),
+                          style: headingTextStyle,
                           textAlign: TextAlign.center,
                         )
                     ),
@@ -114,10 +111,7 @@ class _AddGroupState extends State<AddGroup> {
                             borderSide: const BorderSide(color: black),
                           ),
                         ),
-                        style: TextStyle(
-                          fontSize: titleFontSize,
-                          color: buttonTextColor,
-                        ),
+                        style: buttonTitleTextStyle,
                         onChanged: (field) {
                           if (field.isEmpty) {
                             setState(() => titleUnfilled = true);
@@ -134,10 +128,7 @@ class _AddGroupState extends State<AddGroup> {
                   SliverToBoxAdapter(
                       child: Text(
                         'You must have a title for your concert',
-                        style: TextStyle(
-                          fontSize: smallFontSize,
-                          color: invalidColor,
-                        ),
+                        style: invalidTextStyle,
                         textAlign: TextAlign.center,
                       ),
                   ),
@@ -147,10 +138,7 @@ class _AddGroupState extends State<AddGroup> {
                       margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                       child: Text(
                         'Mixing Method: ',
-                        style: TextStyle(
-                          fontSize: headingFontSize,
-                          color: textColor,
-                        ),
+                        style: headingTextStyle,
                         textAlign: TextAlign.center,
                       ),
                     ),
@@ -195,10 +183,7 @@ class _AddGroupState extends State<AddGroup> {
                         padding: const EdgeInsets.all(20),
                         child: Text(
                           'Enter a description:',
-                          style: TextStyle(
-                            fontSize: headingFontSize,
-                            color: textColor,
-                          ),
+                          style: headingTextStyle,
                           textAlign: TextAlign.center,
                         )
                     ),
@@ -230,10 +215,7 @@ class _AddGroupState extends State<AddGroup> {
                             borderSide: const BorderSide(color: black),
                           ),
                         ),
-                        style: TextStyle(
-                          fontSize: infoFontSize,
-                          color: buttonTextColor,
-                        ),
+                        style: blackDefaultTextStyle,
                         onChanged: (field) {
                           if (field.isEmpty) {
                             setState(() => titleUnfilled = true);
@@ -251,10 +233,7 @@ class _AddGroupState extends State<AddGroup> {
                       padding: const EdgeInsets.all(10),
                       child: Text(
                         'And lastly, some tags to describe your concert:',
-                        style: TextStyle(
-                          fontSize: headingFontSize,
-                          color: textColor,
-                        ),
+                        style: headingTextStyle,
                         textAlign: TextAlign.center,
                       ),
                     ),
@@ -264,10 +243,7 @@ class _AddGroupState extends State<AddGroup> {
                       padding: const EdgeInsets.all(5),
                       child: Text(
                         'Enter as a list of comma separated words',
-                        style: TextStyle(
-                          fontSize: infoFontSize,
-                          color: textColor,
-                        ),
+                        style: defaultTextStyle,
                         textAlign: TextAlign.center,
                       ),
                     ),
@@ -299,10 +275,7 @@ class _AddGroupState extends State<AddGroup> {
                             borderSide: const BorderSide(color: black),
                           ),
                         ),
-                        style: TextStyle(
-                          fontSize: infoFontSize,
-                          color: buttonTextColor,
-                        ),
+                        style: blackDefaultTextStyle,
                         onChanged: (field) {
                           if (field.isEmpty) {
                             setState(() => titleUnfilled = true);
@@ -318,10 +291,7 @@ class _AddGroupState extends State<AddGroup> {
                 SliverToBoxAdapter(
                     child: Text(
                       'Finished making your concert? Tap the button below to create your concert. The invitation codes will be sent to your email.',
-                      style: TextStyle(
-                        fontSize: headingFontSize,
-                        color: textColor,
-                      ),
+                      style: headingTextStyle,
                       textAlign: TextAlign.center,
                     ),
                 ),
@@ -346,11 +316,7 @@ class _AddGroupState extends State<AddGroup> {
                         },
                         child: Text(
                           'Create',
-                          style: TextStyle(
-                            fontSize: bigButtonFontSize,
-                            color: buttonTextColor,
-                            fontWeight: FontWeight.w400,
-                          ),
+                          style: bigButtonTextStyle,
                           textAlign: TextAlign.center,
                         ),
                       ),
@@ -373,18 +339,18 @@ class _AddGroupState extends State<AddGroup> {
             onPressed: () {
               Navigator.pop(context, false);
             },
-            child: const Text(
+            child: Text(
               'Register',
-              style: TextStyle(color: Colors.red, fontSize: 18),
+              style: invalidTextStyle,
             ),
           ),
           TextButton(
             onPressed: () {
               Navigator.pop(context, true);
             },
-            child: const Text(
+            child: Text(
               'Login',
-              style: TextStyle(color: Colors.red, fontSize: 18),
+              style: invalidTextStyle,
             ),
           ),
         ],

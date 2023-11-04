@@ -37,15 +37,17 @@ class _SkeletonState extends State<Skeleton> {
 
   @override
   Widget build(BuildContext context) {
+    double textScale = MediaQuery.of(context).textScaleFactor;
+    if (!updatedTextStyles && textScale != 1) {
+      updateTextStyles(textScale);
+    }
+
     return Scaffold(
       appBar: AppBar(
         leadingWidth: 80,
         title: Text(
           _navManager.title,
-          style: TextStyle(
-            fontSize: titleFontSize,
-            color: textColor,
-          ),
+          style: titleTextStyle,
         ),
         actions: _navManager.buttonNotifier.value == NavState.concert
             ? <Widget>[

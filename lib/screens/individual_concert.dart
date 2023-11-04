@@ -69,10 +69,8 @@ class _ConcertPageState extends State<ConcertPage> {
                   if (snapshot.hasError) {
                     print('hereError');
                     return Text('Error: $snapshot.error}',
-                        style: const TextStyle(
-                          color: black,
-                          fontSize: smallFontSize,
-                        ));
+                        style: smallTextStyle,
+                    );
                   }
                   if (concert.id == -1) {
                     print('here');
@@ -86,10 +84,7 @@ class _ConcertPageState extends State<ConcertPage> {
                             margin: const EdgeInsets.symmetric(vertical: 30),
                             child: Text(
                               concert.title,
-                              style: TextStyle(
-                                fontSize: titleFontSize,
-                                color: textColor,
-                              ),
+                              style: titleTextStyle,
                               textAlign: TextAlign.center,
                             ),
                           ),
@@ -102,10 +97,7 @@ class _ConcertPageState extends State<ConcertPage> {
                               vertical: 5, horizontal: 20),
                           child: Text(
                             'Description: ',
-                            style: TextStyle(
-                              fontSize: infoFontSize,
-                              color: textColor,
-                            ),
+                            style: headingTextStyle,
                             textAlign: TextAlign.left,
                           ),
                         ),
@@ -125,10 +117,7 @@ class _ConcertPageState extends State<ConcertPage> {
                           ),
                           child: Text(
                             concert.description,
-                            style: TextStyle(
-                              fontSize: infoFontSize,
-                              color: textColor,
-                            ),
+                            style: defaultTextStyle,
                             textAlign: TextAlign.left,
                           ),
                         ),
@@ -140,10 +129,7 @@ class _ConcertPageState extends State<ConcertPage> {
                               vertical: 5, horizontal: 20),
                           child: Text(
                             'Group Leader: ',
-                            style: TextStyle(
-                              fontSize: headingFontSize,
-                              color: textColor,
-                            ),
+                            style: headingTextStyle,
                             textAlign: TextAlign.left,
                           ),
                         ),
@@ -163,10 +149,7 @@ class _ConcertPageState extends State<ConcertPage> {
                           ),
                           child: Text(
                             concert.maestro,
-                            style: TextStyle(
-                              fontSize: infoFontSize,
-                              color: textColor,
-                            ),
+                            style: defaultTextStyle,
                             textAlign: TextAlign.left,
                           ),
                         ),
@@ -178,10 +161,7 @@ class _ConcertPageState extends State<ConcertPage> {
                               vertical: 5, horizontal: 20),
                           child: Text(
                             'Recording Date: ',
-                            style: TextStyle(
-                              fontSize: headingFontSize,
-                              color: textColor,
-                            ),
+                            style: headingTextStyle,
                             textAlign: TextAlign.left,
                           ),
                         ),
@@ -208,10 +188,7 @@ class _ConcertPageState extends State<ConcertPage> {
                                       ? DateFormat('yyyy-MM-dd HH:mm')
                                       .format(concert.date!)
                                       : 'No Date',
-                                  style: TextStyle(
-                                    fontSize: infoFontSize,
-                                    color: textColor,
-                                  ),
+                                  style: defaultTextStyle,
                                   textAlign: TextAlign.left,
                                 ),
                               ),
@@ -226,10 +203,7 @@ class _ConcertPageState extends State<ConcertPage> {
                               vertical: 5, horizontal: 20),
                           child: Text(
                             'Performers: ',
-                            style: TextStyle(
-                              fontSize: headingFontSize,
-                              color: textColor,
-                            ),
+                            style: headingTextStyle,
                             textAlign: TextAlign.left,
                           ),
                         ),
@@ -253,12 +227,10 @@ class _ConcertPageState extends State<ConcertPage> {
                                   ),
                                   child: Text(
                                     entry,
-                                    style: TextStyle(
-                                      fontSize: infoFontSize,
-                                      color: textColor,
-                                    ),
+                                    style: defaultTextStyle,
                                     textAlign: TextAlign.left,
-                                  ));
+                                  ),
+                              );
                             }).toList(),
                           ),
                         ),
@@ -270,10 +242,7 @@ class _ConcertPageState extends State<ConcertPage> {
                               vertical: 5, horizontal: 20),
                           child: Text(
                             'Tags: ',
-                            style: TextStyle(
-                              fontSize: headingFontSize,
-                              color: textColor,
-                            ),
+                            style: headingTextStyle,
                             textAlign: TextAlign.left,
                           ),
                         ),
@@ -293,10 +262,7 @@ class _ConcertPageState extends State<ConcertPage> {
                           ),
                           child: Text(
                             concert.tags.split('`').join(', '),
-                            style: TextStyle(
-                              fontSize: infoFontSize,
-                              color: textColor,
-                            ),
+                            style: defaultTextStyle,
                             textAlign: TextAlign.left,
                           ),
                         ),

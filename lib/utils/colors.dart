@@ -11,6 +11,7 @@ Color mainSchemeColor = gold;
 Color accentColor = black;
 Color borderColor = black;
 Color textColor = white;
+Color textfieldTextColor = black;
 Color buttonTextColor = black;
 Color invalidColor = red;
 Color textFieldBackingColor = lightGrey;

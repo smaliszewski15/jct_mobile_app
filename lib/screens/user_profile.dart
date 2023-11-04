@@ -29,10 +29,7 @@ class UserProfilePage extends StatelessWidget {
           Flexible(
             child: Text(
               'You are currently not logged in. You must be logged in to view this page',
-              style: TextStyle(
-                fontSize: titleFontSize,
-                color: textColor,
-              ),
+              style: titleTextStyle,
               textAlign: TextAlign.center,
             ),
           ),
@@ -49,11 +46,7 @@ class UserProfilePage extends StatelessWidget {
               },
               child: Text(
                 'Log in',
-                style: TextStyle(
-                  fontSize: bigButtonFontSize,
-                  color: buttonTextColor,
-                  fontWeight: FontWeight.w400,
-                ),
+                style: bigButtonTextStyle,
                 textAlign: TextAlign.center,
               ),
             ),
@@ -61,10 +54,7 @@ class UserProfilePage extends StatelessWidget {
           Flexible(
             child: Text(
               'New user? Sign up now!\nYou will be able to join concerts, or even start your own!',
-              style: TextStyle(
-                fontSize: titleFontSize,
-                color: textColor,
-              ),
+              style: titleTextStyle,
               textAlign: TextAlign.center,
             ),
           ),
@@ -81,11 +71,7 @@ class UserProfilePage extends StatelessWidget {
               },
               child: Text(
                 'Sign Up',
-                style: TextStyle(
-                  fontSize: bigButtonFontSize,
-                  color: buttonTextColor,
-                  fontWeight: FontWeight.w400,
-                ),
+                style: bigButtonTextStyle,
                 textAlign: TextAlign.center,
               ),
             ),
@@ -145,13 +131,10 @@ class _ProfileState extends State<Profile> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Container(
-                      margin: const EdgeInsets.only(top: 20),
+                      margin: const EdgeInsets.all(5),
                       child: Text(
                         'Username',
-                        style: TextStyle(
-                          fontSize: smallFontSize,
-                          color: textColor,
-                        ),
+                        style: defaultTextStyle,
                         textAlign: TextAlign.center,
                       ),
                     ),
@@ -159,6 +142,7 @@ class _ProfileState extends State<Profile> {
                       width: MediaQuery.of(context).size.width / 1.2,
                       padding: const EdgeInsets.symmetric(
                           vertical: 10, horizontal: 5),
+                      margin: const EdgeInsets.all(5),
                       decoration: BoxDecoration(
                         color: textFieldBackingColor,
                         borderRadius: const BorderRadius.all(
@@ -166,21 +150,15 @@ class _ProfileState extends State<Profile> {
                       ),
                       child: Text(
                         user.username == '' ? 'No User Name' : user.username,
-                        style: TextStyle(
-                          fontSize: smallFontSize,
-                          color: buttonTextColor,
-                        ),
+                        style: blackDefaultTextStyle,
                         textAlign: TextAlign.left,
                       ),
                     ),
                     Container(
-                      margin: const EdgeInsets.only(top: 20),
+                      padding: const EdgeInsets.all(5),
                       child: Text(
                         'Email',
-                        style: TextStyle(
-                          fontSize: smallFontSize,
-                          color: textColor,
-                        ),
+                        style: defaultTextStyle,
                         textAlign: TextAlign.center,
                       ),
                     ),
@@ -188,6 +166,7 @@ class _ProfileState extends State<Profile> {
                       width: MediaQuery.of(context).size.width / 1.2,
                       padding: const EdgeInsets.symmetric(
                           vertical: 10, horizontal: 5),
+                      margin: const EdgeInsets.all(5),
                       decoration: BoxDecoration(
                         color: textFieldBackingColor,
                         borderRadius: const BorderRadius.all(
@@ -195,22 +174,8 @@ class _ProfileState extends State<Profile> {
                       ),
                       child: Text(
                         user.email == '' ? 'No Email' : user.email,
-                        style: TextStyle(
-                          fontSize: smallFontSize,
-                          color: buttonTextColor,
-                        ),
+                        style: blackDefaultTextStyle,
                         textAlign: TextAlign.left,
-                      ),
-                    ),
-                    Container(
-                      margin: const EdgeInsets.only(top: 20),
-                      child: Text(
-                        'Phone Number',
-                        style: TextStyle(
-                          fontSize: smallFontSize,
-                          color: textColor,
-                        ),
-                        textAlign: TextAlign.center,
                       ),
                     ),
                     // Container(
@@ -253,12 +218,8 @@ class _ProfileState extends State<Profile> {
                                     context, '/profile/edit/information');
                               },
                               child: Text(
-                                'Edit Information',
-                                style: TextStyle(
-                                  fontSize: infoFontSize,
-                                  color: buttonTextColor,
-                                  fontWeight: FontWeight.w400,
-                                ),
+                                'Update Profile',
+                                style: buttonTextStyle,
                                 textAlign: TextAlign.center,
                               ),
                             ),
@@ -281,11 +242,7 @@ class _ProfileState extends State<Profile> {
                               },
                               child: Text(
                                 'Change Password',
-                                style: TextStyle(
-                                  fontSize: infoFontSize,
-                                  color: buttonTextColor,
-                                  fontWeight: FontWeight.w400,
-                                ),
+                                style: buttonTextStyle,
                                 textAlign: TextAlign.center,
                               ),
                             ),
