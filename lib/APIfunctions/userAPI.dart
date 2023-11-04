@@ -69,4 +69,41 @@ class UserAPI {
 
     return response;
   }
+
+  static Future<http.Response> updateUser(int id, Map<String,dynamic> changes) async {
+    http.Response response;
+
+    try {
+      response =
+      await http.put(Uri.http(API_PREFIX, '${apiRoute}/$id'),
+          body: json.encode(changes),
+          headers: {
+        HttpHeaders.contentTypeHeader: 'application/json',
+        HttpHeaders.authorizationHeader: user.authToken
+      });
+    } catch (e) {
+      print(e.toString());
+      throw Exception('Could not connect to server');
+    }
+
+    return response;
+  }
+
+  static Future<http.Response> deleteUser(int id) async {
+    http.Response response;
+
+    try {
+      response =
+      await http.delete(Uri.http(API_PREFIX, '${apiRoute}/$id'),
+          headers: {
+            HttpHeaders.contentTypeHeader: 'application/json',
+            HttpHeaders.authorizationHeader: user.authToken
+          });
+    } catch (e) {
+      print(e.toString());
+      throw Exception('Could not connect to server');
+    }
+
+    return response;
+  }
 }

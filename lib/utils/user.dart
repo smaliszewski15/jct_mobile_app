@@ -39,6 +39,10 @@ class User {
     return newUser;
   }
 
+  void updateUser(String un) {
+    this.username = un;
+  }
+
   void setPassword(String pword) {
     this.password = pword;
   }

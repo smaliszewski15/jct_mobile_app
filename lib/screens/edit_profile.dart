@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../APIfunctions/userAPI.dart';
 import '../utils/colors.dart';
 import '../utils/globals.dart';
 import '../utils/user.dart';
@@ -35,7 +36,7 @@ class _EditUserProfilePageState extends State<EditUserProfilePage> {
     super.dispose();
   }
 
-  late CustomTextField name, username, phoneNumber, password;
+  late CustomTextField username, password;
 
   String errorMessage = '';
 
@@ -162,43 +163,34 @@ class _EditUserProfilePageState extends State<EditUserProfilePage> {
                         ),
                         child: OutlinedButton(
                           onPressed: () async {
-                            bool hasUnfilled = false;
-                            if (name.isUnfilled()) {
-                              name.showToolTip();
-                              hasUnfilled = true;
-                            }
-                            if (username.isUnfilled()) {
-                              username.showToolTip();
-                              hasUnfilled = true;
-                            }
-                            if (phoneNumber.isUnfilled()) {
-                              phoneNumber.showToolTip();
-                              hasUnfilled = true;
-                            }
-                            if (!validatePassword()) {
-                              password.showToolTip();
-                              hasUnfilled = true;
-                            }
-
-                            if (hasUnfilled == true) {
-                              setState(() {});
+                            bool valid = allFieldsValid();
+                            if (!valid) {
+                              setState(() => errorMessage = 'Not all fields are filled');
                               return;
                             }
 
                             try {
-                              final prefs =
-                                  await SharedPreferences.getInstance();
-
                               if (username.editor.value.text !=
                                   user.username) {
-                                prefs.setString(
-                                    'username', username.editor.value.text);
-                                user.username = username.editor.value.text;
+                                user.updateUser(username.editor.value.text);
                               }
+                              Map<String,dynamic> data = {
+                                'UserName': username.editor.value.text,
+                              };
+                              var res = await UserAPI.updateUser(user.id, data);
 
-                              Navigator.pop(context);
+                              if (res.statusCode != 200) {
+                                print(res.body);
+                                return;
+                              }
+                              user.putUserInStorage();
+                              errorMessage = '';
+                              if (context.mounted) {
+                                _showSnack(context);
+                              }
+                              return;
                             } catch (e) {
-                              print("Could not open Shared Preferences");
+                              print(e);
                             }
                           },
                           child: Text(
@@ -206,6 +198,17 @@ class _EditUserProfilePageState extends State<EditUserProfilePage> {
                             style: bigButtonTextStyle,
                             textAlign: TextAlign.center,
                           ),
+                        ),
+                      ),
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(10),
+                        child: Text(
+                          errorMessage,
+                          style: invalidTextStyle.copyWith(
+                            fontSize: headingFontSize,
+                          ),
+                          textAlign: TextAlign.center,
                         ),
                       ),
                     ],
@@ -219,6 +222,20 @@ class _EditUserProfilePageState extends State<EditUserProfilePage> {
     );
   }
 
+  bool allFieldsValid() {
+    bool toRet = true;
+    if (username.isUnfilled()) {
+      username.showToolTip();
+      toRet = false;
+    }
+    if (!validatePassword()) {
+      password.showToolTip();
+      toRet = false;
+    }
+
+    return toRet;
+  }
+
   bool validatePassword() {
     if (password.isUnfilled()) {
       return false;
@@ -227,6 +244,26 @@ class _EditUserProfilePageState extends State<EditUserProfilePage> {
       return false;
     }
     return true;
+  }
+
+  void _showSnack(BuildContext context) {
+    ScaffoldMessenger.of(context)
+        .showSnackBar(
+      SnackBar(
+        content: WillPopScope(
+          onWillPop: () async {
+            ScaffoldMessenger.of(context).removeCurrentSnackBar();
+            return true;
+          },
+          child: const Text('Successfully updated your information'),
+        ),
+        duration: const Duration(seconds: 3),
+      ),
+    )
+        .closed
+        .then((reason) async {
+      Navigator.pop(context, true);
+    });
   }
 }
 

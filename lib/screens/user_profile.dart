@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../APIfunctions/userAPI.dart';
 import '../utils/colors.dart';
 import '../utils/globals.dart';
 import '../utils/user.dart';
@@ -88,6 +89,8 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  String errorMessage = '';
+
   @override
   void initState() {
     super.initState();
@@ -98,6 +101,76 @@ class _ProfileState extends State<Profile> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: black,
+        actions: <Widget>[
+          IconButton(
+            onPressed: () async {
+              var delete = await showDialog(
+                context: context,
+                barrierDismissible: true,
+                builder: (context) {
+                  return AlertDialog(
+                    title: const Text('Deleting your account?'),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)),
+                    elevation: 15,
+                    actions: <Widget>[
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pop(context, false);
+                        },
+                        child: Text(
+                          'Cancel',
+                          style: invalidTextStyle,
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pop(context, true);
+                        },
+                        child: Text(
+                          'Delete my account',
+                          style: invalidTextStyle,
+                        ),
+                      )
+                    ],
+                    content: const Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          Flexible(
+                              child: Text(
+                                  'Are you sure you want to delete your account?')),
+                        ]),
+                  );
+                },
+              );
+
+              if (delete != true) {
+                return;
+              }
+
+              try {
+                final res = await UserAPI.deleteUser(user.id);
+                if (res.statusCode != 200) {
+                  print(res.body);
+                  return;
+                }
+                print(res.body);
+                user.logout();
+                if (context.mounted) {
+                  _showSnack(context);
+                }
+              } catch (e) {
+                print(e);
+              }
+              setState(() {});
+            },
+            icon: const Icon(
+              Icons.delete,
+              color: Colors.red,
+            ),
+            iconSize: 35,
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -178,27 +251,6 @@ class _ProfileState extends State<Profile> {
                         textAlign: TextAlign.left,
                       ),
                     ),
-                    // Container(
-                    //   width: MediaQuery.of(context).size.width / 1.2,
-                    //   padding: const EdgeInsets.symmetric(
-                    //       vertical: 10, horizontal: 5),
-                    //   margin: const EdgeInsets.only(bottom: 5),
-                    //   decoration: BoxDecoration(
-                    //     color: textFieldBackingColor,
-                    //     borderRadius: const BorderRadius.all(
-                    //         Radius.circular(roundedCorners)),
-                    //   ),
-                    //   child: Text(
-                    //     user.phoneNumber == ''
-                    //         ? 'No Phone Number'
-                    //         : user.phoneNumber,
-                    //     style: TextStyle(
-                    //       fontSize: smallFontSize,
-                    //       color: buttonTextColor,
-                    //     ),
-                    //     textAlign: TextAlign.left,
-                    //   ),
-                    // ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
@@ -215,7 +267,7 @@ class _ProfileState extends State<Profile> {
                             child: OutlinedButton(
                               onPressed: () {
                                 Navigator.pushNamed(
-                                    context, '/profile/edit/information');
+                                    context, '/profile/edit/information').then((entry) => entry == true ? setState((){}) : null);
                               },
                               child: Text(
                                 'Update Profile',
@@ -249,8 +301,20 @@ class _ProfileState extends State<Profile> {
                           ),
                         ),
                       ],
-                    )
+                    ),
+
                   ],
+                ),
+              ),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(10),
+                child: Text(
+                  errorMessage,
+                  style: invalidTextStyle.copyWith(
+                    fontSize: headingFontSize,
+                  ),
+                  textAlign: TextAlign.center,
                 ),
               ),
             ],
@@ -258,5 +322,25 @@ class _ProfileState extends State<Profile> {
         ),
       ),
     );
+  }
+
+  void _showSnack(BuildContext context) {
+    ScaffoldMessenger.of(context)
+        .showSnackBar(
+      SnackBar(
+        content: WillPopScope(
+          onWillPop: () async {
+            ScaffoldMessenger.of(context).removeCurrentSnackBar();
+            return true;
+          },
+          child: const Text('Successfully deleted your account!'),
+        ),
+        duration: const Duration(seconds: 3),
+      ),
+    )
+        .closed
+        .then((reason) async {
+      Navigator.pop(context, true);
+    });
   }
 }
