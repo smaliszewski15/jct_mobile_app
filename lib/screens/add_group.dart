@@ -18,6 +18,7 @@ class AddGroup extends StatefulWidget {
 }
 
 class _AddGroupState extends State<AddGroup> {
+  late List<Mixer> mixers;
   late List<String> methods;
   late String method;
   Future<bool>? done;
@@ -400,7 +401,14 @@ class _AddGroupState extends State<AddGroup> {
     String time = DateFormat('Hms').format(widget.date!.toUtc()).toString();
 
     List<String> tags = _tags.value.text.split(', ');
-    print(tags);
+
+    String mixerMethod = '';
+    for (var met in mixers) {
+      if (met.name == method) {
+        mixerMethod = met.name;
+        break;
+      }
+    }
 
     Map<String, dynamic> package = {
       'concertTitle': _title.value.text,
@@ -408,6 +416,7 @@ class _AddGroupState extends State<AddGroup> {
       'concertDescription': _description.value.text,
       'date': date,
       'time': time,
+      'mixer': mixerMethod,
     };
 
     if (context.mounted) {
@@ -447,6 +456,7 @@ class _AddGroupState extends State<AddGroup> {
 
   Future<bool> getMethods() async {
     methods = [];
+    mixers = [];
     final res = await GroupsAPI.getMixMethods();
     if (res.statusCode != 200) {
       print(res.body);
@@ -455,12 +465,21 @@ class _AddGroupState extends State<AddGroup> {
     print(res.body);
     var data = json.decode(res.body);
     data = data['mixers'];
-    for (var mixers in data) {
-      methods.add(mixers['displayName']);
+    for (var newMixers in data) {
+      Mixer mixer = Mixer(name: newMixers['displayName'], fileName: newMixers['fileName'] ?? '');
+     mixers.add(mixer);
+     methods.add(mixer.name);
     }
     method = methods.first;
     return true;
   }
+}
+
+class Mixer {
+  late String name;
+  late String fileName;
+
+  Mixer({required this.name, required this.fileName});
 }
 
 extension on String {
