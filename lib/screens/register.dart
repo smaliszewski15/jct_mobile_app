@@ -264,10 +264,8 @@ class _RegisterPageState extends State<RegisterPage> {
                                   ),
                                 ),
                                 onPressed: () {
-                                  setState(() {
-                                    Navigator.restorablePushReplacementNamed(
+                                  Navigator.restorablePushReplacementNamed(
                                         context, '/login');
-                                  });
                                 },
                                 child: const Row(
                                   mainAxisAlignment: MainAxisAlignment.center,

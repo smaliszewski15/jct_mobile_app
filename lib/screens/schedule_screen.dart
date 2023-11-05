@@ -23,7 +23,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
   int currentMonth = DateTime.now().month;
   int currentDay = DateTime.now().day;
   Future<bool>? done;
-  List<List<Group>> groups = [];
+  List<Group> groups = [];
   double totalHeight = 120;
   bool reserving = false;
   bool browsing = true;
@@ -126,23 +126,9 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                             if (snapshot.hasError) {
                               return Text('Error: $snapshot.error}');
                             }
-                            int days = 0;
 
                             return CustomScrollView(
-                              slivers: groups
-                                  .map((list) => Section(
-                                        currentMonth: widget.filter.start
-                                            .add(Duration(days: days))
-                                            .month,
-                                        currentDay: widget.filter.start
-                                            .add(Duration(days: days++))
-                                            .day,
-                                        groups: list,
-                                        reserving: reserving,
-                                        browsing: browsing,
-                                        totalHeight: totalHeight,
-                                      ))
-                                  .toList(),
+                              slivers: scheduledDays(),
                             );
                         }
                       });
@@ -156,44 +142,58 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
   Future<bool> ParseGroups() async {
     groups = [];
 
-    DateTime end = widget.filter.end.add(const Duration(days: 1));
-    Map<String, dynamic> queryDate = {};
+    Map<String, dynamic> queries = {};
 
-    int j = 0;
-    for (DateTime start = widget.filter.start;
-        start != end;
-        start = start.add(const Duration(days: 1))) {
-      queryDate['date'] = DateFormat('yyyy-MM-dd').format(start);
+    DateTime fromDateTime = widget.filter.start.toUtc();
+    DateTime toDateTime = widget.filter.end.toUtc();
+    String fromDate = DateFormat("yyyy-MM-ddTHH:mm:ss").format(fromDateTime);
+    String toDate = DateFormat("yyyy-MM-ddTHH:mm:ss").format(toDateTime);
+    print("From Date: $fromDate, To Date: $toDate");
 
-      final res = await GroupsAPI.getSchedule(queryDate);
+    queries['fromDateTime'] = fromDate;
+    queries['toDateTime'] = toDate;
 
-      if (res.statusCode != 200) {
-        print(res.statusCode);
-        return false;
-      }
-      String date = DateFormat('yyyy-MM-dd').format(start);
+    final res = await GroupsAPI.getSchedule(queries);
 
-      var data = json.decode(res.body);
-      groups.add(List.empty(growable: true));
+    if (res.statusCode != 200) {
+      print(res.statusCode);
+      return false;
+    }
+    print(res.body);
 
-      for (var concerts in data['scheduledTimes']) {
-        Group newGroup = Group.fromDateConcert(date, concerts);
-        if (groups.isNotEmpty) {
-          int place = 0;
-          for (int i = 0; i < groups[j].length; i++) {
-            if (newGroup.date!.isBefore(groups[j][i].date!)) {
-              break;
-            }
-            place++;
-          }
-          groups[j].insert(place, newGroup);
-        } else {
-          groups[j].add(newGroup);
+    var data = json.decode(res.body);
+
+    for (var concerts in data['scheduledTimes']) {
+      Group newGroup = Group.fromDateConcert(concerts);
+      if (groups.isNotEmpty) {
+        int place = 0;
+        if (newGroup.date!.isBefore(groups[place].date!)) {
+          break;
         }
+        place++;
+        groups.insert(place, newGroup);
+      } else {
+        groups.add(newGroup);
       }
-      j++;
     }
     return true;
+  }
+
+  List<Widget> scheduledDays() {
+    List<Widget> toRet = [];
+    DateTime day = widget.filter.start;
+    while (!day.isAfter(widget.filter.end)) {
+      toRet.add(Section(
+        currentMonth: day.month,
+        currentDay: day.day,
+        groups: groups,
+        reserving: reserving,
+        browsing: browsing,
+        totalHeight: totalHeight,
+      ));
+      day = day.add(const Duration(days: 1));
+    }
+    return toRet;
   }
 }
 

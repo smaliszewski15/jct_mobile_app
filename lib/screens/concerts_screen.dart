@@ -82,7 +82,7 @@ class _ConcertsState extends State<ConcertsScreen> {
                       focusNode: searchFocus,
                       controller: _search,
                       decoration: InputDecoration.collapsed(
-                        hintText: 'Search...',
+                        hintText: 'Search by title or tags',
                         hintStyle: searchTextStyle.copyWith(decoration: TextDecoration.underline),
                       ),
                       style: searchTextStyle,
@@ -262,8 +262,8 @@ class _ConcertsState extends State<ConcertsScreen> {
 
     DateTime fromDateTime = widget.filter.start.toUtc();
     DateTime toDateTime = widget.filter.end.toUtc();
-    String fromDate = DateFormat("yyyy-MM-ddTHH\:mm\:ss").format(fromDateTime);
-    String toDate = DateFormat("yyyy-MM-ddTHH\:mm\:ss").format(toDateTime);
+    String fromDate = DateFormat("yyyy-MM-ddTHH:mm:ss").format(fromDateTime);
+    String toDate = DateFormat("yyyy-MM-ddTHH:mm:ss").format(toDateTime);
     print("From Date: $fromDate, To Date: $toDate");
 
     queries['fromDateTime'] = fromDate;

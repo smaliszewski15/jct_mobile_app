@@ -39,8 +39,8 @@ class Group {
     return Group(groupID: id, maestro: leader, maestroID: maestroID, title: title, date: date, tags: tags, description: description);
   }
 
-  factory Group.fromDateConcert(String date, String time) {
-    DateTime newDate = ConvertToDate(date, time);
+  factory Group.fromDateConcert(String date) {
+    DateTime newDate = DateTime.parse(date);
     return Group(date: newDate.toLocal());
   }
 

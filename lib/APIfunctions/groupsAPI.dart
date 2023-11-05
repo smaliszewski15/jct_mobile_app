@@ -84,6 +84,20 @@ class GroupsAPI {
     return response;
   }
 
+  static Future<http.Response> getMixMethods() async {
+    http.Response response;
+
+    try {
+      response = await http.get(Uri.http(API_PREFIX, '${apiRoute}/getMixMethods'),
+          headers: baseHeader);
+    } catch (e) {
+      print(e.toString());
+      throw Exception('Could not connect to server');
+    }
+
+    return response;
+  }
+
   // static Map<String, dynamic> getGroups = {
   //   'groupsData': [
   //     {

@@ -63,7 +63,7 @@ class _TagFilterDrawerState extends State<TagFilterDrawer> {
                         setState(() {});
                       },
                       child: Text(
-                        entry.tagName.capitalize(),
+                        entry.tagName,//.capitalize(),
                         style: const TextStyle(
                           fontSize: infoFontSize,
                           color: black,
@@ -97,11 +97,5 @@ class _TagFilterDrawerState extends State<TagFilterDrawer> {
         ],
       ),
     );
-  }
-}
-
-extension on String {
-  String capitalize() {
-    return "${this[0].toUpperCase()}${this.substring(1).toLowerCase()}";
   }
 }

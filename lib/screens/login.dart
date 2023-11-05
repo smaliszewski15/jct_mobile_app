@@ -191,10 +191,8 @@ class _LogInPageState extends State<LogInPage> {
                             ),
                           ),
                           onPressed: () {
-                            setState(() {
-                              Navigator.restorablePushReplacementNamed(
+                            Navigator.restorablePushReplacementNamed(
                                   context, '/register');
-                            });
                           },
                           child: const Row(
                             children: <Widget>[

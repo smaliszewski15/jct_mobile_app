@@ -36,7 +36,7 @@ class _ConcertFilterDrawerState extends State<ConcertFilterDrawer> {
         children: <Widget>[
           DrawerHeader(
             child: Text(
-              'Filter by when the concert was recorded:',
+              'Filter by date:',
               style: defaultTextStyle,
               textAlign: TextAlign.center,
             ),
@@ -127,14 +127,6 @@ class _ConcertFilterDrawerState extends State<ConcertFilterDrawer> {
               }
             },
             onChanged: null,
-          ),
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(20),
-            child: Text(
-              'To filter by tags, simply type the tags into the search bar',
-              style: defaultTextStyle,
-            ),
           ),
         ],
       ),
