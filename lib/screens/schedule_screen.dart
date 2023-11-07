@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -27,13 +28,29 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
   double totalHeight = 120;
   bool reserving = false;
   bool browsing = true;
+  Timer refresh = Timer.periodic(const Duration(minutes: 20), (Timer t) {});
 
   @override
   void initState() {
     widget.filter.refreshFilter();
+    DateTime now = DateTime.now();
+    int minutes = 20 - now.minute;
+    refresh = Timer.periodic(Duration(minutes: minutes), (Timer t) {
 
+      setState(() {
+        refresh = Timer.periodic(const Duration(minutes: 20), (Timer t) {
+          setState(() {});
+        });
+      });
+    });
     done = ParseGroups();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    refresh.cancel();
+    super.dispose();
   }
 
   @override

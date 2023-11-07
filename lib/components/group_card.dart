@@ -85,12 +85,6 @@ class _GroupCardState extends State<GroupCard>
                               ],
                             ),
                           const Spacer(),
-                          // Text(
-                          //   '${widget.group!.members!.length}/4',
-                          //   style: TextStyle(
-                          //       fontSize: infoFontSize,
-                          //       color: widget.height == 60 ? textColor : black),
-                          // ),
                         ],
                       ),
                       if (widget.clickable)
@@ -110,18 +104,6 @@ class _GroupCardState extends State<GroupCard>
                               ],
                             ),
                             const Spacer(),
-                            // Column(
-                            //   mainAxisAlignment: MainAxisAlignment.end,
-                            //   children: widget.group!.members!
-                            //       .map((entry) => Text(
-                            //             entry,
-                            //             style: const TextStyle(
-                            //               fontSize: smallFontSize,
-                            //               color: black,
-                            //             ),
-                            //           ))
-                            //       .toList(),
-                            // ),
                           ],
                         ),
                     ],
@@ -132,7 +114,9 @@ class _GroupCardState extends State<GroupCard>
                 onPressed: widget.clickable
                     ? () {
                         Navigator.pushNamed(context, '/group/add',
-                            arguments: widget.date!);
+                            arguments: widget.date!).then((entry) {
+                              setState(() {});
+                        });
                       }
                     : null,
                 style: TextButton.styleFrom(

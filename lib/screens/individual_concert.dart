@@ -370,7 +370,6 @@ class _ConcertPageState extends State<ConcertPage> {
     }
 
     var data = json.decode(res.body);
-    print(data);
     if (!data.containsKey('group')) {
       return false;
     }

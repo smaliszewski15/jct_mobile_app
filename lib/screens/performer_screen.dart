@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
+import 'package:wakelock/wakelock.dart';
 
 import '../APIfunctions/api_globals.dart';
 import '../components/audio_wavepainter.dart';
@@ -78,11 +79,12 @@ class _PerformerScreenState extends State<PerformerScreen> {
         }
       },
       onDone: () {
-        disconnect();
+        stopEverything();
         print('done');
       },
       onError: (error) => print(error),
     );
+    Wakelock.enable();
     setState(() {});
   }
 
@@ -145,6 +147,10 @@ class _PerformerScreenState extends State<PerformerScreen> {
     await stopRecorder();
     await stopPlayer();
     disconnect();
+    Wakelock.disable();
+    if (context.mounted) {
+      Navigator.pop(context);
+    }
     started = false;
   }
 
@@ -152,45 +158,47 @@ class _PerformerScreenState extends State<PerformerScreen> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        var leave = await showDialog(
-            context: context,
-            builder: (context) {
-              return AlertDialog(
-                title: const Text("Before you leave..."),
-                shape:  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10)),
-                elevation: 15,
-                actions: <Widget>[
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pop(context, false);
-                    },
-                    child: Text(
-                      'Cancel',
-                      style: invalidTextStyle,
+        if (isConnected == true) {
+          var leave = await showDialog(
+              context: context,
+              builder: (context) {
+                return AlertDialog(
+                  title: const Text("Before you leave..."),
+                  shape:  RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10)),
+                  elevation: 15,
+                  actions: <Widget>[
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context, false);
+                      },
+                      child: Text(
+                        'Cancel',
+                        style: invalidTextStyle,
+                      ),
                     ),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pop(context, true);
-                    },
-                    child: Text(
-                      'Leave',
-                      style: invalidTextStyle,
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context, true);
+                      },
+                      child: Text(
+                        'Leave',
+                        style: invalidTextStyle,
+                      ),
                     ),
+                  ],
+                  content: Text(
+                    'Are you sure you want to leave? The session hasn\'t finished yet',
+                    style: blackDefaultTextStyle,
                   ),
-                ],
-                content: Text(
-                  'Are you sure you want to leave? The session hasn\'t finished yet',
-                  style: blackDefaultTextStyle,
-                ),
-              );
-            }
-        );
-        if (leave != true) {
-          return false;
+                );
+              }
+          );
+          if (leave != true) {
+            return false;
+          }
+          stopEverything();
         }
-        stopEverything();
         if (!user.logged) {
           user.username = '';
         }

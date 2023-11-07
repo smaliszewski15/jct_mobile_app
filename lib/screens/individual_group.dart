@@ -337,70 +337,129 @@ class _IndividualGroupState extends State<IndividualGroup> {
               SliverToBoxAdapter(
                   child: ListView.builder(
                     shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
                     itemCount: widget.group.passcodes!.length,
                     itemBuilder: (context, index) {
-                      return Text(
-                        widget.group.passcodes![index].toString(),
-                        style: defaultTextStyle,
+                      return Row(
+                        children: <Widget>[
+                          if (index == 0)
+                            Text(
+                              'Maestro Passcode: ',
+                              style: defaultTextStyle,
+                            ),
+                          if (index == widget.group.passcodes!.length - 1)
+                            Text(
+                              'Listener Passcode: ',
+                              style: defaultTextStyle,
+                            ),
+                          if (index != 0 && index != widget.group.passcodes!.length - 1)
+                            Text(
+                              'User$index Passcode: ',
+                              style: defaultTextStyle,
+                            ),
+                          Text(
+                            widget.group.passcodes![index].toString(),
+                            style: defaultTextStyle,
+                          ),
+                        ],
                       );
                     },
                   ),
               ),
 
-            //if (widget.group.date!.difference(DateTime.now()).inMinutes < 40)
-            SliverToBoxAdapter(
-                child: Column(
-                  children: <Widget>[
-                    Container(
-                      padding: const EdgeInsets.all(5),
-                      child: Text(
-                        'Are you the leader of this group? Or do you want to join in? Or do you just want to listen? Click one of buttons below!',
-                        style: headingTextStyle,
-                        textAlign: TextAlign.center,
+            if (widget.group.date!.difference(DateTime.now()).inMinutes < 40)
+              SliverToBoxAdapter(
+                  child: Column(
+                    children: <Widget>[
+                      Container(
+                        padding: const EdgeInsets.all(5),
+                        child: Text(
+                          'Are you the leader of this group? Or do you want to join in? Or do you just want to listen? Click one of buttons below!',
+                          style: headingTextStyle,
+                          textAlign: TextAlign.center,
+                        ),
                       ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        if (user.logged)
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          if (user.logged)
+                            Expanded(
+                              flex: 3,
+                              child: Container(
+                                margin: const EdgeInsets.all(4),
+                                decoration: BoxDecoration(
+                                  color: gold,
+                                  border: Border.all(color: black, width: 3),
+                                ),
+                                child: TextButton(
+                                  onPressed: () async {
+                                    //UNCOMMENT WHEN NOT DOING UI SHIT
+                                    bool logged = await logMaestroIn();
+                                    if (!logged) {
+                                      setState(() => errorMessage = "You must be logged in to start the concert");
+                                      return;
+                                    }
+                                    bool pass = await getPasscode();
+                                    if (!pass) {
+                                      setState(() => errorMessage = "You must enter your maestro passcode to start the concert");
+                                      _passcode.editor.clear();
+                                      return;
+                                    }
+                                    bool succ = await checkMaestroPasscode();
+                                    if (!succ) {
+                                      //setState(() => errorMessage = "Password either incorrect or cannot connect to the server");
+                                      _passcode.editor.clear();
+                                      setState(() {});
+                                      return;
+                                    }
+                                    if (context.mounted) {
+                                      _showSnack(context, SocketType.maestro);
+                                      return;
+                                    }
+                                    _passcode.editor.clear();
+                                    return;
+                                  },
+                                  child: Text(
+                                    'Maestro',
+                                    style: blackDefaultTextStyle.copyWith(
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              ),
+                            ),
                           Expanded(
                             flex: 3,
                             child: Container(
-                              margin: const EdgeInsets.all(4),
                               decoration: BoxDecoration(
                                 color: gold,
                                 border: Border.all(color: black, width: 3),
                               ),
+                              margin: const EdgeInsets.all(4),
                               child: TextButton(
-                                onPressed: () async {
+                                onPressed:  () async {
                                   //UNCOMMENT WHEN NOT DOING UI SHIT
-                                  bool logged = await logMaestroIn();
-                                  if (!logged) {
-                                    setState(() => errorMessage = "You must be logged in to start the concert");
-                                    return;
-                                  }
                                   bool pass = await getPasscode();
                                   if (!pass) {
-                                    setState(() => errorMessage = "You must enter your maestro passcode to start the concert");
-                                    _passcode.editor.clear();
+                                    setState(() => errorMessage = "You must enter a passcode to join the concert");
                                     return;
                                   }
-                                  bool succ = await checkMaestroPasscode();
+                                  bool succ = await checkPerformerPasscode();
                                   if (!succ) {
-                                    //setState(() => errorMessage = "Password either incorrect or cannot connect to the server");
+                                    setState(() => errorMessage = "Password either incorrect or cannot connect to the server");
                                     _passcode.editor.clear();
-                                    setState(() {});
                                     return;
                                   }
                                   if (context.mounted) {
-                                    _showSnack(context, SocketType.maestro);
+                                    _showSnack(context, SocketType.performer);
                                     return;
                                   }
                                   _passcode.editor.clear();
-                                  return;
                                 },
                                 child: Text(
-                                  'Maestro',
+                                  'Performer',
                                   style: blackDefaultTextStyle.copyWith(
                                     fontWeight: FontWeight.w400,
                                   ),
@@ -409,85 +468,47 @@ class _IndividualGroupState extends State<IndividualGroup> {
                               ),
                             ),
                           ),
-                        Expanded(
-                          flex: 3,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: gold,
-                              border: Border.all(color: black, width: 3),
-                            ),
-                            margin: const EdgeInsets.all(4),
-                            child: TextButton(
-                              onPressed:  () async {
-                                //UNCOMMENT WHEN NOT DOING UI SHIT
-                                bool pass = await getPasscode();
-                                if (!pass) {
-                                  setState(() => errorMessage = "You must enter a passcode to join the concert");
-                                  return;
-                                }
-                                bool succ = await checkPerformerPasscode();
-                                if (!succ) {
-                                  setState(() => errorMessage = "Password either incorrect or cannot connect to the server");
-                                  _passcode.editor.clear();
-                                  return;
-                                }
-                                if (context.mounted) {
-                                  _showSnack(context, SocketType.performer);
-                                  return;
-                                }
-                                _passcode.editor.clear();
-                              },
-                              child: Text(
-                                'Performer',
-                                style: blackDefaultTextStyle.copyWith(
-                                  fontWeight: FontWeight.w400,
+                          Expanded(
+                            flex: 3,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: gold,
+                                border: Border.all(color: black, width: 3),
+                              ),
+                              margin: const EdgeInsets.all(4),
+                              child: TextButton(
+                                onPressed: () async {
+                                  //UNCOMMENT WHEN NOT DOING UI SHIT
+                                  bool pass = await getPasscode();
+                                  if (!pass) {
+                                    setState(() => errorMessage = "You must enter a passcode to listen to the concert");
+                                    return;
+                                  }
+                                  bool succ = await checkListenerPasscode();
+                                  if (!succ) {
+                                    setState(() => errorMessage = "Password either incorrect or cannot connect to the server");
+                                    return;
+                                  }
+                                  if (context.mounted) {
+                                    _showSnack(context, SocketType.listener);
+                                    return;
+                                  }
+                                },
+                                child: Text(
+                                  'Listener',
+                                  style: blackDefaultTextStyle.copyWith(
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                  textAlign: TextAlign.center,
                                 ),
-                                textAlign: TextAlign.center,
                               ),
                             ),
                           ),
-                        ),
-                        Expanded(
-                          flex: 3,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: gold,
-                              border: Border.all(color: black, width: 3),
-                            ),
-                            margin: const EdgeInsets.all(4),
-                            child: TextButton(
-                              onPressed: () async {
-                                //UNCOMMENT WHEN NOT DOING UI SHIT
-                                bool pass = await getPasscode();
-                                if (!pass) {
-                                  setState(() => errorMessage = "You must enter a passcode to listen to the concert");
-                                  return;
-                                }
-                                bool succ = await checkListenerPasscode();
-                                if (!succ) {
-                                  setState(() => errorMessage = "Password either incorrect or cannot connect to the server");
-                                  return;
-                                }
-                                if (context.mounted) {
-                                  _showSnack(context, SocketType.listener);
-                                  return;
-                                }
-                              },
-                              child: Text(
-                                'Listener',
-                                style: blackDefaultTextStyle.copyWith(
-                                  fontWeight: FontWeight.w400,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-            ),
+                        ],
+                      ),
+                    ],
+                  ),
+              ),
 
             // if (!isCreator && widget.group.date!.difference(DateTime.now()).inMinutes < 40)
             //   Container(

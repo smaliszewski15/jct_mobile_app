@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
+import 'package:wakelock/wakelock.dart';
 
 import '../APIfunctions/api_globals.dart';
 import '../components/player.dart';
@@ -75,6 +76,7 @@ class _ListenScreenState extends State<ListenScreen> {
           },
           onError: (error) => print(error),
     );
+    Wakelock.enable();
     setState(() {});
   }
 
@@ -83,6 +85,7 @@ class _ListenScreenState extends State<ListenScreen> {
       socket!.disconnect();
     }
     socket = null;
+    Wakelock.disable();
     setState(() {});
   }
 

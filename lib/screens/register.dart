@@ -69,25 +69,25 @@ class _RegisterPageState extends State<RegisterPage> {
         body: GestureDetector(
           behavior: HitTestBehavior.translucent,
           onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
-          child: SingleChildScrollView(
-            child: SizedBox(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
+          child: Center(
+            child: SingleChildScrollView(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Container(
-                    margin: const EdgeInsets.symmetric(vertical: 25),
+                    margin: const EdgeInsets.only(bottom: 50),
                     padding: const EdgeInsets.all(8),
-                    width: MediaQuery.of(context).size.width / 2,
-                    height: MediaQuery.of(context).size.width / 2,
-                    color: backgroundColor,
-                    child: Container(
-                      decoration: const BoxDecoration(
-                        image: DecorationImage(
-                          image: AssetImage('assets/images/default-profile-image.jpg'),
-                          fit: BoxFit.cover,
-                        ),
+                    width: MediaQuery.of(context).size.width * .95,
+                    decoration: BoxDecoration(
+                        borderRadius:
+                        const BorderRadius.all(Radius.circular(35)),
+                        color: Colors.black.withOpacity(.45)),
+                    child: SizedBox(
+                      width: MediaQuery.of(context).size.width,
+                      child: Text(
+                        'John Cage\nTribute',
+                        style: veryLargeTextStyle,
+                        textAlign: TextAlign.center,
                       ),
                     ),
                   ),
@@ -97,7 +97,6 @@ class _RegisterPageState extends State<RegisterPage> {
                       Container(
                         padding: const EdgeInsets.all(10),
                         width: MediaQuery.of(context).size.width,
-                        height: MediaQuery.of(context).size.height / 1.5,
                         decoration: BoxDecoration(
                           borderRadius:
                           const BorderRadius.all(Radius.circular(35)),
@@ -145,8 +144,8 @@ class _RegisterPageState extends State<RegisterPage> {
                                   textAlign: TextAlign.left,
                                 ),
                                 Text(
-                                    '*',
-                                    style: smallTextStyle,
+                                  '*',
+                                  style: smallTextStyle,
                                 ),
                                 BasicTooltip(message: "Usernames must be 2-24 characters long and\ncan only contain ASCII characters", tooltipkey: fields['username']!.tooltipKey),
                               ],
@@ -165,8 +164,8 @@ class _RegisterPageState extends State<RegisterPage> {
                                   textAlign: TextAlign.left,
                                 ),
                                 Text(
-                                    '*',
-                                    style: smallTextStyle,
+                                  '*',
+                                  style: smallTextStyle,
                                 ),
                                 BasicTooltip(message: "Emails must be in the correct email format", tooltipkey: fields['email']!.tooltipKey),
                               ],
@@ -185,8 +184,8 @@ class _RegisterPageState extends State<RegisterPage> {
                                   textAlign: TextAlign.left,
                                 ),
                                 Text(
-                                    '*',
-                                    style: smallTextStyle,
+                                  '*',
+                                  style: smallTextStyle,
                                 ),
                                 BasicTooltip(message: "Passwords must be at least 4 characters long and\ncan only contain ASCII characters", tooltipkey: fields['password']!.tooltipKey),
                               ],
@@ -205,8 +204,8 @@ class _RegisterPageState extends State<RegisterPage> {
                                   textAlign: TextAlign.left,
                                 ),
                                 Text(
-                                    '*',
-                                    style: smallTextStyle,
+                                  '*',
+                                  style: smallTextStyle,
                                 ),
                                 BasicTooltip(message: "Please confirm your password", tooltipkey: fields['confirmPassword']!.tooltipKey),
                               ],
@@ -223,10 +222,10 @@ class _RegisterPageState extends State<RegisterPage> {
                               margin: const EdgeInsets.all(5),
                               child: Text(
                                 errorMessage,
-                                style: smallTextStyle,
+                                style: invalidTextStyle,
+                                textAlign: TextAlign.center,
                               ),
                             ),
-                            const Spacer(),
                             Container(
                               margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                               padding: const EdgeInsets.all(5),
@@ -244,8 +243,10 @@ class _RegisterPageState extends State<RegisterPage> {
                                   if (!success) {
                                     return;
                                   }
-                                  //user = await User().getUserFromStorage();
-                                  _showSnack(context);
+                                  errorMessage = '';
+                                  if (context.mounted) {
+                                    _showSnack(context);
+                                  }
                                 },
                                 child: Text(
                                   'Register',
@@ -265,14 +266,14 @@ class _RegisterPageState extends State<RegisterPage> {
                                 ),
                                 onPressed: () {
                                   Navigator.restorablePushReplacementNamed(
-                                        context, '/login');
+                                      context, '/login');
                                 },
                                 child: const Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: <Widget>[
                                     Flexible(
                                       child: Text(
-                                          'Have an account? Click to sign in',
+                                        'Have an account? Click to sign in',
                                       ),
                                     ),
                                   ],
@@ -304,7 +305,7 @@ class _RegisterPageState extends State<RegisterPage> {
     print(res.body);
     if (res.statusCode != 201) {
       print(res.statusCode);
-      errorMessage = data['message'];
+      errorMessage = data['message'] ?? data['error'];
       return false;
     }
 

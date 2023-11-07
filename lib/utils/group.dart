@@ -1,3 +1,4 @@
+import 'package:intl/intl.dart';
 import '../APIfunctions/api_globals.dart';
 
 class Group {
@@ -40,7 +41,7 @@ class Group {
   }
 
   factory Group.fromDateConcert(String date) {
-    DateTime newDate = DateTime.parse(date);
+    DateTime newDate = DateFormat('yyyy-MM-ddTHH:mm:ss').parse(date, true);
     return Group(date: newDate.toLocal());
   }
 
@@ -55,6 +56,7 @@ class Group {
     toRet.add(json['User2Passcode']);
     toRet.add(json['User3Passcode']);
     toRet.add(json['User4Passcode']);
+    toRet.add(json['ListenerPasscode']);
     return toRet;
   }
 

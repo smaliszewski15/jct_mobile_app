@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
+import 'package:wakelock/wakelock.dart';
 
 import '../APIfunctions/api_globals.dart';
 import '../components/audio_wavepainter.dart';
@@ -117,6 +118,7 @@ class _MaestroScreenState extends State<MaestroScreen> {
     await stopRecorder();
     await stopPlayer();
     disconnect();
+    Wakelock.disable();
     setState(() {});
   }
 
@@ -151,6 +153,7 @@ class _MaestroScreenState extends State<MaestroScreen> {
     await _mRecorder.record(recordingDataController);
     socket!.socket.sink.add(start);
     _mRecorder.isRecording = true;
+    Wakelock.enable();
     setState(() {});
   }
 

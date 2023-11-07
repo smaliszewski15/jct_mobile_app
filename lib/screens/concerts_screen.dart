@@ -173,36 +173,46 @@ class _ConcertsState extends State<ConcertsScreen> {
               child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    if (page != 0)
-                      ElevatedButton(
-                        onPressed: (){
+                    ElevatedButton(
+                      onPressed: page != 0 ? () {
+                        if (page != 0) {
                           page--;
-                          done = getConcertList(oldQuery);
-                          setState(() {});
-                        },
-                        child: Text(
-                          'Prev',
-                          style: defaultTextStyle,
-                        ),
-                      ),
-                    //PageCounter(),
-                    Text(
-                      " $page ",
-                      style: defaultTextStyle,
-                    ),
-                    if (page != totalPages)
-                      ElevatedButton(
-                        onPressed: () async {
-                          page++;
                           (done = getConcertList(oldQuery)).then((entry) => {
                             setState(() {})
                           });
-                        },
-                        child: Text(
-                          'Next',
-                          style: defaultTextStyle,
-                        ),
+                          setState(() {});
+                        }
+                      } : null,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: mainSchemeColor,
+                        disabledBackgroundColor: accentColor,
                       ),
+                      child: Text(
+                        'Prev',
+                        style: defaultTextStyle.copyWith(color: page == 0 ? textColor : textfieldTextColor),
+                      ),
+                    ),
+                    Text(
+                      " ${page+1} ",
+                      style: defaultTextStyle,
+                    ),
+                    ElevatedButton(
+                      onPressed: page+1 != totalPages ? () {
+                        page++;
+                        (done = getConcertList(oldQuery)).then((entry) => {
+                          setState(() {})
+                        });
+                      } : null,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: mainSchemeColor,
+                        disabledBackgroundColor: accentColor,
+                        foregroundColor: textfieldTextColor,
+                      ),
+                      child: Text(
+                        'Next',
+                        style: defaultTextStyle.copyWith(color: page+1 == totalPages ? textColor : textfieldTextColor),
+                      ),
+                    ),
                   ]
               ),
             ),
@@ -258,6 +268,11 @@ class _ConcertsState extends State<ConcertsScreen> {
     if (searchQuery.isNotEmpty) {
       queries['search'] = searchQuery;
     }
+
+    if (searchQuery != oldQuery) {
+      page = 0;
+    }
+
     queries['page'] = '$page';
 
     DateTime fromDateTime = widget.filter.start.toUtc();
@@ -277,24 +292,11 @@ class _ConcertsState extends State<ConcertsScreen> {
     }
     //print(res.body);
 
-    if (searchQuery != oldQuery) {
-      page = 0;
-    }
-
     var data = json.decode(res.body);
     if (!data.containsKey('searchResults')) {
       return false;
     }
 
-    // if (data['searchResults'].isEmpty) {
-    //   hadMore = false;
-    //   if (page != 0) {
-    //     page--;
-    //   }
-    //   totalPages = page;
-    //   _showSnack(context);
-    //   return true;
-    // }
     searchResults = [];
     totalPages = data['pages'] ?? 50;
 

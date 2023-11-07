@@ -3,6 +3,7 @@ import 'colors.dart';
 
 
 //Font Sizes
+const double veryLargeFontSize = 60;
 const double bigButtonFontSize = 48;
 const double titleFontSize = 48;
 const double headingFontSize = 28;
@@ -27,6 +28,11 @@ bool isEmail(email) {
 }
 
 //Text Styles
+TextStyle veryLargeTextStyle = TextStyle(
+  fontSize: veryLargeFontSize,
+  color: textColor,
+);
+
 TextStyle buttonTextStyle = TextStyle(
   fontSize: buttonFontSize,
   color: buttonTextColor,
@@ -92,6 +98,11 @@ TextStyle searchTextStyle = TextStyle(
 TextStyle errorTextStyle = TextStyle(fontSize: 10, color: invalidColor);
 
 void updateTextStyles(double scaler) {
+  veryLargeTextStyle = TextStyle(
+    fontSize: veryLargeFontSize / scaler,
+    color: textColor,
+  );
+
   buttonTextStyle = TextStyle(
     fontSize: buttonFontSize / scaler,
     color: buttonTextColor,
