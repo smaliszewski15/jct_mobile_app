@@ -117,24 +117,24 @@ class _ConcertsState extends State<ConcertsScreen> {
                 children: <Widget>[
                   Text(
                     upcoming.date!.isBefore(DateTime.now()) ? 'Concert Playing Now!' : 'Upcoming Concert',
-                    style: blackHeadingTextStyle,
+                    style: headingTextStyle,
                   ),
                   Text(
                     "Title: ${upcoming.title}",
-                    style: blackDefaultTextStyle,
+                    style: defaultTextStyle,
                   ),
                   Text(
                     "Concert Date: ${DateFormat('yyyy-MM-dd HH:mm').format(upcoming.date!)}",
-                    style: blackDefaultTextStyle,
+                    style: defaultTextStyle,
                     textAlign: TextAlign.center,
                   ),
                   Text(
                     "Maestro: ${upcoming.maestro}",
-                    style: blackDefaultTextStyle,
+                    style: defaultTextStyle,
                   ),
                   Text(
                     "Tags: ${upcoming.tags.split('`').join(', ')}",
-                    style: blackDefaultTextStyle,
+                    style: defaultTextStyle,
                   ),
                   TextButton(
                     onPressed: () {
@@ -144,16 +144,13 @@ class _ConcertsState extends State<ConcertsScreen> {
                             getNextConcert();
                       });
                     },
-                    style: TextButton.styleFrom(
-                      textStyle: const TextStyle(
-                        fontSize: headingFontSize,
-                        color: Color(0xff2483f0),
+                    child: Text(
+                      "Check it out ->",
+                      style: headingTextStyle.copyWith(
+                        color: red,
                         fontStyle: FontStyle.italic,
                         decoration: TextDecoration.underline,
                       ),
-                    ),
-                    child: const Text(
-                      "Check it out ->",
                     ),
                   ),
                 ],
@@ -189,7 +186,7 @@ class _ConcertsState extends State<ConcertsScreen> {
                       ),
                       child: Text(
                         'Prev',
-                        style: defaultTextStyle.copyWith(color: page == 0 ? textColor : textfieldTextColor),
+                        style: defaultTextStyle.copyWith(color: whiteTextColor),
                       ),
                     ),
                     Text(

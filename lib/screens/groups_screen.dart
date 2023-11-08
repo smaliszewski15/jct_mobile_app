@@ -35,7 +35,7 @@ class _GroupsState extends State<GroupsScreen> {
                 child: Container(
                   margin: const EdgeInsets.all(5),
                   decoration: BoxDecoration(
-                    color: gold,
+                    color: mainSchemeColor,
                     border: Border.all(color: black, width: 3),
                   ),
                   child: ElevatedButton(

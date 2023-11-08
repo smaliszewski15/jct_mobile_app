@@ -189,7 +189,7 @@ class _PerformerScreenState extends State<PerformerScreen> {
                   ],
                   content: Text(
                     'Are you sure you want to leave? The session hasn\'t finished yet',
-                    style: blackDefaultTextStyle,
+                    style: defaultTextStyle,
                   ),
                 );
               }

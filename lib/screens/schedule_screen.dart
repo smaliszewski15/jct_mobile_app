@@ -28,15 +28,14 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
   double totalHeight = 120;
   bool reserving = false;
   bool browsing = true;
-  Timer refresh = Timer.periodic(const Duration(minutes: 20), (Timer t) {});
+  Timer? refresh;
 
   @override
   void initState() {
     widget.filter.refreshFilter();
     DateTime now = DateTime.now();
-    int minutes = 20 - now.minute;
+    int minutes = 20 - (now.minute % 20);
     refresh = Timer.periodic(Duration(minutes: minutes), (Timer t) {
-
       setState(() {
         refresh = Timer.periodic(const Duration(minutes: 20), (Timer t) {
           setState(() {});
@@ -49,7 +48,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
 
   @override
   void dispose() {
-    refresh.cancel();
+    refresh!.cancel();
     super.dispose();
   }
 

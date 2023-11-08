@@ -48,12 +48,12 @@ class _ConcertPageState extends State<ConcertPage> {
         child: Scaffold(
           appBar: AppBar(
             leading: IconButton(
-                icon: const Icon(Icons.navigate_before, color: gold),
+                icon: Icon(Icons.navigate_before, color: accentColor),
                 iconSize: 35,
                 onPressed: () {
                   Navigator.pop(context);
                 }),
-            backgroundColor: black,
+            backgroundColor: mainSchemeColor,
             automaticallyImplyLeading: false,
           ),
           backgroundColor: backgroundColor,
@@ -84,7 +84,7 @@ class _ConcertPageState extends State<ConcertPage> {
                             margin: const EdgeInsets.symmetric(vertical: 30),
                             child: Text(
                               concert.title,
-                              style: titleTextStyle,
+                              style: titleTextStyle.copyWith(color: textColor),
                               textAlign: TextAlign.center,
                             ),
                           ),
@@ -117,7 +117,7 @@ class _ConcertPageState extends State<ConcertPage> {
                           ),
                           child: Text(
                             concert.description,
-                            style: defaultTextStyle,
+                            style: whiteDefaultTextStyle,
                             textAlign: TextAlign.left,
                           ),
                         ),
@@ -149,7 +149,7 @@ class _ConcertPageState extends State<ConcertPage> {
                           ),
                           child: Text(
                             concert.maestro,
-                            style: defaultTextStyle,
+                            style: whiteDefaultTextStyle,
                             textAlign: TextAlign.left,
                           ),
                         ),
@@ -188,7 +188,7 @@ class _ConcertPageState extends State<ConcertPage> {
                                       ? DateFormat('yyyy-MM-dd HH:mm')
                                       .format(concert.date!)
                                       : 'No Date',
-                                  style: defaultTextStyle,
+                                  style: whiteDefaultTextStyle,
                                   textAlign: TextAlign.left,
                                 ),
                               ),
@@ -227,7 +227,7 @@ class _ConcertPageState extends State<ConcertPage> {
                                   ),
                                   child: Text(
                                     entry,
-                                    style: defaultTextStyle,
+                                    style: whiteDefaultTextStyle,
                                     textAlign: TextAlign.left,
                                   ),
                               );
@@ -262,7 +262,7 @@ class _ConcertPageState extends State<ConcertPage> {
                           ),
                           child: Text(
                             concert.tags.split('`').join(', '),
-                            style: defaultTextStyle,
+                            style: whiteDefaultTextStyle,
                             textAlign: TextAlign.left,
                           ),
                         ),
@@ -365,9 +365,11 @@ class _ConcertPageState extends State<ConcertPage> {
 
     final res = await ConcertsAPI.getSongData(query);
 
+
     if (res.statusCode != 200) {
       return false;
     }
+    print(res.body);
 
     var data = json.decode(res.body);
     if (!data.containsKey('group')) {

@@ -110,10 +110,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
             onPressed: () => Navigator.restorablePushNamed(context, '/profile'),
             child: Text(
               'View Profile',
-              style: TextStyle(
-                fontSize: titleFontSize,
-                color: textColor,
-              ),
+              style: titleTextStyle,
               textAlign: TextAlign.center,
             )
           )
@@ -134,7 +131,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
           width: 100,
           margin: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-            color: gold,
+            color: mainSchemeColor,
             border: Border.all(color: black, width: 3),
           ),
           child: TextButton(
@@ -163,7 +160,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
           width: 100,
           margin: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-            color: gold,
+            color: mainSchemeColor,
             border: Border.all(color: black, width: 3),
           ),
           child: TextButton(

@@ -39,7 +39,15 @@ class _GroupCardState extends State<GroupCard>
                 decoration: BoxDecoration(
                   borderRadius:
                       const BorderRadius.all(Radius.circular(roundedCorners)),
-                  color: widget.clickable ? mainSchemeColor : accentColor,
+                  color: widget.clickable ? darkBlue : mainSchemeColor,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.5),
+                      spreadRadius: 5,
+                      blurRadius: 7,
+                      offset: const Offset(0,3),
+                    ),
+                  ],
                 ),
                 child: TextButton(
                   onPressed: widget.clickable
@@ -66,7 +74,7 @@ class _GroupCardState extends State<GroupCard>
                                 ? DateFormat('jm').format(widget.group!.date!)
                                 : DateFormat('jm').format(DateTime.now()),
                             style: defaultTextStyle.copyWith(
-                              color: !widget.clickable ? textColor : black,
+                              color: !widget.clickable ? whiteTextColor : black,
                             ),
                           ),
                           const Spacer(),
@@ -95,7 +103,7 @@ class _GroupCardState extends State<GroupCard>
                               children: <Widget>[
                                 Text(
                                   widget.group!.title,
-                                  style: blackDefaultTextStyle,
+                                  style: defaultTextStyle,
                                 ),
                                 Text(
                                   widget.group!.maestro,
@@ -128,7 +136,15 @@ class _GroupCardState extends State<GroupCard>
                   decoration: BoxDecoration(
                     borderRadius:
                         const BorderRadius.all(Radius.circular(roundedCorners)),
-                    color: widget.clickable ? mainSchemeColor : accentColor,
+                    color: widget.clickable ? mainSchemeColor : darkBlue,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.5),
+                        spreadRadius: 5,
+                        blurRadius: 7,
+                        offset: const Offset(0,3),
+                      ),
+                    ],
                   ),
                   margin: const EdgeInsets.all(5),
                   padding: const EdgeInsets.all(5),
@@ -137,7 +153,7 @@ class _GroupCardState extends State<GroupCard>
                     child: Text(
                       DateFormat('jm').format(widget.date!),
                       style: defaultTextStyle.copyWith(
-                        color: widget.clickable ? black : textColor,
+                        color: widget.clickable ? black : whiteTextColor,
                       ),
                     ),
                   ),

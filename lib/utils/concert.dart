@@ -27,15 +27,18 @@ class Concert {
     String title = json['Title'] ?? '';
     int id = json['GroupID'] ?? -1;
     String maestro = json['GroupLeaderName'] ?? '';
-    List<String> perfs = _getPerformers(json);
+    //List<String> perfs = _getPerformers(json);
     String tags = json['Tags'] ?? '';
     String description = json.containsKey('Description') ? json['Description'] : '';
     List<String> dateParts = json['Date'].split('-');
+    List<String> timeParts = json['Time'].split(':');
     int year = int.parse(dateParts[0]);
     int month = int.parse(dateParts[1]);
     int day = int.parse(dateParts[2]);
-    DateTime date = DateTime(year, month, day);
-    Concert newConcert = Concert(title: title, id: id, maestro: maestro, performers: perfs, tags: tags, description: description, date: date);
+    int hour = int.parse(timeParts[0]);
+    int minute = int.parse(timeParts[1]);
+    DateTime date = DateTime(year, month, day, hour, minute);
+    Concert newConcert = Concert(title: title, id: id, maestro: maestro, tags: tags, description: description, date: date);
     return newConcert;
   }
 

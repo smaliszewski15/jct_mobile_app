@@ -4,14 +4,14 @@ import 'colors.dart';
 
 //Font Sizes
 const double veryLargeFontSize = 60;
-const double bigButtonFontSize = 48;
-const double titleFontSize = 48;
-const double headingFontSize = 28;
-const double buttonFontSize = 28;
-const double infoFontSize = 20;
-const double smallFontSize = 18;
+const double bigButtonFontSize = 50;
+const double titleFontSize = 50;
+const double headingFontSize = 30;
+const double buttonFontSize = 30;
+const double infoFontSize = 22;
+const double smallFontSize = 20;
 const double extraSmallFontSize = 16;
-const double navBarTextSize = 10;
+const double navBarTextSize = 12;
 
 //Icon Sizes
 const double bottomIconSize = 40;
@@ -30,140 +30,183 @@ bool isEmail(email) {
 //Text Styles
 TextStyle veryLargeTextStyle = TextStyle(
   fontSize: veryLargeFontSize,
-  color: textColor,
+  color: whiteTextColor,
+  fontFamily: 'Balthazar',
 );
 
 TextStyle buttonTextStyle = TextStyle(
   fontSize: buttonFontSize,
   color: buttonTextColor,
   fontWeight: FontWeight.w400,
+  fontFamily: 'Balthazar',
 );
 
 TextStyle bigButtonTextStyle = TextStyle(
   fontSize: bigButtonFontSize,
   color: buttonTextColor,
   fontWeight: FontWeight.w400,
+  fontFamily: 'Balthazar',
 );
 
 TextStyle headingTextStyle = TextStyle(
   fontSize: headingFontSize,
   color: textColor,
+  fontFamily: 'Balthazar',
 );
 
 TextStyle blackHeadingTextStyle = TextStyle(
   fontSize: headingFontSize,
   color: textfieldTextColor,
+  fontFamily: 'Balthazar',
 );
 
 TextStyle defaultTextStyle = TextStyle(
   fontSize: infoFontSize,
   color: textColor,
+  fontFamily: 'Balthazar',
+);
+
+TextStyle whiteDefaultTextStyle = TextStyle(
+  fontSize: infoFontSize,
+  color: whiteTextColor,
+  fontFamily: 'Balthazar',
 );
 
 TextStyle smallTextStyle = TextStyle(
   fontSize: smallFontSize,
   color: textColor,
+  fontFamily: 'Balthazar',
 );
 
-TextStyle blackDefaultTextStyle = TextStyle(
-  fontSize: infoFontSize,
-  color: textfieldTextColor,
+TextStyle smallWhiteTextStyle = TextStyle(
+  fontSize: smallFontSize,
+  color: whiteTextColor,
+  fontFamily: 'Balthazar',
 );
 
 TextStyle titleTextStyle = TextStyle(
   fontSize: titleFontSize,
   color: textColor,
+  fontFamily: 'Balthazar',
 );
 
 TextStyle buttonTitleTextStyle = TextStyle(
   fontSize: titleFontSize,
   color: textfieldTextColor,
+  fontFamily: 'Balthazar',
 );
 
 TextStyle invalidTextStyle = TextStyle(
   fontSize: smallFontSize,
   color: invalidColor,
+  fontFamily: 'Balthazar',
 );
 
 TextStyle smallTextFieldTextStyle = TextStyle(
   fontSize: smallFontSize,
   color: buttonTextColor,
+  fontFamily: 'Balthazar',
 );
 
 TextStyle searchTextStyle = TextStyle(
   color: buttonTextColor,
   fontSize: infoFontSize,
+  fontFamily: 'Balthazar',
 );
 
-TextStyle errorTextStyle = TextStyle(fontSize: 10, color: invalidColor);
+TextStyle errorTextStyle = TextStyle(
+  fontSize: 10,
+  color: invalidColor,
+  fontFamily: 'Balthazar',
+);
 
 void updateTextStyles(double scaler) {
   veryLargeTextStyle = TextStyle(
     fontSize: veryLargeFontSize / scaler,
-    color: textColor,
+    color: whiteTextColor,
+    fontFamily: 'Balthazar',
   );
 
   buttonTextStyle = TextStyle(
     fontSize: buttonFontSize / scaler,
     color: buttonTextColor,
     fontWeight: FontWeight.w400,
+    fontFamily: 'Balthazar',
   );
 
   bigButtonTextStyle = TextStyle(
     fontSize: bigButtonFontSize / scaler,
     color: buttonTextColor,
     fontWeight: FontWeight.w400,
+    fontFamily: 'Balthazar',
   );
 
   headingTextStyle = TextStyle(
     fontSize: headingFontSize / scaler,
     color: textColor,
+    fontFamily: 'Balthazar',
   );
 
   blackHeadingTextStyle = TextStyle(
     fontSize: headingFontSize / scaler,
     color: textfieldTextColor,
+    fontFamily: 'Balthazar',
   );
 
   defaultTextStyle = TextStyle(
     fontSize: infoFontSize / scaler,
     color: textColor,
+    fontFamily: 'Balthazar',
+  );
+
+  whiteDefaultTextStyle = TextStyle(
+    fontSize: infoFontSize / scaler,
+    color: whiteTextColor,
+    fontFamily: 'Balthazar',
   );
 
   smallTextStyle = TextStyle(
     fontSize: smallFontSize / scaler,
     color: textColor,
-  );
-
-  blackDefaultTextStyle = TextStyle(
-    fontSize: infoFontSize / scaler,
-    color: textfieldTextColor,
+    fontFamily: 'Balthazar',
   );
 
   titleTextStyle = TextStyle(
     fontSize: titleFontSize / scaler,
-    color: textColor,
+    color: whiteTextColor,
+    fontFamily: 'Balthazar',
   );
 
   buttonTitleTextStyle = TextStyle(
     fontSize: titleFontSize / scaler,
     color: textfieldTextColor,
+    fontFamily: 'Balthazar',
   );
 
   invalidTextStyle = TextStyle(
     fontSize: smallFontSize / scaler,
     color: invalidColor,
+    fontFamily: 'Balthazar',
   );
 
   smallTextFieldTextStyle = TextStyle(
     fontSize: smallFontSize / scaler,
     color: buttonTextColor,
+    fontFamily: 'Balthazar',
   );
 
   searchTextStyle = TextStyle(
     color: buttonTextColor,
     fontSize: infoFontSize / scaler,
+    fontFamily: 'Balthazar',
   );
+
+  smallWhiteTextStyle = TextStyle(
+    fontSize: smallFontSize / scaler,
+    color: whiteTextColor,
+    fontFamily: 'Balthazar',
+  );
+
   updatedTextStyles = true;
 }
 

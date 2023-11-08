@@ -38,7 +38,7 @@ class UserProfilePage extends StatelessWidget {
             margin: const EdgeInsets.all(20),
             padding: const EdgeInsets.all(5),
             decoration: BoxDecoration(
-              color: gold,
+              color: mainSchemeColor,
               border: Border.all(color: black, width: 3),
             ),
             child: OutlinedButton(
@@ -63,7 +63,7 @@ class UserProfilePage extends StatelessWidget {
             margin: const EdgeInsets.all(20),
             padding: const EdgeInsets.all(5),
             decoration: BoxDecoration(
-              color: gold,
+              color: mainSchemeColor,
               border: Border.all(color: black, width: 3),
             ),
             child: OutlinedButton(
@@ -100,7 +100,7 @@ class _ProfileState extends State<Profile> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: black,
+        backgroundColor: accentColor,
         actions: <Widget>[
           IconButton(
             onPressed: () async {
@@ -223,7 +223,7 @@ class _ProfileState extends State<Profile> {
                       ),
                       child: Text(
                         user.username == '' ? 'No User Name' : user.username,
-                        style: blackDefaultTextStyle,
+                        style: defaultTextStyle,
                         textAlign: TextAlign.left,
                       ),
                     ),
@@ -247,7 +247,7 @@ class _ProfileState extends State<Profile> {
                       ),
                       child: Text(
                         user.email == '' ? 'No Email' : user.email,
-                        style: blackDefaultTextStyle,
+                        style: defaultTextStyle,
                         textAlign: TextAlign.left,
                       ),
                     ),
@@ -261,7 +261,7 @@ class _ProfileState extends State<Profile> {
                                 vertical: 5, horizontal: 10),
                             padding: const EdgeInsets.all(5),
                             decoration: BoxDecoration(
-                              color: gold,
+                              color: mainSchemeColor,
                               border: Border.all(color: black, width: 3),
                             ),
                             child: OutlinedButton(
@@ -284,7 +284,7 @@ class _ProfileState extends State<Profile> {
                                 vertical: 5, horizontal: 10),
                             padding: const EdgeInsets.all(5),
                             decoration: BoxDecoration(
-                              color: gold,
+                              color: mainSchemeColor,
                               border: Border.all(color: black, width: 3),
                             ),
                             child: OutlinedButton(

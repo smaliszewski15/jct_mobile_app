@@ -140,12 +140,12 @@ class _RegisterPageState extends State<RegisterPage> {
                               children: <Widget>[
                                 Text(
                                   'Username',
-                                  style: smallTextStyle,
+                                  style: smallWhiteTextStyle,
                                   textAlign: TextAlign.left,
                                 ),
                                 Text(
                                   '*',
-                                  style: smallTextStyle,
+                                  style: invalidTextStyle,
                                 ),
                                 BasicTooltip(message: "Usernames must be 2-24 characters long and\ncan only contain ASCII characters", tooltipkey: fields['username']!.tooltipKey),
                               ],
@@ -160,12 +160,12 @@ class _RegisterPageState extends State<RegisterPage> {
                               children: <Widget>[
                                 Text(
                                   'Email',
-                                  style: smallTextStyle,
+                                  style: smallWhiteTextStyle,
                                   textAlign: TextAlign.left,
                                 ),
                                 Text(
                                   '*',
-                                  style: smallTextStyle,
+                                  style: invalidTextStyle,
                                 ),
                                 BasicTooltip(message: "Emails must be in the correct email format", tooltipkey: fields['email']!.tooltipKey),
                               ],
@@ -180,12 +180,12 @@ class _RegisterPageState extends State<RegisterPage> {
                               children: <Widget>[
                                 Text(
                                   'Password',
-                                  style: smallTextStyle,
+                                  style: smallWhiteTextStyle,
                                   textAlign: TextAlign.left,
                                 ),
                                 Text(
                                   '*',
-                                  style: smallTextStyle,
+                                  style: invalidTextStyle,
                                 ),
                                 BasicTooltip(message: "Passwords must be at least 4 characters long and\ncan only contain ASCII characters", tooltipkey: fields['password']!.tooltipKey),
                               ],
@@ -200,12 +200,12 @@ class _RegisterPageState extends State<RegisterPage> {
                               children: <Widget>[
                                 Text(
                                   'Confirm Password',
-                                  style: smallTextStyle,
+                                  style: smallWhiteTextStyle,
                                   textAlign: TextAlign.left,
                                 ),
                                 Text(
                                   '*',
-                                  style: smallTextStyle,
+                                  style: invalidTextStyle,
                                 ),
                                 BasicTooltip(message: "Please confirm your password", tooltipkey: fields['confirmPassword']!.tooltipKey),
                               ],

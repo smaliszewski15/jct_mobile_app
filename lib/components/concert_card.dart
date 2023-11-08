@@ -23,9 +23,17 @@ class _ConcertCardState extends State<ConcertCard> {
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.all(Radius.circular(roundedCorners)),
-        color: accentColor,
+        color: mainSchemeColor,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.5),
+            spreadRadius: 5,
+            blurRadius: 7,
+            offset: const Offset(0,3),
+          ),
+        ],
       ),
-      child: OutlinedButton(
+      child: TextButton(
         onPressed: () {
           Navigator.restorablePushNamed(
               context, '/concerts/concert',

@@ -198,7 +198,7 @@ class _MaestroScreenState extends State<MaestroScreen> {
                 ],
                 content: Text(
                   "Are you sure you want to leave? This will end the session for all of the participants",
-                  style: blackDefaultTextStyle,
+                  style: defaultTextStyle,
                 ),
               );
             }

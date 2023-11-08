@@ -110,7 +110,7 @@ class _LogInPageState extends State<LogInPage> {
                               children: <Widget>[
                                 Text(
                                   'Username',
-                                  style: smallTextStyle,
+                                  style: smallWhiteTextStyle,
                                   textAlign: TextAlign.left,
                                 ),
                                 BasicTooltip(message: "Username cannot be left blank", tooltipkey: usernameKey),
@@ -128,7 +128,7 @@ class _LogInPageState extends State<LogInPage> {
                               children: <Widget>[
                                 Text(
                                   'Password',
-                                  style: smallTextStyle,
+                                  style: smallWhiteTextStyle,
                                   textAlign: TextAlign.left,
                                 ),
                                 BasicTooltip(message: "Password cannot be left blank", tooltipkey: passwordKey),

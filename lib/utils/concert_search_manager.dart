@@ -60,7 +60,7 @@ class ConcertSearchManager {
                 colorScheme: ColorScheme.dark(
                   primary: mainSchemeColor,
                   onPrimary: black,
-                  surface: black,
+                  surface: mainSchemeColor,
                   onSurface: textColor,
                 ),
                 dialogBackgroundColor: backgroundColor,
@@ -93,7 +93,7 @@ class ConcertSearchManager {
                 colorScheme: ColorScheme.dark(
                   primary: mainSchemeColor,
                   onPrimary: black,
-                  surface: black,
+                  surface: mainSchemeColor,
                   onSurface: textColor,
                 ),
                 dialogBackgroundColor: backgroundColor,

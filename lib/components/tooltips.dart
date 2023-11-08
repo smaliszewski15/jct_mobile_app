@@ -28,7 +28,7 @@ class BasicTooltip extends StatelessWidget {
       child: Icon(
         Icons.help,
         size: smallFontSize,
-        color: textColor,
+        color: whiteTextColor,
       ),
     );
   }

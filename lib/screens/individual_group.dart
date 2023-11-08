@@ -65,7 +65,7 @@ class _IndividualGroupState extends State<IndividualGroup> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: const Icon(Icons.navigate_before, color: gold),
+          icon: Icon(Icons.navigate_before, color: accentColor),
           iconSize: 35,
           onPressed: () {
             Navigator.pop(context);
@@ -132,7 +132,7 @@ class _IndividualGroupState extends State<IndividualGroup> {
         //         ),
         //       ]
         //     : null,
-        backgroundColor: black,
+        backgroundColor: mainSchemeColor,
         automaticallyImplyLeading: false,
       ),
       backgroundColor: backgroundColor,
@@ -181,7 +181,7 @@ class _IndividualGroupState extends State<IndividualGroup> {
                 )
                     : Text(
                   widget.group.title,
-                  style: titleTextStyle,
+                  style: titleTextStyle.copyWith(color: textColor),
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -268,10 +268,10 @@ class _IndividualGroupState extends State<IndividualGroup> {
                   padding: const EdgeInsets.all(5),
                   margin:
                   const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                  color: black,
+                  color: accentColor,
                   child: Text(
                     widget.group.maestro,
-                    style: defaultTextStyle,
+                    style: whiteDefaultTextStyle,
                   ),
                 ),
             ),
@@ -291,10 +291,10 @@ class _IndividualGroupState extends State<IndividualGroup> {
                   padding: const EdgeInsets.all(5),
                   margin:
                   const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                  color: black,
+                  color: accentColor,
                   child: Text(
                     widget.group.tags.split('`').join(', '),
-                    style: defaultTextStyle,
+                    style: whiteDefaultTextStyle,
                   ),
                 ),
             ),
@@ -314,10 +314,10 @@ class _IndividualGroupState extends State<IndividualGroup> {
                   padding: const EdgeInsets.all(5),
                   margin:
                   const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                  color: black,
+                  color: accentColor,
                   child: Text(
                     widget.group.description,
-                    style: defaultTextStyle,
+                    style: whiteDefaultTextStyle,
                   ),
                 ),
             ),
@@ -389,7 +389,7 @@ class _IndividualGroupState extends State<IndividualGroup> {
                               child: Container(
                                 margin: const EdgeInsets.all(4),
                                 decoration: BoxDecoration(
-                                  color: gold,
+                                  color: mainSchemeColor,
                                   border: Border.all(color: black, width: 3),
                                 ),
                                 child: TextButton(
@@ -422,7 +422,7 @@ class _IndividualGroupState extends State<IndividualGroup> {
                                   },
                                   child: Text(
                                     'Maestro',
-                                    style: blackDefaultTextStyle.copyWith(
+                                    style: defaultTextStyle.copyWith(
                                       fontWeight: FontWeight.w400,
                                     ),
                                     textAlign: TextAlign.center,
@@ -434,7 +434,7 @@ class _IndividualGroupState extends State<IndividualGroup> {
                             flex: 3,
                             child: Container(
                               decoration: BoxDecoration(
-                                color: gold,
+                                color: mainSchemeColor,
                                 border: Border.all(color: black, width: 3),
                               ),
                               margin: const EdgeInsets.all(4),
@@ -460,7 +460,7 @@ class _IndividualGroupState extends State<IndividualGroup> {
                                 },
                                 child: Text(
                                   'Performer',
-                                  style: blackDefaultTextStyle.copyWith(
+                                  style: defaultTextStyle.copyWith(
                                     fontWeight: FontWeight.w400,
                                   ),
                                   textAlign: TextAlign.center,
@@ -472,7 +472,7 @@ class _IndividualGroupState extends State<IndividualGroup> {
                             flex: 3,
                             child: Container(
                               decoration: BoxDecoration(
-                                color: gold,
+                                color: mainSchemeColor,
                                 border: Border.all(color: black, width: 3),
                               ),
                               margin: const EdgeInsets.all(4),
@@ -496,7 +496,7 @@ class _IndividualGroupState extends State<IndividualGroup> {
                                 },
                                 child: Text(
                                   'Listener',
-                                  style: blackDefaultTextStyle.copyWith(
+                                  style: defaultTextStyle.copyWith(
                                     fontWeight: FontWeight.w400,
                                   ),
                                   textAlign: TextAlign.center,

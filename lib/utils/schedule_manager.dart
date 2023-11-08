@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-
 import '../utils/colors.dart';
-import '../utils/globals.dart';
 
 class ScheduleManager {
 
@@ -70,7 +67,7 @@ class ScheduleManager {
                 colorScheme: ColorScheme.dark(
                   primary: mainSchemeColor,
                   onPrimary: black,
-                  surface: black,
+                  surface: mainSchemeColor,
                   onSurface: textColor,
                 ),
                 dialogBackgroundColor: backgroundColor,
@@ -101,7 +98,7 @@ class ScheduleManager {
                 colorScheme: ColorScheme.dark(
                   primary: mainSchemeColor,
                   onPrimary: black,
-                  surface: black,
+                  surface: mainSchemeColor,
                   onSurface: textColor,
                 ),
                 dialogBackgroundColor: backgroundColor,

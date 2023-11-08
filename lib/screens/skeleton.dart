@@ -84,7 +84,7 @@ class _SkeletonState extends State<Skeleton> {
             : null,
         leading: Builder(
           builder: (context) {
-            return OutlinedButton(
+            return TextButton(
               onPressed: () => Scaffold.of(context).openDrawer(),
               child: Container(
                 decoration: const BoxDecoration(
@@ -100,7 +100,7 @@ class _SkeletonState extends State<Skeleton> {
           },
         ),
         centerTitle: true,
-        backgroundColor: black,
+        backgroundColor: mainSchemeColor,
         automaticallyImplyLeading: false,
       ),
       drawer: FutureBuilder(
@@ -210,7 +210,7 @@ class _SkeletonState extends State<Skeleton> {
         },
       ),
       bottomNavigationBar: BottomAppBar(
-        color: black,
+        color: mainSchemeColor,
         child: SizedBox(
           height: navBarHeight,
           child: Center(
@@ -218,7 +218,7 @@ class _SkeletonState extends State<Skeleton> {
               children: <Widget>[
                 Expanded(
                   flex: 2,
-                  child: OutlinedButton(
+                  child: TextButton(
                     onPressed: () {
                       if (_navManager.buttonNotifier.value !=
                           NavState.home) {
@@ -234,7 +234,7 @@ class _SkeletonState extends State<Skeleton> {
                           size: bottomIconSize,
                           color: _navManager.buttonNotifier.value ==
                               NavState.home
-                              ? mainSchemeColor
+                              ? accentColor
                               : white,
                         ),
                         Text(
@@ -244,7 +244,7 @@ class _SkeletonState extends State<Skeleton> {
                             navBarTextSize, //navBarTextSize,
                             color: _navManager.buttonNotifier.value ==
                                 NavState.home
-                                ? mainSchemeColor
+                                ? accentColor
                                 : white,
                           ),
                           textAlign: TextAlign.center,
@@ -255,7 +255,7 @@ class _SkeletonState extends State<Skeleton> {
                 ),
                 Expanded(
                   flex: 2,
-                  child: OutlinedButton(
+                  child: TextButton(
                     onPressed: () {
                       if (_navManager.buttonNotifier.value !=
                           NavState.concert) {
@@ -271,7 +271,7 @@ class _SkeletonState extends State<Skeleton> {
                           size: bottomIconSize,
                           color: _navManager.buttonNotifier.value ==
                               NavState.concert
-                              ? mainSchemeColor
+                              ? accentColor
                               : white,
                         ),
                         Text(
@@ -281,7 +281,7 @@ class _SkeletonState extends State<Skeleton> {
                             navBarTextSize, //navBarTextSize,
                             color: _navManager.buttonNotifier.value ==
                                 NavState.concert
-                                ? mainSchemeColor
+                                ? accentColor
                                 : white,
                           ),
                           textAlign: TextAlign.center,
@@ -292,7 +292,7 @@ class _SkeletonState extends State<Skeleton> {
                 ),
                 Expanded(
                   flex: 2,
-                  child: OutlinedButton(
+                  child: TextButton(
                     onPressed: () {
                       if (_navManager.buttonNotifier.value !=
                           NavState.schedule) {
@@ -308,7 +308,7 @@ class _SkeletonState extends State<Skeleton> {
                           size: bottomIconSize,
                           color: _navManager.buttonNotifier.value ==
                               NavState.schedule
-                              ? mainSchemeColor
+                              ? accentColor
                               : white,
                         ),
                         Text(
@@ -318,7 +318,7 @@ class _SkeletonState extends State<Skeleton> {
                             navBarTextSize, //user.isAdmin ? navBarTextSize,
                             color: _navManager.buttonNotifier.value ==
                                 NavState.schedule
-                                ? mainSchemeColor
+                                ? accentColor
                                 : white,
                           ),
                           textAlign: TextAlign.center,
@@ -340,7 +340,7 @@ class _SkeletonState extends State<Skeleton> {
                             size: bottomIconSize,
                             color: _navManager.buttonNotifier.value ==
                                 NavState.admin
-                                ? mainSchemeColor
+                                ? accentColor
                                 : white,
                           ),
                           Text(
@@ -350,7 +350,7 @@ class _SkeletonState extends State<Skeleton> {
                               navBarTextSize,
                               color: _navManager.buttonNotifier.value ==
                                   NavState.admin
-                                  ? mainSchemeColor
+                                  ? accentColor
                                   : white,
                             ),
                             textAlign: TextAlign.center,

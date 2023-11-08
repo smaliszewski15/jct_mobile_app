@@ -42,7 +42,7 @@ class _AddGroupState extends State<AddGroup> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: const Icon(Icons.navigate_before, color: gold),
+          icon: Icon(Icons.navigate_before, color: mainSchemeColor),
           iconSize: 35,
           onPressed: () {
             Navigator.pop(context);
@@ -234,7 +234,7 @@ class _AddGroupState extends State<AddGroup> {
                             borderSide: const BorderSide(color: black),
                           ),
                         ),
-                  style: blackDefaultTextStyle,
+                  style: defaultTextStyle,
                   onChanged: (field) {
                     if (field.isEmpty) {
                       setState(() => titleUnfilled = true);
@@ -295,7 +295,7 @@ class _AddGroupState extends State<AddGroup> {
                             borderSide: const BorderSide(color: black),
                           ),
                         ),
-                  style: blackDefaultTextStyle,
+                  style: defaultTextStyle,
                   onChanged: (field) {
                     if (field.isEmpty) {
                       setState(() => titleUnfilled = true);
@@ -321,7 +321,7 @@ class _AddGroupState extends State<AddGroup> {
                     const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                 padding: const EdgeInsets.all(5),
                 decoration: BoxDecoration(
-                  color: gold,
+                  color: mainSchemeColor,
                   border: Border.all(color: black, width: 3),
                 ),
                 child: TextButton(

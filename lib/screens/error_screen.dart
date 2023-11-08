@@ -34,7 +34,7 @@ class ErrorScreen extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(5),
             decoration: BoxDecoration(
-              color: gold,
+              color: mainSchemeColor,
               border: Border.all(color: black),
             ),
             child: OutlinedButton(
