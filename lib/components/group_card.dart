@@ -39,7 +39,7 @@ class _GroupCardState extends State<GroupCard>
                 decoration: BoxDecoration(
                   borderRadius:
                       const BorderRadius.all(Radius.circular(roundedCorners)),
-                  color: widget.clickable ? darkBlue : mainSchemeColor,
+                  color: widget.clickable ? mainSchemeColor : accentColor,
                   boxShadow: [
                     BoxShadow(
                       color: Colors.grey.withOpacity(0.5),
@@ -74,7 +74,7 @@ class _GroupCardState extends State<GroupCard>
                                 ? DateFormat('jm').format(widget.group!.date!)
                                 : DateFormat('jm').format(DateTime.now()),
                             style: defaultTextStyle.copyWith(
-                              color: !widget.clickable ? whiteTextColor : black,
+                              color: !widget.clickable ? whiteTextColor : textColor,
                             ),
                           ),
                           const Spacer(),
@@ -136,7 +136,7 @@ class _GroupCardState extends State<GroupCard>
                   decoration: BoxDecoration(
                     borderRadius:
                         const BorderRadius.all(Radius.circular(roundedCorners)),
-                    color: widget.clickable ? mainSchemeColor : darkBlue,
+                    color: widget.clickable ? mainSchemeColor : accentColor,
                     boxShadow: [
                       BoxShadow(
                         color: Colors.grey.withOpacity(0.5),

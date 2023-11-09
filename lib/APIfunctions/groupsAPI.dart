@@ -70,6 +70,21 @@ class GroupsAPI {
     return response;
   }
 
+  static Future<http.Response> validateListener(Map<String, dynamic> query) async {
+    http.Response response;
+
+    try {
+      response = await http.post(Uri.http(API_PREFIX, '${apiRoute}/validateListener'),
+          body: json.encode(query),
+          headers: authHeader);
+    } catch (e) {
+      print(e.toString());
+      throw Exception('Could not connect to server');
+    }
+
+    return response;
+  }
+
   static Future<http.Response> getNextConcert() async {
     http.Response response;
 

@@ -190,13 +190,12 @@ class _IndividualGroupState extends State<IndividualGroup> {
                 child: Container(
                   width: double.infinity,
                   margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
                         'Scheduled Date: ',
                         style: defaultTextStyle,
-                        textAlign: TextAlign.left,
                       ),
                       Text(
                         DateFormat('E, MMM dd, yyyy - hh:mm')
@@ -211,7 +210,8 @@ class _IndividualGroupState extends State<IndividualGroup> {
                 child: Container(
                   width: double.infinity,
                   margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                  child: Row(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
                         'Mixing Method: ',
@@ -245,7 +245,7 @@ class _IndividualGroupState extends State<IndividualGroup> {
                       //           ).toList()))
                       // else
                       Text(
-                        method,
+                        widget.group.mixer == null ? "Default" : widget.group.mixer!.name,
                         style: defaultTextStyle,
                       ),
                     ],
@@ -486,7 +486,7 @@ class _IndividualGroupState extends State<IndividualGroup> {
                                   }
                                   bool succ = await checkListenerPasscode();
                                   if (!succ) {
-                                    setState(() => errorMessage = "Password either incorrect or cannot connect to the server");
+                                    setState(() {});
                                     return;
                                   }
                                   if (context.mounted) {
@@ -909,7 +909,7 @@ class _IndividualGroupState extends State<IndividualGroup> {
       'listenerPasscode': _passcode.editor.value.text,
     };
 
-    final res = await GroupsAPI.prepare(query);
+    final res = await GroupsAPI.validateListener(query);
     if (res.statusCode != 200) {
       print(res.body);
       var message = json.decode(res.body);

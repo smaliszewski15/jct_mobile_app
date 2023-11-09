@@ -26,6 +26,21 @@ class HomeScreen extends StatelessWidget {
               width: MediaQuery.of(context).size.width / 1.5,
               height: MediaQuery.of(context).size.height / 3,
               margin: const EdgeInsets.symmetric(vertical: 30),
+              decoration: BoxDecoration(
+                borderRadius: const BorderRadius.all(Radius.circular(roundedCorners)),
+                border: Border.all(
+                  color: black,
+                  width: 3,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.5),
+                    spreadRadius: 5,
+                    blurRadius: 7,
+                    offset: const Offset(0,3),
+                  ),
+                ],
+              ),
               child: Image.asset(
                   'assets/images/johncage.jpg',
                   fit: BoxFit.fitHeight
@@ -96,6 +111,22 @@ class HomeScreen extends StatelessWidget {
                 Container(
                   width: MediaQuery.of(context).size.width / 4,
                   margin: const EdgeInsets.symmetric(vertical: 30),
+                  padding: const EdgeInsets.all(5),
+                  decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.all(Radius.circular(roundedCorners)),
+                    border: Border.all(
+                      color: black,
+                      width: 3,
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.5),
+                        spreadRadius: 5,
+                        blurRadius: 7,
+                        offset: const Offset(0,3),
+                      ),
+                    ],
+                  ),
                   child: Image.asset(
                       'assets/images/Kyle.jpg',
                       fit: BoxFit.fitWidth
@@ -119,8 +150,23 @@ class HomeScreen extends StatelessWidget {
               children: <Widget>[
                 Container(
                   width: MediaQuery.of(context).size.width / 4,
-                  //height: MediaQuery.of(context).size.height / 3,
                   margin: const EdgeInsets.symmetric(vertical: 30),
+                  padding: const EdgeInsets.all(5),
+                  decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.all(Radius.circular(roundedCorners)),
+                    border: Border.all(
+                      color: black,
+                      width: 3,
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.5),
+                        spreadRadius: 5,
+                        blurRadius: 7,
+                        offset: const Offset(0,3),
+                      ),
+                    ],
+                  ),
                   child: Image.asset(
                       'assets/images/Demetri.jpg',
                       fit: BoxFit.fitWidth
@@ -143,7 +189,22 @@ class HomeScreen extends StatelessWidget {
               children: <Widget>[
                 Container(
                   width: MediaQuery.of(context).size.width / 4,
-                  //height: MediaQuery.of(context).size.height / 3,
+                  padding: const EdgeInsets.all(5),
+                  decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.all(Radius.circular(roundedCorners)),
+                    border: Border.all(
+                      color: black,
+                      width: 3,
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.5),
+                        spreadRadius: 5,
+                        blurRadius: 7,
+                        offset: const Offset(0,3),
+                      ),
+                    ],
+                  ),
                   margin: const EdgeInsets.symmetric(vertical: 30),
                   child: Image.asset(
                       'assets/images/Rayyan.jpg',
@@ -167,10 +228,25 @@ class HomeScreen extends StatelessWidget {
               children: <Widget>[
                 Container(
                   width: MediaQuery.of(context).size.width / 4,
-                  //height: MediaQuery.of(context).size.height / 3,
+                  padding: const EdgeInsets.all(5),
+                  decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.all(Radius.circular(roundedCorners)),
+                    border: Border.all(
+                      color: black,
+                      width: 3,
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.5),
+                        spreadRadius: 5,
+                        blurRadius: 7,
+                        offset: const Offset(0,3),
+                      ),
+                    ],
+                  ),
                   margin: const EdgeInsets.symmetric(vertical: 30),
                   child: Image.asset(
-                      'assets/images/default-profile-image.jpg',
+                      'assets/images/Himil.jpg',
                       fit: BoxFit.fitWidth
                   ),
                 ),
@@ -191,7 +267,22 @@ class HomeScreen extends StatelessWidget {
               children: <Widget>[
                 Container(
                   width: MediaQuery.of(context).size.width / 4,
-                  //height: MediaQuery.of(context).size.height / 3,
+                  padding: const EdgeInsets.all(5),
+                  decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.all(Radius.circular(roundedCorners)),
+                    border: Border.all(
+                      color: black,
+                      width: 3,
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.5),
+                        spreadRadius: 5,
+                        blurRadius: 7,
+                        offset: const Offset(0,3),
+                      ),
+                    ],
+                  ),
                   margin: const EdgeInsets.symmetric(vertical: 30),
                   child: Image.asset(
                       'assets/images/default-profile-image.jpg',
@@ -215,7 +306,22 @@ class HomeScreen extends StatelessWidget {
               children: <Widget>[
                 Container(
                   width: MediaQuery.of(context).size.width / 4,
-                  //height: MediaQuery.of(context).size.height / 3,
+                  padding: const EdgeInsets.all(5),
+                  decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.all(Radius.circular(roundedCorners)),
+                    border: Border.all(
+                      color: black,
+                      width: 3,
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.5),
+                        spreadRadius: 5,
+                        blurRadius: 7,
+                        offset: const Offset(0,3),
+                      ),
+                    ],
+                  ),
                   margin: const EdgeInsets.symmetric(vertical: 30),
                   child: Image.asset(
                       'assets/images/Paul.png',

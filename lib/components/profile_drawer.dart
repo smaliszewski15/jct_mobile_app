@@ -110,7 +110,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
             onPressed: () => Navigator.restorablePushNamed(context, '/profile'),
             child: Text(
               'View Profile',
-              style: titleTextStyle,
+              style: titleTextStyle.copyWith(color: whiteTextColor),
               textAlign: TextAlign.center,
             )
           )
@@ -128,7 +128,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
           textAlign: TextAlign.center,
         ),
         Container(
-          width: 100,
+          width: 110,
           margin: const EdgeInsets.all(10),
           decoration: BoxDecoration(
             color: mainSchemeColor,
@@ -157,7 +157,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
           textAlign: TextAlign.center,
         ),
         Container(
-          width: 100,
+          width: 110,
           margin: const EdgeInsets.all(10),
           decoration: BoxDecoration(
             color: mainSchemeColor,

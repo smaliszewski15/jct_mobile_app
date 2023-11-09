@@ -36,7 +36,7 @@ class _FilterDrawerState extends State<FilterDrawer> {
             children: <Widget>[
               DrawerHeader(
                 child: Text(
-                  'Filter by when you want to record:',
+                  'Filter by session date:',
                   style: defaultTextStyle,
                   textAlign: TextAlign.center,
                 ),

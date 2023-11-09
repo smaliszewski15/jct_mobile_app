@@ -8,7 +8,7 @@ const double bigButtonFontSize = 50;
 const double titleFontSize = 50;
 const double headingFontSize = 30;
 const double buttonFontSize = 30;
-const double infoFontSize = 22;
+const double infoFontSize = 24;
 const double smallFontSize = 20;
 const double extraSmallFontSize = 16;
 const double navBarTextSize = 12;
@@ -90,9 +90,9 @@ TextStyle titleTextStyle = TextStyle(
   fontFamily: 'Balthazar',
 );
 
-TextStyle buttonTitleTextStyle = TextStyle(
+TextStyle whiteTitleTextStyle = TextStyle(
   fontSize: titleFontSize,
-  color: textfieldTextColor,
+  color: whiteTextColor,
   fontFamily: 'Balthazar',
 );
 
@@ -177,7 +177,7 @@ void updateTextStyles(double scaler) {
     fontFamily: 'Balthazar',
   );
 
-  buttonTitleTextStyle = TextStyle(
+  whiteTitleTextStyle = TextStyle(
     fontSize: titleFontSize / scaler,
     color: textfieldTextColor,
     fontFamily: 'Balthazar',

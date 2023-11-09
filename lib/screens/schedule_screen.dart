@@ -79,14 +79,13 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                 child: Container(
                   width: 100,
                   height: toggleHeight,
-                  color: _reserveToggle ? mainSchemeColor : black,
+                  color: _reserveToggle ? mainSchemeColor : accentColor,
                   child: Align(
                     alignment: Alignment.center,
                     child: Text(
                       'Reserve',
-                      style: TextStyle(
-                        color: _reserveToggle ? black : white,
-                        fontSize: infoFontSize,
+                      style: defaultTextStyle.copyWith(
+                        color: _reserveToggle ? textColor : whiteTextColor,
                       ),
                     ),
                   ),
@@ -107,14 +106,13 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                 child: Container(
                   width: 100,
                   height: toggleHeight,
-                  color: _reserveToggle ? black : mainSchemeColor,
+                  color: _reserveToggle ? accentColor : mainSchemeColor,
                   child: Align(
                     alignment: Alignment.center,
                     child: Text(
                       'Browse',
-                      style: TextStyle(
-                        color: _reserveToggle ? white : black,
-                        fontSize: infoFontSize,
+                      style: defaultTextStyle.copyWith(
+                        color: _reserveToggle ? whiteTextColor : textColor,
                       ),
                     ),
                   ),

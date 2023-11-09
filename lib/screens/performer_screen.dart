@@ -6,11 +6,11 @@ import 'package:wakelock/wakelock.dart';
 
 import '../APIfunctions/api_globals.dart';
 import '../components/audio_wavepainter.dart';
-import '../components/player.dart';
-import '../components/recorder.dart';
-import '../components/socket_listener.dart';
+import '../utils/player.dart';
+import '../utils/recorder.dart';
 import '../utils/colors.dart';
 import '../utils/globals.dart';
+import '../utils/socketPerformer.dart';
 import '../utils/user.dart';
 
 class PerformerScreen extends StatefulWidget {
@@ -22,9 +22,9 @@ class PerformerScreen extends StatefulWidget {
   _PerformerScreenState createState() => _PerformerScreenState();
 }
 
-class _PerformerScreenState extends State<PerformerScreen> {
+class _PerformerScreenState extends State<PerformerScreen> with WidgetsBindingObserver {
   final buttonNotifier = ValueNotifier<bool>(false);
-  SocketConnect? performSocket;
+  SocketPerformer? performSocket;
 
   final Player _mPlayer = Player();
   final Recorder _mRecorder = Recorder();
@@ -39,16 +39,47 @@ class _PerformerScreenState extends State<PerformerScreen> {
   void initState() {
     super.initState();
     connectPerformSocket();
+    WidgetsBinding.instance.addObserver(this);
   }
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     release();
     super.dispose();
   }
 
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    switch (state) {
+      case AppLifecycleState.inactive:
+      case AppLifecycleState.detached:
+        print(state);
+        stopEverything();
+        break;
+      case AppLifecycleState.paused:
+        print(state);
+        stopEverything();
+        break;
+      case AppLifecycleState.resumed:
+        print(state);
+        if (performSocket == null) {
+          connectPerformSocket();
+        }
+        if (!_mPlayer.isPlaying) {
+          listenForSink();
+        }
+        if (!_mRecorder.isRecording) {
+          record();
+        }
+        break;
+      default:
+        return;
+    }
+  }
+
   Future<void> connectPerformSocket() async {
-    performSocket = SocketConnect(SocketType.performer, user.username != '' ? user.username : 'Anonymous User', widget.passcode);
+    performSocket = SocketPerformer(user.username != '' ? user.username : 'Anonymous User', widget.passcode);
     isConnected = true;
     performSocket!.socket.stream.listen(
       (data) {
@@ -68,6 +99,7 @@ class _PerformerScreenState extends State<PerformerScreen> {
             stopRecorder();
             stopPlayer();
             disconnect();
+            Navigator.pop(context);
             setState(() {});
           } else {
             print(data);
@@ -88,6 +120,14 @@ class _PerformerScreenState extends State<PerformerScreen> {
     setState(() {});
   }
 
+  Future<void> stopEverything() async {
+    await stopRecorder();
+    await stopPlayer();
+    disconnect();
+    Wakelock.disable();
+    started = false;
+  }
+
   Future<void> disconnect() async {
     if (performSocket != null) {
       performSocket!.disconnect();
@@ -95,7 +135,6 @@ class _PerformerScreenState extends State<PerformerScreen> {
     performSocket = null;
     participants = [];
     isConnected = false;
-    setState(() {});
   }
 
   Future<void> release() async {
@@ -141,17 +180,6 @@ class _PerformerScreenState extends State<PerformerScreen> {
     await _mPlayer.listen();
     _mPlayer.mPlayer!.foodSink!.add(FoodData(silence));
     setState(() {});
-  }
-
-  Future<void> stopEverything() async {
-    await stopRecorder();
-    await stopPlayer();
-    disconnect();
-    Wakelock.disable();
-    if (context.mounted) {
-      Navigator.pop(context);
-    }
-    started = false;
   }
 
   @override
@@ -206,7 +234,14 @@ class _PerformerScreenState extends State<PerformerScreen> {
       },
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: backgroundColor,
+          leading: IconButton(
+            icon: Icon(Icons.navigate_before, color: accentColor),
+            iconSize: 35,
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+          backgroundColor: mainSchemeColor,
         ),
         body: Container(
           width: double.infinity,
@@ -262,7 +297,7 @@ class _PerformerScreenState extends State<PerformerScreen> {
                           ),
                           child: Text(
                             participants[index],
-                            style: defaultTextStyle,
+                            style: whiteDefaultTextStyle,
                             textAlign: TextAlign.center,
                           ),
                         );

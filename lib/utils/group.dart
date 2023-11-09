@@ -9,13 +9,14 @@ class Group {
   late String tags;
   late String description;
 
+  late Mixer? mixer;
   late String? groupName;
   late List<String>? members;
   late DateTime? date;
   late List<int>? passcodes;
 
 
-  Group({this.groupID = -1, this.members, this.maestro = '', this.maestroID = -1, this.tags = '', this.title = '', this.description = '', this.date, this.passcodes, this.groupName});
+  Group({this.groupID = -1, this.members, this.maestro = '', this.maestroID = -1, this.tags = '', this.title = '', this.description = '', this.date, this.passcodes, this.groupName, this.mixer});
 
   factory Group.fromNextJson(Map json) {
     print(json);
@@ -26,7 +27,8 @@ class Group {
     String description = json['Description'] ?? '';
     DateTime date = ConvertToDate(json['Date'], json['Time']);
     String tags = json['Tags'] ?? '';
-    return Group(groupID: groupID, maestro: leader, maestroID: maestroID, title: title, date: date, tags: tags, description: description);
+    Mixer? mixer = json.containsKey('Mixer') ? Mixer.fromFile(json['Mixer']) : null;
+    return Group(groupID: groupID, maestro: leader, maestroID: maestroID, title: title, date: date, tags: tags, description: description, mixer: mixer);
   }
 
   factory Group.fromScheduleJson(Map json) {
@@ -65,5 +67,17 @@ class Group {
   String toString() {
     String group = '\nTitle: ${this.title}\nPerformers: ${this.members}\nTags: ${this.tags}\nDate: ${this.date}';
     return group;
+  }
+}
+
+class Mixer {
+  late String name;
+  late String fileName;
+
+  Mixer({required this.name, required this.fileName});
+
+  factory Mixer.fromFile(String fileName) {
+    String name = fileName.split(".")[0];
+    return Mixer(name: name, fileName: fileName);
   }
 }

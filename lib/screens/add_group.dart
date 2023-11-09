@@ -113,7 +113,7 @@ class _AddGroupState extends State<AddGroup> {
                             borderSide: const BorderSide(color: black),
                           ),
                         ),
-                  style: buttonTitleTextStyle,
+                  style: titleTextStyle,
                   onChanged: (field) {
                     if (field.isEmpty) {
                       setState(() => titleUnfilled = true);
@@ -405,7 +405,7 @@ class _AddGroupState extends State<AddGroup> {
     String mixerMethod = '';
     for (var met in mixers) {
       if (met.name == method) {
-        mixerMethod = met.name;
+        mixerMethod = met.fileName;
         break;
       }
     }
@@ -473,13 +473,6 @@ class _AddGroupState extends State<AddGroup> {
     method = methods.first;
     return true;
   }
-}
-
-class Mixer {
-  late String name;
-  late String fileName;
-
-  Mixer({required this.name, required this.fileName});
 }
 
 extension on String {

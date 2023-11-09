@@ -11,7 +11,7 @@ class Player {
 
   Future<void>? stopPlayer() {
     if (mPlayer != null) {
-      return mPlayer!.stopPlayer();
+      mPlayer!.stopPlayer();
     }
     isPlaying = false;
     print('stopping player');

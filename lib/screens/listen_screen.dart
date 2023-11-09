@@ -5,10 +5,11 @@ import 'package:flutter_sound/flutter_sound.dart';
 import 'package:wakelock/wakelock.dart';
 
 import '../APIfunctions/api_globals.dart';
-import '../components/player.dart';
-import '../components/socket_listener.dart';
+import '../utils/player.dart';
 import '../utils/colors.dart';
 import '../utils/globals.dart';
+import '../utils/socketListener.dart';
+import '../utils/user.dart';
 
 final Uint8List silence = Uint8List(5000);
 
@@ -23,7 +24,7 @@ class ListenScreen extends StatefulWidget {
 
 class _ListenScreenState extends State<ListenScreen> {
   final buttonNotifier = ValueNotifier<bool>(false);
-  SocketConnect? socket;
+  SocketListener? socket;
 
   final Player _mPlayer = Player();
   bool muted = false;
@@ -39,18 +40,19 @@ class _ListenScreenState extends State<ListenScreen> {
   @override
   void dispose() {
     release();
-    socket!.disconnect();
+    disconnect();
     super.dispose();
   }
 
   Future<void> connectListenSocket() async {
-    socket = SocketConnect(SocketType.listener, '', widget.passcode);
+    await listen();
+    socket = SocketListener(user.username != '' ? user.username : 'jeff', widget.passcode);
     socket!.socket.stream.listen(
           (data) {
             String s = splitHeader(data);
-            List<String> split = s.split(':');
-            if (split[0] == 'participants') {
-              parseParticipants(split[1]);
+            List<String> list = s.split(':');
+            if (list.length > 1) {
+              parseParticipants(list.sublist(1).join(':'));
               print(s);
               setState(() {});
             } else {
@@ -116,7 +118,14 @@ class _ListenScreenState extends State<ListenScreen> {
       },
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: backgroundColor,
+          leading: IconButton(
+            icon: Icon(Icons.navigate_before, color: accentColor),
+            iconSize: 35,
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+          backgroundColor: mainSchemeColor,
         ),
         body: Container(
           width: MediaQuery.of(context).size.width,
@@ -150,7 +159,7 @@ class _ListenScreenState extends State<ListenScreen> {
                           ),
                           child: Text(
                             participants[index],
-                            style: defaultTextStyle,
+                            style: whiteDefaultTextStyle,
                             textAlign: TextAlign.center,
                           ),
                         );

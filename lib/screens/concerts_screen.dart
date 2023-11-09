@@ -89,7 +89,6 @@ class _ConcertsState extends State<ConcertsScreen> {
                       textInputAction: TextInputAction.done,
                       onSubmitted: (query) {
                         if (oldQuery.isEmpty || oldQuery != query) {
-                          print(query);
                           done = getConcertList(query);
                           oldQuery = query;
                           setState(() {});
@@ -171,7 +170,7 @@ class _ConcertsState extends State<ConcertsScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     ElevatedButton(
-                      onPressed: page != 0 ? () {
+                      onPressed: page > 0 ? () {
                         if (page != 0) {
                           page--;
                           (done = getConcertList(oldQuery)).then((entry) => {
@@ -183,6 +182,8 @@ class _ConcertsState extends State<ConcertsScreen> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: mainSchemeColor,
                         disabledBackgroundColor: accentColor,
+                        foregroundColor: textfieldTextColor,
+                        elevation: 5,
                       ),
                       child: Text(
                         'Prev',
@@ -194,7 +195,7 @@ class _ConcertsState extends State<ConcertsScreen> {
                       style: defaultTextStyle,
                     ),
                     ElevatedButton(
-                      onPressed: page+1 != totalPages ? () {
+                      onPressed: page+1 < totalPages ? () {
                         page++;
                         (done = getConcertList(oldQuery)).then((entry) => {
                           setState(() {})
@@ -204,6 +205,7 @@ class _ConcertsState extends State<ConcertsScreen> {
                         backgroundColor: mainSchemeColor,
                         disabledBackgroundColor: accentColor,
                         foregroundColor: textfieldTextColor,
+                        elevation: 5,
                       ),
                       child: Text(
                         'Next',
@@ -276,7 +278,6 @@ class _ConcertsState extends State<ConcertsScreen> {
     DateTime toDateTime = widget.filter.end.toUtc();
     String fromDate = DateFormat("yyyy-MM-ddTHH:mm:ss").format(fromDateTime);
     String toDate = DateFormat("yyyy-MM-ddTHH:mm:ss").format(toDateTime);
-    print("From Date: $fromDate, To Date: $toDate");
 
     queries['fromDateTime'] = fromDate;
     queries['toDateTime'] = toDate;
@@ -287,7 +288,6 @@ class _ConcertsState extends State<ConcertsScreen> {
       print(res.body);
       return false;
     }
-    //print(res.body);
 
     var data = json.decode(res.body);
     if (!data.containsKey('searchResults')) {

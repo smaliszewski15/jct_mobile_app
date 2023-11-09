@@ -6,11 +6,11 @@ import 'package:wakelock/wakelock.dart';
 
 import '../APIfunctions/api_globals.dart';
 import '../components/audio_wavepainter.dart';
-import '../components/player.dart';
-import '../components/recorder.dart';
-import '../components/socket_listener.dart';
+import '../utils/player.dart';
+import '../utils/recorder.dart';
 import '../utils/colors.dart';
 import '../utils/globals.dart';
+import '../utils/socketMaestro.dart';
 import '../utils/user.dart';
 
 class MaestroScreen extends StatefulWidget {
@@ -22,9 +22,9 @@ class MaestroScreen extends StatefulWidget {
   _MaestroScreenState createState() => _MaestroScreenState();
 }
 
-class _MaestroScreenState extends State<MaestroScreen> {
+class _MaestroScreenState extends State<MaestroScreen> with WidgetsBindingObserver{
   final buttonNotifier = ValueNotifier<bool>(false);
-  SocketConnect? socket;
+  SocketMaestro? socket;
 
   final Player _mPlayer = Player();
   final Recorder _mRecorder = Recorder();
@@ -36,15 +36,45 @@ class _MaestroScreenState extends State<MaestroScreen> {
 
   @override
   void initState() {
-    connect();
     super.initState();
+    connect();
+    WidgetsBinding.instance.addObserver(this);
   }
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     release();
-    disconnect();
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    switch (state) {
+      case AppLifecycleState.inactive:
+      case AppLifecycleState.detached:
+        print(state);
+        stopEverything();
+        break;
+      case AppLifecycleState.paused:
+        print(state);
+        stopEverything();
+        break;
+      case AppLifecycleState.resumed:
+        print(state);
+        if (socket == null) {
+          connect();
+        }
+        if (!_mPlayer.isPlaying) {
+          listenForSink();
+        }
+        if (!_mRecorder.isRecording) {
+          record();
+        }
+        break;
+      default:
+        return;
+    }
   }
 
   Future<void> release() async {
@@ -71,7 +101,7 @@ class _MaestroScreenState extends State<MaestroScreen> {
 
   Future<void> connect() async {
     print(user.username);
-    socket = SocketConnect(SocketType.maestro, user.username, widget.passcode);
+    socket = SocketMaestro(user.username, widget.passcode);
     isConnected = true;
     socket!.socket.stream.listen(
           (data) {
@@ -101,9 +131,6 @@ class _MaestroScreenState extends State<MaestroScreen> {
       },
       onDone: () {
         print('hereDone');
-        stopEverything();
-        //print('done');
-
       },
       onError: (error) => print(error),
     );
@@ -112,7 +139,7 @@ class _MaestroScreenState extends State<MaestroScreen> {
 
   Future<void> stopEverything() async {
     if (isConnected) {
-      socket!.socket.sink.add(stop);
+      isConnected = false;
     }
 
     await stopRecorder();
@@ -142,7 +169,9 @@ class _MaestroScreenState extends State<MaestroScreen> {
         recordingDataController.stream.listen((buffer) {
           if (buffer is FoodData) {
             if (buffer.data != null) {
-              socket!.socket.sink.add(musicHeader(buffer.data!));
+              if (socket != null) {
+                socket!.socket.sink.add(musicHeader(buffer.data!));
+              }
 
               var newData = Uint8List.fromList(buffer.data!);
               audio!.add(newData);
@@ -160,7 +189,6 @@ class _MaestroScreenState extends State<MaestroScreen> {
   Future<void> listenForSink() async {
     await _mPlayer.listen();
     _mPlayer.mPlayer!.foodSink!.add(FoodData(silence));
-    _mPlayer.isPlaying = true;
     setState(() {});
   }
 
@@ -168,50 +196,60 @@ class _MaestroScreenState extends State<MaestroScreen> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        var leave = await showDialog(
-            context: context,
-            builder: (context) {
-              return AlertDialog(
-                title: const Text("Before you leave..."),
-                shape:  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10)),
-                elevation: 15,
-                actions: <Widget>[
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pop(context, false);
-                    },
-                    child: Text(
-                      'Cancel',
-                      style: invalidTextStyle,
+        if (isConnected == true) {
+          var leave = await showDialog(
+              context: context,
+              builder: (context) {
+                return AlertDialog(
+                  title: const Text("Before you leave..."),
+                  shape:  RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10)),
+                  elevation: 15,
+                  actions: <Widget>[
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context, false);
+                      },
+                      child: Text(
+                        'Cancel',
+                        style: invalidTextStyle,
+                      ),
                     ),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pop(context, true);
-                    },
-                    child: Text(
-                      'Leave',
-                      style: invalidTextStyle,
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context, true);
+                      },
+                      child: Text(
+                        'Leave',
+                        style: invalidTextStyle,
+                      ),
                     ),
+                  ],
+                  content: Text(
+                    "Are you sure you want to leave? This will end the session for all of the participants",
+                    style: defaultTextStyle,
                   ),
-                ],
-                content: Text(
-                  "Are you sure you want to leave? This will end the session for all of the participants",
-                  style: defaultTextStyle,
-                ),
-              );
-            }
-        );
-        if (leave != true) {
-          return false;
+                );
+              }
+          );
+          if (leave != true) {
+            return false;
+          }
+          socket!.socket.sink.add(stop);
+          stopEverything();
         }
-        stopEverything();
         return true;
       },
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: backgroundColor,
+          leading: IconButton(
+            icon: Icon(Icons.navigate_before, color: accentColor),
+            iconSize: 35,
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+          backgroundColor: mainSchemeColor,
         ),
         body: Container(
             width: double.infinity,
@@ -245,7 +283,7 @@ class _MaestroScreenState extends State<MaestroScreen> {
                             ),
                             child: Text(
                               participants[index],
-                              style: defaultTextStyle,
+                              style: whiteDefaultTextStyle,
                               textAlign: TextAlign.center,
                             ),
                           );
@@ -286,7 +324,11 @@ class _MaestroScreenState extends State<MaestroScreen> {
                           return;
                         }
                         if (_mRecorder.isRecording) {
+                          socket!.socket.sink.add(stop);
                           await stopEverything();
+                          if (context.mounted) {
+                            Navigator.pop(context);
+                          }
                         } else {
                           if (socket == null) {
                             connect();
