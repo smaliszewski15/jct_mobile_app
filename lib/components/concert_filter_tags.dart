@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../utils/concert_tags_manager.dart';
+import '../managers/concert_tags_manager.dart';
 import '../utils/colors.dart';
 import '../utils/globals.dart';
 

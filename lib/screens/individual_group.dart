@@ -5,8 +5,8 @@ import 'package:intl/intl.dart';
 import '../APIfunctions/groupsAPI.dart';
 import '../utils/colors.dart';
 import '../utils/globals.dart';
-import '../utils/group.dart';
-import '../utils/user.dart';
+import '../models/group.dart';
+import '../models/user.dart';
 
 enum SocketType {
   listener,

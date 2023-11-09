@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:intl/intl.dart';
 import '../APIfunctions/concertAPI.dart';
-import '../utils/concert.dart';
+import '../models/concert.dart';
 import '../utils/concert_player.dart';
 import '../utils/colors.dart';
 import '../utils/globals.dart';

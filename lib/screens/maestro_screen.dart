@@ -11,7 +11,7 @@ import '../utils/recorder.dart';
 import '../utils/colors.dart';
 import '../utils/globals.dart';
 import '../utils/socketMaestro.dart';
-import '../utils/user.dart';
+import '../models/user.dart';
 
 class MaestroScreen extends StatefulWidget {
   late final String passcode;
@@ -130,7 +130,11 @@ class _MaestroScreenState extends State<MaestroScreen> with WidgetsBindingObserv
 
       },
       onDone: () {
-        print('hereDone');
+            if (isConnected == true) {
+              stopEverything();
+            }
+          print('hereDone');
+          setState(() {});
       },
       onError: (error) => print(error),
     );
@@ -149,7 +153,7 @@ class _MaestroScreenState extends State<MaestroScreen> with WidgetsBindingObserv
     setState(() {});
   }
 
-  Future<void> disconnect() async {
+  void disconnect() {
     if (socket != null) {
       socket!.disconnect();
     }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../utils/colors.dart';
-import '../utils/concert.dart';
+import '../models/concert.dart';
 import '../utils/globals.dart';
 
 class ConcertCard extends StatefulWidget {

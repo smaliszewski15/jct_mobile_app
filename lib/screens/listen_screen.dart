@@ -9,7 +9,7 @@ import '../utils/player.dart';
 import '../utils/colors.dart';
 import '../utils/globals.dart';
 import '../utils/socketListener.dart';
-import '../utils/user.dart';
+import '../models/user.dart';
 
 final Uint8List silence = Uint8List(5000);
 

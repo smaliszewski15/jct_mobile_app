@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import '../utils/colors.dart';
 import '../utils/globals.dart';
-import '../utils/concert_search_manager.dart';
+import '../managers/concert_search_manager.dart';
 
 class ConcertFilterDrawer extends StatefulWidget {
   late final ConcertSearchManager filter;

@@ -5,10 +5,10 @@ import 'package:intl/intl.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 import '../APIfunctions/groupsAPI.dart';
 import '../components/group_card.dart';
+import '../managers/schedule_manager.dart';
 import '../utils/colors.dart';
 import '../utils/globals.dart';
-import '../utils/group.dart';
-import '../utils/schedule_manager.dart';
+import '../models/group.dart';
 
 class ScheduleScreen extends StatefulWidget {
   late ScheduleManager filter;

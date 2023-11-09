@@ -4,7 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../APIfunctions/userAPI.dart';
 import '../utils/colors.dart';
 import '../utils/globals.dart';
-import '../utils/user.dart';
+import '../models/user.dart';
 import '../components/tooltips.dart';
 import '../components/textfields.dart';
 

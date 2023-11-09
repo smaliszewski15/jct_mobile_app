@@ -11,7 +11,7 @@ import '../screens/listen_screen.dart';
 import '../screens/performer_screen.dart';
 import '../screens/maestro_screen.dart';
 import '../screens/register.dart';
-import '../utils/group.dart';
+import '../models/group.dart';
 
 class Routes {
   static const String skeletonScreen = '/skeleton';

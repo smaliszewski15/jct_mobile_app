@@ -6,11 +6,11 @@ import 'package:intl/intl.dart';
 import '../APIfunctions/concertAPI.dart';
 import '../APIfunctions/groupsAPI.dart';
 import '../components/concert_card.dart';
-import '../utils/concert.dart';
+import '../models/concert.dart';
 import '../utils/colors.dart';
-import '../utils/group.dart';
+import '../models/group.dart';
 import '../utils/globals.dart';
-import '../utils/concert_search_manager.dart';
+import '../managers/concert_search_manager.dart';
 
 class ConcertsScreen extends StatefulWidget {
   late final ConcertSearchManager filter;

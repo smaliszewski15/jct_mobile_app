@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'api_globals.dart';
-import '../utils/user.dart';
+import '../models/user.dart';
 
 class UserAPI {
   static const String apiRoute = '/api/users';

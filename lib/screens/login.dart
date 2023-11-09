@@ -6,7 +6,7 @@ import '../components/tooltips.dart';
 import '../components/textfields.dart';
 import '../utils/colors.dart';
 import '../utils/globals.dart';
-import '../utils/user.dart';
+import '../models/user.dart';
 
 class LogInPage extends StatefulWidget {
   @override

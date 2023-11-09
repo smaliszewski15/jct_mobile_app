@@ -11,7 +11,7 @@ import '../utils/recorder.dart';
 import '../utils/colors.dart';
 import '../utils/globals.dart';
 import '../utils/socketPerformer.dart';
-import '../utils/user.dart';
+import '../models/user.dart';
 
 class PerformerScreen extends StatefulWidget {
   late final String passcode;

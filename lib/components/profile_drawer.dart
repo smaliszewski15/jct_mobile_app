@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../utils/colors.dart';
 import '../utils/globals.dart';
-import '../utils/user.dart';
+import '../models/user.dart';
 
 class HomeDrawer extends StatefulWidget {
 

@@ -5,13 +5,12 @@ import 'schedule_screen.dart';
 import '../components/concert_filter.dart';
 import '../components/group_filter.dart';
 import '../components/profile_drawer.dart';
-//import '../utils/concert_tags_manager.dart';
+import '../managers/concert_search_manager.dart';
+import '../managers/schedule_manager.dart';
+import '../managers/nav_bar_manager.dart';
 import '../utils/colors.dart';
 import '../utils/globals.dart';
-import '../utils/concert_search_manager.dart';
-import '../utils/schedule_manager.dart';
-import '../utils/nav_bar_manager.dart';
-import '../utils/user.dart';
+import '../models/user.dart';
 
 class Skeleton extends StatefulWidget {
   @override

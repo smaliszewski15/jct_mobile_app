@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import '../utils/group.dart';
+import '../models/group.dart';
 import '../utils/colors.dart';
 import '../utils/globals.dart';
 

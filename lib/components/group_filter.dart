@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import '../managers/schedule_manager.dart';
 import '../utils/colors.dart';
 import '../utils/globals.dart';
-import '../utils/schedule_manager.dart';
 
 class FilterDrawer extends StatefulWidget {
   late ScheduleManager filter;
