@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import '../APIfunctions/concertAPI.dart';
 import '../APIfunctions/groupsAPI.dart';
 import '../utils/colors.dart';
 import '../utils/globals.dart';
@@ -15,9 +16,9 @@ enum SocketType {
 }
 
 class IndividualGroup extends StatefulWidget {
-  late final Group group;
+  late final int groupID;
 
-  IndividualGroup(this.group);
+  IndividualGroup(this.groupID);
 
   @override
   _IndividualGroupState createState() => _IndividualGroupState();
@@ -26,6 +27,8 @@ class IndividualGroup extends StatefulWidget {
 class _IndividualGroupState extends State<IndividualGroup> {
   List<String> methods = ['Surprise Me', 'IChing', 'Spotlight'];
   late bool isCreator;
+  late Group group;
+  Future<bool>? done;
 
   bool isEditing = false;
   String errorMessage = '';
@@ -35,10 +38,10 @@ class _IndividualGroupState extends State<IndividualGroup> {
   @override
   void initState() {
     super.initState();
-    //done = retrieveGroup();
+    done = retrieveGroup();
     method = methods.first;
-    _concertDate.text =
-        DateFormat('yyyy-mm-dd HH:mm').format(widget.group.date!);
+    //_concertDate.text =
+    //    DateFormat('yyyy-mm-dd HH:mm').format(group.date!);
     _title.text = '';
     isCreator = created();
   }
@@ -51,10 +54,10 @@ class _IndividualGroupState extends State<IndividualGroup> {
   //Future<bool>? done;
 
   bool created() {
-    if (user.id != widget.group.maestroID) {
+    if (user.id != group.maestroID) {
       return false;
     }
-    if (user.username != widget.group.maestro) {
+    if (user.username != group.maestro) {
       return false;
     }
     return true;
@@ -422,7 +425,7 @@ class _IndividualGroupState extends State<IndividualGroup> {
                                   },
                                   child: Text(
                                     'Maestro',
-                                    style: defaultTextStyle.copyWith(
+                                    style: smallTextStyle.copyWith(
                                       fontWeight: FontWeight.w400,
                                     ),
                                     textAlign: TextAlign.center,
@@ -460,7 +463,7 @@ class _IndividualGroupState extends State<IndividualGroup> {
                                 },
                                 child: Text(
                                   'Performer',
-                                  style: defaultTextStyle.copyWith(
+                                  style: smallTextStyle.copyWith(
                                     fontWeight: FontWeight.w400,
                                   ),
                                   textAlign: TextAlign.center,
@@ -496,7 +499,7 @@ class _IndividualGroupState extends State<IndividualGroup> {
                                 },
                                 child: Text(
                                   'Listener',
-                                  style: defaultTextStyle.copyWith(
+                                  style: smallTextStyle.copyWith(
                                     fontWeight: FontWeight.w400,
                                   ),
                                   textAlign: TextAlign.center,
@@ -817,7 +820,7 @@ class _IndividualGroupState extends State<IndividualGroup> {
       );
     });
 
-    if (logged == null) {
+    if (logged != true && logged != false) {
       return false;
     }
 
@@ -986,15 +989,26 @@ class _IndividualGroupState extends State<IndividualGroup> {
     });
   }
 
-  // Future<bool> retrieveGroup() async {
-  //   Map<String, dynamic> groupsJSON = GroupsAPI.getGroup;
-  //   if (!groupsJSON.containsKey('group')) {
-  //     return false;
-  //   }
-  //   var data = groupsJSON['group'];
-  //   group = Group.fromJson(data);
-  //   return true;
-  // }
+  Future<bool> retrieveGroup() async {
+    Map<String, dynamic> query = {
+      'id': '${widget.groupID}',
+    };
+
+    final res = await ConcertsAPI.getSongData(query);
+
+    if (res.statusCode != 200) {
+      return false;
+    }
+
+    var data = json.decode(res.body);
+    if (!data.containsKey('group')) {
+      return false;
+    }
+
+    group = Group.songFromJson(data['group']);
+
+    return true;
+  }
 }
 
 class PasscodeAlert extends StatefulWidget {

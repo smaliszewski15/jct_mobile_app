@@ -53,7 +53,9 @@ class _GroupCardState extends State<GroupCard>
                   onPressed: widget.clickable
                       ? () {
                           Navigator.pushNamed(context, '/group/group',
-                              arguments: widget.group!);
+                              arguments: widget.group!).then((entry) {
+                                setState(() {});
+                          });
                         }
                       : null,
                   style: TextButton.styleFrom(

@@ -392,7 +392,7 @@ class _AddGroupState extends State<AddGroup> {
           );
         });
 
-    if (logged != true) {
+    if (logged != true && logged != false) {
       return false;
     }
 

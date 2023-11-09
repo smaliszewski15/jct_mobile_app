@@ -25,6 +25,8 @@ class _ConcertsState extends State<ConcertsScreen> {
   @override
   void initState() {
     super.initState();
+    widget.filter.end = DateTime.now();
+    widget.filter.toChangeEnd = DateTime.now();
     getNextConcert();
     done = getConcertList('');
     searchFocus.addListener(() => searchLostFocus());
@@ -158,7 +160,7 @@ class _ConcertsState extends State<ConcertsScreen> {
                 width: double.infinity,
                 child: Text(
                   'No upcoming concerts at this time. Go schedule one by going to the "Schedule" tab!',
-                  style: blackHeadingTextStyle,
+                  style: headingTextStyle,
                   textAlign: TextAlign.center,
                 ),
               ),

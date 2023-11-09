@@ -36,6 +36,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
     DateTime now = DateTime.now();
     int minutes = 20 - (now.minute % 20);
     refresh = Timer.periodic(Duration(minutes: minutes), (Timer t) {
+      refresh!.cancel();
       setState(() {
         refresh = Timer.periodic(const Duration(minutes: 20), (Timer t) {
           setState(() {});
@@ -61,64 +62,79 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
       color: backgroundColor,
       child: Column(
         children: <Widget>[
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              TextButton(
-                onPressed: !_reserveToggle
-                    ? () {
-                        totalHeight = 60;
-                        reserving = true;
-                        browsing = false;
-                        setState(() => _reserveToggle = true);
-                      }
-                    : null,
-                style: TextButton.styleFrom(
-                  padding: EdgeInsets.zero,
-                ),
-                child: Container(
-                  width: 100,
-                  height: toggleHeight,
-                  color: _reserveToggle ? mainSchemeColor : accentColor,
-                  child: Align(
-                    alignment: Alignment.center,
-                    child: Text(
-                      'Reserve',
-                      style: defaultTextStyle.copyWith(
-                        color: _reserveToggle ? textColor : whiteTextColor,
+          Container(
+            decoration: BoxDecoration(
+              color: accentColor,
+              borderRadius: const BorderRadius.all(Radius.circular(roundedCorners)),
+            ),
+            margin: const EdgeInsets.all(5),
+            padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                TextButton(
+                  onPressed: !_reserveToggle
+                      ? () {
+                    totalHeight = 60;
+                    reserving = true;
+                    browsing = false;
+                    setState(() => _reserveToggle = true);
+                  }
+                      : null,
+                  style: TextButton.styleFrom(
+                    padding: EdgeInsets.zero,
+                  ),
+                  child: Container(
+                    width: 100,
+                    height: toggleHeight,
+                    decoration: BoxDecoration(
+                      color: _reserveToggle ? mainSchemeColor : null,
+                      borderRadius: const BorderRadius.all(Radius.circular(roundedCorners)),
+                    ),
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: Text(
+                        'Reserve',
+                        style: defaultTextStyle.copyWith(
+                          color: _reserveToggle ? textColor : whiteTextColor,
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-              TextButton(
-                onPressed: _reserveToggle
-                    ? () {
-                        totalHeight = 120;
-                        reserving = false;
-                        browsing = true;
-                        setState(() => _reserveToggle = false);
-                      }
-                    : null,
-                style: TextButton.styleFrom(
-                  padding: EdgeInsets.zero,
-                ),
-                child: Container(
-                  width: 100,
-                  height: toggleHeight,
-                  color: _reserveToggle ? accentColor : mainSchemeColor,
-                  child: Align(
-                    alignment: Alignment.center,
-                    child: Text(
-                      'Browse',
-                      style: defaultTextStyle.copyWith(
-                        color: _reserveToggle ? whiteTextColor : textColor,
+                TextButton(
+                  onPressed: _reserveToggle
+                      ? () {
+                    totalHeight = 120;
+                    reserving = false;
+                    browsing = true;
+                    setState(() => _reserveToggle = false);
+                  }
+                      : null,
+                  style: TextButton.styleFrom(
+                    padding: EdgeInsets.zero,
+                  ),
+                  child: Container(
+                    width: 100,
+                    height: toggleHeight,
+                    decoration: BoxDecoration(
+                      color: _reserveToggle ? null : mainSchemeColor,
+                      borderRadius: const BorderRadius.all(Radius.circular(roundedCorners)),
+                    ),
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: Text(
+                        'Browse',
+                        style: defaultTextStyle.copyWith(
+                          color: _reserveToggle ? whiteTextColor : textColor,
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
           Expanded(
             child: ValueListenableBuilder<bool>(
@@ -177,7 +193,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
 
     var data = json.decode(res.body);
 
-    for (var concerts in data['scheduledTimes']) {
+    for (var concerts in data['scheduledGroups']) {
       Group newGroup = Group.fromDateConcert(concerts);
       if (groups.isNotEmpty) {
         int place = 0;

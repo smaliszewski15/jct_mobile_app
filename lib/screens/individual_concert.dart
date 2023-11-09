@@ -273,11 +273,12 @@ class _ConcertPageState extends State<ConcertPage> {
                             builder: (_, value, __) {
                               switch (value) {
                                 case ButtonState.loading:
-                                  return Container(
-                                    margin: const EdgeInsets.all(8),
+                                  return const SizedBox(
                                     width: 250,
                                     height: 250,
-                                    child: const CircularProgressIndicator(),
+                                    child: Center(
+                                      child: CircularProgressIndicator(),
+                                    ),
                                   );
                                 case ButtonState.paused:
                                   return IconButton(

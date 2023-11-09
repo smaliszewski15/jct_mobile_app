@@ -61,7 +61,7 @@ class HomeScreen extends StatelessWidget {
                   Flexible(
                     child: Text(
                       'In honor of John Cage, this project was made in order to express his quote “Everything we do is music”. '
-                          'You and up to 4 other friends can sign up and schedule a session. From there, everyone in the session can'
+                          'You and up to 4 other friends can sign up and schedule a session. From there, everyone in the session can '
                           'take a recording of any sound and mix them all into one song called a concert. It can be any sound such as '
                           'waves of a beach, birds chirping, sound of a metro passing by, and so much more.',
                       style: smallTextStyle,

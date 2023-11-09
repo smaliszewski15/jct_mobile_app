@@ -264,7 +264,7 @@ class _ProfileState extends State<Profile> {
                               color: mainSchemeColor,
                               border: Border.all(color: black, width: 3),
                             ),
-                            child: OutlinedButton(
+                            child: TextButton(
                               onPressed: () {
                                 Navigator.pushNamed(
                                     context, '/profile/edit/information').then((entry) => entry == true ? setState((){}) : null);
@@ -287,7 +287,7 @@ class _ProfileState extends State<Profile> {
                               color: mainSchemeColor,
                               border: Border.all(color: black, width: 3),
                             ),
-                            child: OutlinedButton(
+                            child: TextButton(
                               onPressed: () {
                                 Navigator.restorablePushNamed(
                                     context, '/profile/edit/password');

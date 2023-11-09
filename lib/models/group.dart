@@ -42,9 +42,10 @@ class Group {
     return Group(groupID: id, maestro: leader, maestroID: maestroID, title: title, date: date, tags: tags, description: description);
   }
 
-  factory Group.fromDateConcert(String date) {
-    DateTime newDate = DateFormat('yyyy-MM-ddTHH:mm:ss').parse(date, true);
-    return Group(date: newDate.toLocal());
+  factory Group.fromDateConcert(Map<String,dynamic> date) {
+    DateTime newDate = DateFormat('yyyy-MM-ddTHH:mm:ss').parse(date['DateTime'], true);
+    int id = date['GroupID'];
+    return Group(groupID: id, date: newDate.toLocal());
   }
 
   void addPasscodes(Map json) {
