@@ -65,7 +65,7 @@ class Routes {
         }
       case groupScreen:
         var arguments = settings.arguments;
-        if (arguments is Group) {
+        if (arguments is int) {
           return MaterialPageRoute(builder: (context) => IndividualGroup(arguments));
         }
         else {

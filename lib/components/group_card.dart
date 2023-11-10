@@ -9,13 +9,12 @@ class GroupCard extends StatefulWidget {
   late double height;
   late final DateTime? date;
   final buttonNotifier = ValueNotifier<double>(25);
-  bool clickable = false;
+  bool clickable;
+  final ValueNotifier added;
 
-  GroupCard({this.group, this.height = 60, this.date, this.clickable = false}) {
+  GroupCard({this.group, this.height = 60, this.date, required this.clickable, required this.added}) {
     buttonNotifier.value = height;
   }
-
-  void clickState() => clickable = !clickable;
 
   void changeHeight(double newHeight) => height = newHeight;
 
@@ -52,10 +51,8 @@ class _GroupCardState extends State<GroupCard>
                 child: TextButton(
                   onPressed: widget.clickable
                       ? () {
-                          Navigator.pushNamed(context, '/group/group',
-                              arguments: widget.group!).then((entry) {
-                                setState(() {});
-                          });
+                          Navigator.restorablePushNamed(context, '/group/group',
+                              arguments: widget.group!.groupID);
                         }
                       : null,
                   style: TextButton.styleFrom(
@@ -125,7 +122,10 @@ class _GroupCardState extends State<GroupCard>
                     ? () {
                         Navigator.pushNamed(context, '/group/add',
                             arguments: widget.date!).then((entry) {
-                              setState(() {});
+                              print('here');
+                              if (entry == true) {
+                                widget.added.value = true;
+                              }
                         });
                       }
                     : null,

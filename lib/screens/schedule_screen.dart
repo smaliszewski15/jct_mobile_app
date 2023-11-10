@@ -220,6 +220,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
         reserving: reserving,
         browsing: browsing,
         totalHeight: totalHeight,
+        changed: widget.filter.changedNotifier
       ));
       day = day.add(const Duration(days: 1));
     }
@@ -232,9 +233,10 @@ class Section extends StatelessWidget {
   final int currentDay;
   final List<Group> groups;
   late final List<DateTime> tempList;
-  bool reserving;
-  bool browsing;
-  double totalHeight;
+  final bool reserving;
+  final bool browsing;
+  final double totalHeight;
+  final changed;
 
   Section(
       {required this.currentMonth,
@@ -242,7 +244,8 @@ class Section extends StatelessWidget {
       required this.groups,
       required this.reserving,
       required this.browsing,
-      required this.totalHeight}) {
+      required this.totalHeight,
+      required this.changed}) {
     tempList = dateList();
   }
 
@@ -311,12 +314,14 @@ class Section extends StatelessWidget {
                 group: groups[groupList++],
                 height: totalHeight,
                 clickable: browsing,
+                added: changed,
               );
             } else {
               return GroupCard(
                 date: tempList[index],
                 height: totalHeight,
                 clickable: reserving,
+                added: changed,
               );
             }
           },

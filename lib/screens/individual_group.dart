@@ -29,8 +29,6 @@ class _IndividualGroupState extends State<IndividualGroup> {
   late bool isCreator;
   late Group group;
   Future<bool>? done;
-
-  bool isEditing = false;
   String errorMessage = '';
 
   late String method;
@@ -43,7 +41,6 @@ class _IndividualGroupState extends State<IndividualGroup> {
     //_concertDate.text =
     //    DateFormat('yyyy-mm-dd HH:mm').format(group.date!);
     _title.text = '';
-    isCreator = created();
   }
 
   final _concertDate = TextEditingController();
@@ -71,711 +68,355 @@ class _IndividualGroupState extends State<IndividualGroup> {
           icon: Icon(Icons.navigate_before, color: accentColor),
           iconSize: 35,
           onPressed: () {
-            Navigator.pop(context);
+            Navigator.pop(context, true);
           },
         ),
-        // actions: isCreator
-        //     ? <Widget>[
-        //         IconButton(
-        //           icon: Icon(
-        //             Icons.delete,
-        //             color: invalidColor,
-        //           ),
-        //           iconSize: 35,
-        //           onPressed: () async {
-        //             bool confirm = await showDialog(
-        //               context: context,
-        //               barrierDismissible: false,
-        //               builder: (context) {
-        //                 return AlertDialog(
-        //                   title: const Text('Delete Group?',
-        //                       style: TextStyle(
-        //                           fontSize: titleFontSize, color: black)),
-        //                   shape: RoundedRectangleBorder(
-        //                       borderRadius: BorderRadius.circular(10)),
-        //                   elevation: 15,
-        //                   actions: <Widget>[
-        //                     TextButton(
-        //                       onPressed: () {
-        //                         Navigator.pop(context, false);
-        //                       },
-        //                       child: const Text(
-        //                         'Cancel',
-        //                         style: TextStyle(color: black, fontSize: 18),
-        //                       ),
-        //                     ),
-        //                     TextButton(
-        //                       onPressed: () {
-        //                         Navigator.pop(context, true);
-        //                       },
-        //                       child: const Text(
-        //                         'Delete',
-        //                         style: TextStyle(color: red, fontSize: 18),
-        //                       ),
-        //                     )
-        //                   ],
-        //                   content: const Column(
-        //                     mainAxisSize: MainAxisSize.min,
-        //                     children: <Widget>[
-        //                       Flexible(
-        //                           child: Text(
-        //                               'Are you sure you want to delete this group?')),
-        //                     ],
-        //                   ),
-        //                 );
-        //               },
-        //             );
-        //
-        //             if (!mounted) return;
-        //
-        //             if (confirm) {
-        //               Navigator.pop(context);
-        //             }
-        //           },
-        //         ),
-        //       ]
-        //     : null,
         backgroundColor: mainSchemeColor,
-        automaticallyImplyLeading: false,
       ),
       backgroundColor: backgroundColor,
       body: GestureDetector(
         behavior: HitTestBehavior.translucent,
         onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
-        child: CustomScrollView(
-          slivers:  <Widget>[
-            SliverToBoxAdapter(
-              child: Container(
-                padding: const EdgeInsets.all(20),
-                child: isEditing
-                    ? TextField(
-                  maxLines: 1,
-                  controller: _title,
-                  decoration: titleUnfilled
-                      ? InputDecoration(
-                    contentPadding: const EdgeInsets.all(5),
-                    counterText: '',
-                    filled: true,
-                    fillColor: mainSchemeColor,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20),
-                      borderSide: const BorderSide(color: black),
-                    ),
-                  )
-                      : InputDecoration(
-                    contentPadding: const EdgeInsets.all(5),
-                    counterText: '',
-                    filled: true,
-                    fillColor: mainSchemeColor,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20),
-                      borderSide: BorderSide(color: invalidColor),
-                    ),
-                  ),
-                  style: titleTextStyle.copyWith(color: textfieldTextColor),
-                  onChanged: (field) {
-                    if (field.isEmpty) {
-                      setState(() => titleUnfilled = true);
-                      return;
-                    }
-                    setState(() => titleUnfilled = false);
-                  },
-                  textAlign: TextAlign.center,
-                )
-                    : Text(
-                  widget.group.title,
-                  style: titleTextStyle.copyWith(color: textColor),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            ),
-            SliverToBoxAdapter(
-                child: Container(
-                  width: double.infinity,
-                  margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        'Scheduled Date: ',
-                        style: defaultTextStyle,
-                      ),
-                      Text(
-                        DateFormat('E, MMM dd, yyyy - hh:mm')
-                            .format(widget.group.date!),
-                        style: defaultTextStyle,
-                      )
-                    ],
-                  ),
-                ),
-            ),
-            SliverToBoxAdapter(
-                child: Container(
-                  width: double.infinity,
-                  margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        'Mixing Method: ',
-                        style: defaultTextStyle,
-                      ),
-                      // if (isEditing)
-                      //   Container(
-                      //       padding: const EdgeInsets.all(5),
-                      //       decoration: BoxDecoration(
-                      //         color: mainSchemeColor,
-                      //         borderRadius: BorderRadius.circular(20),
-                      //         border: Border.all(color: black),
-                      //       ),
-                      //       child: DropdownButton<String>(
-                      //           value: method,
-                      //           dropdownColor: mainSchemeColor,
-                      //           icon: const Icon(Icons.arrow_drop_down,
-                      //               color: black),
-                      //           onChanged: (String? value) {
-                      //             setState(() {
-                      //               method = value!;
-                      //             });
-                      //           },
-                      //           items: methods.map<DropdownMenuItem<String>>(
-                      //                 (String value) {
-                      //               return DropdownMenuItem<String>(
-                      //                 value: value,
-                      //                 child: Text(value),
-                      //               );
-                      //             },
-                      //           ).toList()))
-                      // else
-                      Text(
-                        widget.group.mixer == null ? "Default" : widget.group.mixer!.name,
-                        style: defaultTextStyle,
-                      ),
-                    ],
-                  ),
-                ),
-            ),
-            SliverToBoxAdapter(
-                child: Container(
-                  width: double.infinity,
-                  margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                  child: Text(
-                    'Group Leader: ',
-                    style: defaultTextStyle,
-                  ),
-                ),
-            ),
-            SliverToBoxAdapter(
-                child: Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(5),
-                  margin:
-                  const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                  color: accentColor,
-                  child: Text(
-                    widget.group.maestro,
-                    style: whiteDefaultTextStyle,
-                  ),
-                ),
-            ),
-            SliverToBoxAdapter(
-                child: Container(
-                  width: double.infinity,
-                  margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                  child: Text(
-                    'Tags: ',
-                    style: defaultTextStyle,
-                  ),
-                ),
-            ),
-            SliverToBoxAdapter(
-                child: Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(5),
-                  margin:
-                  const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                  color: accentColor,
-                  child: Text(
-                    widget.group.tags.split('`').join(', '),
-                    style: whiteDefaultTextStyle,
-                  ),
-                ),
-            ),
-            SliverToBoxAdapter(
-                child: Container(
-                  width: double.infinity,
-                  margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                  child: Text(
-                    'Description: ',
-                    style: defaultTextStyle,
-                  ),
-                ),
-            ),
-            SliverToBoxAdapter(
-                child: Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(5),
-                  margin:
-                  const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                  color: accentColor,
-                  child: Text(
-                    widget.group.description,
-                    style: whiteDefaultTextStyle,
-                  ),
-                ),
-            ),
-            if (widget.group.passcodes != null)
-              SliverToBoxAdapter(
-                  child: Container(
-                    width: double.infinity,
-                    margin:
-                    const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                    child: Text(
-                      'Passcodes: ',
-                      style: defaultTextStyle,
-                    ),
-                  ),
-              ),
-            if (widget.group.passcodes != null)
-              SliverToBoxAdapter(
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    itemCount: widget.group.passcodes!.length,
-                    itemBuilder: (context, index) {
-                      return Row(
-                        children: <Widget>[
-                          if (index == 0)
-                            Text(
-                              'Maestro Passcode: ',
-                              style: defaultTextStyle,
-                            ),
-                          if (index == widget.group.passcodes!.length - 1)
-                            Text(
-                              'Listener Passcode: ',
-                              style: defaultTextStyle,
-                            ),
-                          if (index != 0 && index != widget.group.passcodes!.length - 1)
-                            Text(
-                              'User$index Passcode: ',
-                              style: defaultTextStyle,
-                            ),
-                          Text(
-                            widget.group.passcodes![index].toString(),
-                            style: defaultTextStyle,
-                          ),
-                        ],
-                      );
-                    },
-                  ),
-              ),
+        child: FutureBuilder(
+            future: done,
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              switch (snapshot.connectionState) {
+                case ConnectionState.none:
+                case ConnectionState.active:
+                case ConnectionState.waiting:
+                  return const CircularProgressIndicator();
+                case ConnectionState.done:
+                  if (snapshot.hasError) {
+                    return Text('Error: $snapshot.error}');
+                  }
+                  isCreator = created();
 
-            if (widget.group.date!.difference(DateTime.now()).inMinutes < 40)
-              SliverToBoxAdapter(
-                  child: Column(
-                    children: <Widget>[
-                      Container(
-                        padding: const EdgeInsets.all(5),
-                        child: Text(
-                          'Are you the leader of this group? Or do you want to join in? Or do you just want to listen? Click one of buttons below!',
-                          style: headingTextStyle,
-                          textAlign: TextAlign.center,
+                  return CustomScrollView(
+                    slivers:  <Widget>[
+                      SliverToBoxAdapter(
+                        child: Container(
+                          padding: const EdgeInsets.all(20),
+                          child: Text(
+                            group.title,
+                            style: titleTextStyle.copyWith(color: textColor),
+                            textAlign: TextAlign.center,
+                          ),
                         ),
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          if (user.logged)
-                            Expanded(
-                              flex: 3,
-                              child: Container(
-                                margin: const EdgeInsets.all(4),
-                                decoration: BoxDecoration(
-                                  color: mainSchemeColor,
-                                  border: Border.all(color: black, width: 3),
-                                ),
-                                child: TextButton(
-                                  onPressed: () async {
-                                    //UNCOMMENT WHEN NOT DOING UI SHIT
-                                    bool logged = await logMaestroIn();
-                                    if (!logged) {
-                                      setState(() => errorMessage = "You must be logged in to start the concert");
-                                      return;
-                                    }
-                                    bool pass = await getPasscode();
-                                    if (!pass) {
-                                      setState(() => errorMessage = "You must enter your maestro passcode to start the concert");
-                                      _passcode.editor.clear();
-                                      return;
-                                    }
-                                    bool succ = await checkMaestroPasscode();
-                                    if (!succ) {
-                                      //setState(() => errorMessage = "Password either incorrect or cannot connect to the server");
-                                      _passcode.editor.clear();
-                                      setState(() {});
-                                      return;
-                                    }
-                                    if (context.mounted) {
-                                      _showSnack(context, SocketType.maestro);
-                                      return;
-                                    }
-                                    _passcode.editor.clear();
-                                    return;
-                                  },
-                                  child: Text(
-                                    'Maestro',
-                                    style: smallTextStyle.copyWith(
-                                      fontWeight: FontWeight.w400,
+                      SliverToBoxAdapter(
+                        child: Container(
+                          width: double.infinity,
+                          margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Text(
+                                'Scheduled Date: ',
+                                style: defaultTextStyle,
+                              ),
+                              Text(
+                                DateFormat('E, MMM dd, yyyy - hh:mm')
+                                    .format(group.date!),
+                                style: defaultTextStyle,
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                      SliverToBoxAdapter(
+                        child: Container(
+                          width: double.infinity,
+                          margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Text(
+                                'Mixing Method: ',
+                                style: defaultTextStyle,
+                              ),
+                              Text(
+                                group.mixer == null ? "Default" : group.mixer!.name,
+                                style: defaultTextStyle,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      SliverToBoxAdapter(
+                        child: Container(
+                          width: double.infinity,
+                          margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                          child: Text(
+                            'Group Leader: ',
+                            style: defaultTextStyle,
+                          ),
+                        ),
+                      ),
+                      SliverToBoxAdapter(
+                        child: Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.all(5),
+                          margin:
+                          const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                          color: accentColor,
+                          child: Text(
+                            group.maestro,
+                            style: whiteDefaultTextStyle,
+                          ),
+                        ),
+                      ),
+                      SliverToBoxAdapter(
+                        child: Container(
+                          width: double.infinity,
+                          margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                          child: Text(
+                            'Tags: ',
+                            style: defaultTextStyle,
+                          ),
+                        ),
+                      ),
+                      SliverToBoxAdapter(
+                        child: Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.all(5),
+                          margin:
+                          const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                          color: accentColor,
+                          child: Text(
+                            group.tags.split('`').join(', '),
+                            style: whiteDefaultTextStyle,
+                          ),
+                        ),
+                      ),
+                      SliverToBoxAdapter(
+                        child: Container(
+                          width: double.infinity,
+                          margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                          child: Text(
+                            'Description: ',
+                            style: defaultTextStyle,
+                          ),
+                        ),
+                      ),
+                      SliverToBoxAdapter(
+                        child: Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.all(5),
+                          margin:
+                          const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                          color: accentColor,
+                          child: Text(
+                            group.description,
+                            style: whiteDefaultTextStyle,
+                          ),
+                        ),
+                      ),
+                      if (group.passcodes != null)
+                        SliverToBoxAdapter(
+                          child: Container(
+                            width: double.infinity,
+                            margin:
+                            const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                            child: Text(
+                              'Passcodes: ',
+                              style: defaultTextStyle,
+                            ),
+                          ),
+                        ),
+                      if (group.passcodes != null)
+                        SliverToBoxAdapter(
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            itemCount: group.passcodes!.length,
+                            itemBuilder: (context, index) {
+                              return Row(
+                                children: <Widget>[
+                                  if (index == 0)
+                                    Text(
+                                      'Maestro Passcode: ',
+                                      style: defaultTextStyle,
                                     ),
-                                    textAlign: TextAlign.center,
+                                  if (index == group.passcodes!.length - 1)
+                                    Text(
+                                      'Listener Passcode: ',
+                                      style: defaultTextStyle,
+                                    ),
+                                  if (index != 0 && index != group.passcodes!.length - 1)
+                                    Text(
+                                      'User$index Passcode: ',
+                                      style: defaultTextStyle,
+                                    ),
+                                  Text(
+                                    group.passcodes![index].toString(),
+                                    style: defaultTextStyle,
                                   ),
-                                ),
-                              ),
-                            ),
-                          Expanded(
-                            flex: 3,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: mainSchemeColor,
-                                border: Border.all(color: black, width: 3),
-                              ),
-                              margin: const EdgeInsets.all(4),
-                              child: TextButton(
-                                onPressed:  () async {
-                                  //UNCOMMENT WHEN NOT DOING UI SHIT
-                                  bool pass = await getPasscode();
-                                  if (!pass) {
-                                    setState(() => errorMessage = "You must enter a passcode to join the concert");
-                                    return;
-                                  }
-                                  bool succ = await checkPerformerPasscode();
-                                  if (!succ) {
-                                    setState(() => errorMessage = "Password either incorrect or cannot connect to the server");
-                                    _passcode.editor.clear();
-                                    return;
-                                  }
-                                  if (context.mounted) {
-                                    _showSnack(context, SocketType.performer);
-                                    return;
-                                  }
-                                  _passcode.editor.clear();
-                                },
+                                ],
+                              );
+                            },
+                          ),
+                        ),
+
+                      if (group.date!.difference(DateTime.now()).inMinutes < 40)
+                        SliverToBoxAdapter(
+                          child: Column(
+                            children: <Widget>[
+                              Container(
+                                padding: const EdgeInsets.all(5),
                                 child: Text(
-                                  'Performer',
-                                  style: smallTextStyle.copyWith(
-                                    fontWeight: FontWeight.w400,
-                                  ),
+                                  'Are you the leader of this group? Or do you want to join in? Or do you just want to listen? Click one of buttons below!',
+                                  style: headingTextStyle,
                                   textAlign: TextAlign.center,
                                 ),
                               ),
-                            ),
-                          ),
-                          Expanded(
-                            flex: 3,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: mainSchemeColor,
-                                border: Border.all(color: black, width: 3),
-                              ),
-                              margin: const EdgeInsets.all(4),
-                              child: TextButton(
-                                onPressed: () async {
-                                  //UNCOMMENT WHEN NOT DOING UI SHIT
-                                  bool pass = await getPasscode();
-                                  if (!pass) {
-                                    setState(() => errorMessage = "You must enter a passcode to listen to the concert");
-                                    return;
-                                  }
-                                  bool succ = await checkListenerPasscode();
-                                  if (!succ) {
-                                    setState(() {});
-                                    return;
-                                  }
-                                  if (context.mounted) {
-                                    _showSnack(context, SocketType.listener);
-                                    return;
-                                  }
-                                },
-                                child: Text(
-                                  'Listener',
-                                  style: smallTextStyle.copyWith(
-                                    fontWeight: FontWeight.w400,
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  if (user.logged)
+                                    Expanded(
+                                      flex: 3,
+                                      child: Container(
+                                        margin: const EdgeInsets.all(4),
+                                        decoration: BoxDecoration(
+                                          color: mainSchemeColor,
+                                          border: Border.all(color: black, width: 3),
+                                        ),
+                                        child: TextButton(
+                                          onPressed: () async {
+                                            //UNCOMMENT WHEN NOT DOING UI SHIT
+                                            bool logged = await logMaestroIn();
+                                            if (!logged) {
+                                              setState(() => errorMessage = "You must be logged in to start the concert");
+                                              return;
+                                            }
+                                            bool pass = await getPasscode();
+                                            if (!pass) {
+                                              setState(() => errorMessage = "You must enter your maestro passcode to start the concert");
+                                              _passcode.editor.clear();
+                                              return;
+                                            }
+                                            bool succ = await checkMaestroPasscode();
+                                            if (!succ) {
+                                              //setState(() => errorMessage = "Password either incorrect or cannot connect to the server");
+                                              _passcode.editor.clear();
+                                              setState(() {});
+                                              return;
+                                            }
+                                            if (context.mounted) {
+                                              _showSnack(context, SocketType.maestro);
+                                              return;
+                                            }
+                                            _passcode.editor.clear();
+                                            return;
+                                          },
+                                          child: Text(
+                                            'Maestro',
+                                            style: smallTextStyle.copyWith(
+                                              fontWeight: FontWeight.w400,
+                                            ),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  Expanded(
+                                    flex: 3,
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: mainSchemeColor,
+                                        border: Border.all(color: black, width: 3),
+                                      ),
+                                      margin: const EdgeInsets.all(4),
+                                      child: TextButton(
+                                        onPressed:  () async {
+                                          //UNCOMMENT WHEN NOT DOING UI SHIT
+                                          bool pass = await getPasscode();
+                                          if (!pass) {
+                                            setState(() => errorMessage = "You must enter a passcode to join the concert");
+                                            return;
+                                          }
+                                          bool succ = await checkPerformerPasscode();
+                                          if (!succ) {
+                                            setState(() => errorMessage = "Password either incorrect or cannot connect to the server");
+                                            _passcode.editor.clear();
+                                            return;
+                                          }
+                                          if (context.mounted) {
+                                            _showSnack(context, SocketType.performer);
+                                            return;
+                                          }
+                                          _passcode.editor.clear();
+                                        },
+                                        child: Text(
+                                          'Performer',
+                                          style: smallTextStyle.copyWith(
+                                            fontWeight: FontWeight.w400,
+                                          ),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ),
+                                    ),
                                   ),
-                                  textAlign: TextAlign.center,
-                                ),
+                                  Expanded(
+                                    flex: 3,
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: mainSchemeColor,
+                                        border: Border.all(color: black, width: 3),
+                                      ),
+                                      margin: const EdgeInsets.all(4),
+                                      child: TextButton(
+                                        onPressed: () async {
+                                          //UNCOMMENT WHEN NOT DOING UI SHIT
+                                          bool pass = await getPasscode();
+                                          if (!pass) {
+                                            setState(() => errorMessage = "You must enter a passcode to listen to the concert");
+                                            return;
+                                          }
+                                          bool succ = await checkListenerPasscode();
+                                          if (!succ) {
+                                            setState(() {});
+                                            return;
+                                          }
+                                          if (context.mounted) {
+                                            _showSnack(context, SocketType.listener);
+                                            return;
+                                          }
+                                        },
+                                        child: Text(
+                                          'Listener',
+                                          style: smallTextStyle.copyWith(
+                                            fontWeight: FontWeight.w400,
+                                          ),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ),
+                            ],
                           ),
-                        ],
+                        ),
+                      SliverToBoxAdapter(
+                        child: Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.all(10),
+                          child: Text(
+                            errorMessage,
+                            style: invalidTextStyle.copyWith(
+                              fontSize: headingFontSize,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
                       ),
                     ],
-                  ),
-              ),
-
-            // if (!isCreator && widget.group.date!.difference(DateTime.now()).inMinutes < 40)
-            //   Container(
-            //     margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-            //     padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 67),
-            //     decoration: BoxDecoration(
-            //       color: gold,
-            //       border: Border.all(color: black, width: 3),
-            //     ),
-            //     child: OutlinedButton(
-            //       onPressed: null,
-            //       child: Text(
-            //         'Join Session',
-            //         style: TextStyle(
-            //           fontSize: bigButtonFontSize,
-            //           color: buttonTextColor,
-            //           fontWeight: FontWeight.w400,
-            //         ),
-            //         textAlign: TextAlign.center,
-            //       ),
-            //     ),
-            //   ),
-            // if (!isEditing && isCreator)
-            //   Container(
-            //     margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-            //     padding: const EdgeInsets.all(5),
-            //     decoration: BoxDecoration(
-            //       color: gold,
-            //       border: Border.all(color: black, width: 3),
-            //     ),
-            //     child: OutlinedButton(
-            //       onPressed: () {
-            //         setState(() => isEditing = true);
-            //       },
-            //       child: Text(
-            //         'Edit Details',
-            //         style: TextStyle(
-            //           fontSize: bigButtonFontSize,
-            //           color: buttonTextColor,
-            //           fontWeight: FontWeight.w400,
-            //         ),
-            //         textAlign: TextAlign.center,
-            //       ),
-            //     ),
-            //   ),
-            // if (!isEditing && !isCreator && (user!.logged ? widget.group.members!.contains(user!.username) : false))
-            //   Container(
-            //     margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-            //     padding: const EdgeInsets.all(5),
-            //     decoration: BoxDecoration(
-            //       color: red,
-            //       border: Border.all(color: black, width: 3),
-            //     ),
-            //     child: OutlinedButton(
-            //       onPressed: () async {
-            //         bool confirm = await showDialog(
-            //           context: context,
-            //           barrierDismissible: false,
-            //           builder: (context) {
-            //             return AlertDialog(
-            //               title: const Text('Confirm', style: TextStyle(fontSize: titleFontSize, color: black)),
-            //               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-            //               elevation: 15,
-            //               actions: <Widget>[
-            //                 TextButton(
-            //                   onPressed: () {
-            //                     Navigator.pop(context, false);
-            //                   },
-            //                   child: const Text(
-            //                     'Cancel',
-            //                     style: TextStyle(color: Colors.red, fontSize: 18),
-            //                   ),
-            //                 ),
-            //                 TextButton(
-            //                   onPressed: () {
-            //                     Navigator.pop(context, true);
-            //                   },
-            //                   child: const Text(
-            //                     'Confirm',
-            //                     style: TextStyle(color: black, fontSize: 18),
-            //                   ),
-            //                 )
-            //               ],
-            //               content:
-            //               const Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-            //                 Flexible(
-            //                     child: Text(
-            //                         'Are you sure you want to leave this group?')),
-            //               ]),
-            //             );
-            //           },
-            //         );
-            //         if (confirm && context.mounted) {
-            //           Navigator.pop(context);
-            //         }
-            //       },
-            //       child: Text(
-            //         'Leave Group',
-            //         style: TextStyle(
-            //           fontSize: bigButtonFontSize,
-            //           color: buttonTextColor,
-            //           fontWeight: FontWeight.w400,
-            //         ),
-            //         textAlign: TextAlign.center,
-            //       ),
-            //     ),
-            //   ),
-            // Container(
-            //   width: double.infinity,
-            //   padding: const EdgeInsets.all(5),
-            //   margin: const EdgeInsets.symmetric(horizontal: 5),
-            //   child: TextField(
-            //     maxLines: 1,
-            //     controller: _passcode,
-            //     decoration: passcodeUnfilled
-            //         ? invalidTextField.copyWith(hintText: 'Enter passcode')
-            //         : globalDecoration.copyWith(hintText: 'Enter passcode'),
-            //     style: TextStyle(
-            //       fontSize: bioTextSize + 2,
-            //       color: buttonTextColor,
-            //     ),
-            //     onChanged: (field) {
-            //       if (field.isEmpty) {
-            //         setState(() => passcodeUnfilled = true);
-            //         return;
-            //       }
-            //       setState(() => passcodeUnfilled = false);
-            //     },
-            //     textAlign: TextAlign.left,
-            //     textInputAction: TextInputAction.next,
-            //   ),
-            // ),
-            // Container(
-            //   margin: const EdgeInsets.all(10),
-            //   padding: const EdgeInsets.all(5),
-            //   child: TextButton(
-            //     onPressed: () async {
-            //       Map<String, dynamic> query = {
-            //         'maestroPasscode': _passcode.value.text,
-            //       };
-            //
-            //       final res = await GroupsAPI.prepare(query);
-            //       if (res.statusCode != 200) {
-            //         print(res.body);
-            //         var message = json.decode(res.body);
-            //         errorMessage = message.containsKey('message')
-            //             ? message['message']
-            //             : message['error'];
-            //         return;
-            //       }
-            //       if (context.mounted) {
-            //         _showSnack(context);
-            //       }
-            //     },
-            //     child: Text(
-            //       'Prepare concert',
-            //       style: buttonTextStyle,
-            //     ),
-            //   ),
-            // ),
-            //commented out because the buttons are not used rn
-            // if (isEditing && false)
-            //   Container(
-            //     margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-            //     padding: const EdgeInsets.all(5),
-            //     decoration: BoxDecoration(
-            //       color: gold,
-            //       border: Border.all(color: black, width: 3),
-            //     ),
-            //     child: OutlinedButton(
-            //       onPressed: () async {
-            //         bool confirm = await showDialog(
-            //           context: context,
-            //           barrierDismissible: false,
-            //           builder: (context) {
-            //             return AlertDialog(
-            //               title: const Text('Confirm', style: TextStyle(fontSize: titleFontSize, color: black)),
-            //               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-            //               elevation: 15,
-            //               actions: <Widget>[
-            //                 TextButton(
-            //                   onPressed: () {
-            //                     Navigator.pop(context, false);
-            //                   },
-            //                   child: const Text(
-            //                     'Cancel',
-            //                     style: TextStyle(color: Colors.red, fontSize: 18),
-            //                   ),
-            //                 ),
-            //                 TextButton(
-            //                   onPressed: () {
-            //                     Navigator.pop(context, true);
-            //                   },
-            //                   child: const Text(
-            //                     'Confirm',
-            //                     style: TextStyle(color: black, fontSize: 18),
-            //                   ),
-            //                 )
-            //               ],
-            //               content:
-            //               const Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-            //                 Flexible(
-            //                     child: Text(
-            //                         'Confirm changes made to the group?')),
-            //               ]),
-            //             );
-            //           },
-            //         );
-            //         if (!confirm) {
-            //           return;
-            //         }
-            //         widget.group.title = _title.text;
-            //         setState(() => isEditing = false);
-            //       },
-            //       child: Text(
-            //         'Confirm Changes',
-            //         style: TextStyle(
-            //           fontSize: bigButtonFontSize,
-            //           color: buttonTextColor,
-            //           fontWeight: FontWeight.w400,
-            //         ),
-            //         textAlign: TextAlign.center,
-            //       ),
-            //     ),
-            //   ),
-            // if (isEditing)
-            //   Container(
-            //     margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-            //     padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 67),
-            //     decoration: BoxDecoration(
-            //       color: red,
-            //       border: Border.all(color: black, width: 3),
-            //     ),
-            //     child: OutlinedButton(
-            //       onPressed: () {
-            //         _title.text = widget.group.title;
-            //         setState(() => isEditing = false);
-            //       },
-            //       child: Text(
-            //         'Cancel Changes',
-            //         style: TextStyle(
-            //           fontSize: bigButtonFontSize,
-            //           color: buttonTextColor,
-            //           fontWeight: FontWeight.w400,
-            //         ),
-            //         textAlign: TextAlign.center,
-            //       ),
-            //     ),
-            //   ),
-            SliverToBoxAdapter(
-                child: Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(10),
-                  child: Text(
-                    errorMessage,
-                    style: invalidTextStyle.copyWith(
-                      fontSize: headingFontSize,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-            ),
-          ],
-      ),
+                  );
+              }
+            }
+        ),
     ),
     );
   }
@@ -1001,11 +642,15 @@ class _IndividualGroupState extends State<IndividualGroup> {
     }
 
     var data = json.decode(res.body);
+    print(data);
     if (!data.containsKey('group')) {
       return false;
     }
 
-    group = Group.songFromJson(data['group']);
+    group = Group.fromScheduleJson(data['group']);
+
+    _concertDate.text =
+       DateFormat('yyyy-mm-dd HH:mm').format(group.date!);
 
     return true;
   }

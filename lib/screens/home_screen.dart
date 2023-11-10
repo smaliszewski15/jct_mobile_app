@@ -285,7 +285,7 @@ class HomeScreen extends StatelessWidget {
                   ),
                   margin: const EdgeInsets.symmetric(vertical: 30),
                   child: Image.asset(
-                      'assets/images/default-profile-image.jpg',
+                      'assets/images/Stephen.jpg',
                       fit: BoxFit.fitWidth
                   ),
                 ),

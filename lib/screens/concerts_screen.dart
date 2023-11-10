@@ -141,7 +141,7 @@ class _ConcertsState extends State<ConcertsScreen> {
                     onPressed: () {
                       Navigator.pushNamed(
                           context, '/group/group',
-                          arguments: upcoming).then((entry) {
+                          arguments: upcoming.groupID).then((entry) {
                             getNextConcert();
                       });
                     },

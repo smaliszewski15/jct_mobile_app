@@ -45,7 +45,7 @@ class _AddGroupState extends State<AddGroup> {
           icon: Icon(Icons.navigate_before, color: mainSchemeColor),
           iconSize: 35,
           onPressed: () {
-            Navigator.pop(context);
+            Navigator.pop(context, false);
           },
         ),
         actions: null,
@@ -446,7 +446,7 @@ class _AddGroupState extends State<AddGroup> {
         newGroup.addPasscodes(schedule);
         if (context.mounted) {
           Navigator.pushReplacementNamed(context, '/group/group',
-              arguments: newGroup);
+              arguments: newGroup.groupID);
         }
       });
       return true;
