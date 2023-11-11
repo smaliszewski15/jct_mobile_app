@@ -4,6 +4,8 @@ import 'package:http/http.dart' as http;
 import 'api_globals.dart';
 import '../models/user.dart';
 
+List<int> passcodes = [];
+
 class GroupsAPI {
 
   static const String apiRoute = '/api/schedules';
@@ -112,70 +114,4 @@ class GroupsAPI {
 
     return response;
   }
-
-  // static Map<String, dynamic> getGroups = {
-  //   'groupsData': [
-  //     {
-  //       'title': 'Title 1',
-  //       'maestro': 'Paul',
-  //       'tags': 'soft`loud',
-  //       'date': '2023-10-10',
-  //       'time': '22:40',
-  //       'members': [
-  //         'Stephen',
-  //         'Paul',
-  //         'Kyle',
-  //       ],
-  //     },
-  //     {
-  //       'title': 'Title 2',
-  //       'maestro': 'Stephen',
-  //       'tags': 'jazz`rock',
-  //       'date': '2023-10-13',
-  //       'time': '21:20',
-  //       'members': [
-  //         'Stephen',
-  //         'Paul',
-  //         'Kyle',
-  //       ],
-  //     },
-  //     {
-  //       'title': 'Title 3',
-  //       'maestro': 'Rayyan',
-  //       'tags': 'soft`loud',
-  //       'date': '2023-10-12',
-  //       'time': '23:40',
-  //       'members': [
-  //         'Stephen',
-  //         'Paul',
-  //         'Kyle',
-  //       ],
-  //     },
-  //     {
-  //       'title': 'Title 4',
-  //       'maestro': 'Himil',
-  //       'tags': 'soft`loud',
-  //       'date': '2023-10-13',
-  //       'time': '22:00',
-  //       'members': [
-  //         'Stephen',
-  //         'Paul',
-  //         'Kyle',
-  //       ],
-  //     },
-  //   ]
-  // };
-  //
-  // static Map<String, dynamic> getGroup = {
-  //   'group': {
-  //     'Title': 'Title 1',
-  //     'GroupID': 2,
-  //     'GroupLeaderName': 'Paul',
-  //     'GroupLeaderID': 4,
-  //     'Description': 'This is a description',
-  //     'Tags': 'soft`loud',
-  //     'Date': '2023-9-10',
-  //     'Time': '22:40',
-  //   },
-  // };
 }

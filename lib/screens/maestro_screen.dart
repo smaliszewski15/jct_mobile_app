@@ -5,6 +5,7 @@ import 'package:flutter_sound/flutter_sound.dart';
 import 'package:wakelock/wakelock.dart';
 
 import '../APIfunctions/api_globals.dart';
+import '../APIfunctions/groupsAPI.dart';
 import '../components/audio_wavepainter.dart';
 import '../utils/player.dart';
 import '../utils/recorder.dart';
@@ -105,7 +106,6 @@ class _MaestroScreenState extends State<MaestroScreen> with WidgetsBindingObserv
     isConnected = true;
     socket!.socket.stream.listen(
           (data) {
-            print(data);
         String s = splitHeader(data);
         List<String> list = s.split(':');
         if (list.length > 1) {
@@ -241,6 +241,7 @@ class _MaestroScreenState extends State<MaestroScreen> with WidgetsBindingObserv
           }
           socket!.socket.sink.add(stop);
           stopEverything();
+          passcodes = [];
         }
         return true;
       },

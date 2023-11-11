@@ -122,7 +122,7 @@ class _GroupCardState extends State<GroupCard>
                     ? () {
                         Navigator.pushNamed(context, '/group/add',
                             arguments: widget.date!).then((entry) {
-                              print('here');
+                              //print(entry);
                               if (entry == true) {
                                 widget.added.value = true;
                               }

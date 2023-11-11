@@ -1,7 +1,13 @@
 import 'dart:convert';
-import 'package:flutter/material.dart';
+import 'dart:io';
+import 'dart:isolate';
+import 'dart:ui';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
+import 'package:device_info_plus/device_info_plus.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:intl/intl.dart';
+import 'package:permission_handler/permission_handler.dart';
 import '../APIfunctions/concertAPI.dart';
 import '../models/concert.dart';
 import '../utils/concert_player.dart';
@@ -21,18 +27,38 @@ class _ConcertPageState extends State<ConcertPage> {
   late final ConcertPlayer _pageManager;
   Concert concert = Concert();
   Future<bool>? done;
+  ReceivePort _port = ReceivePort();
 
   @override
   void initState() {
     super.initState();
     _pageManager = ConcertPlayer(widget.id);
     done = getConcert(widget.id);
+    IsolateNameServer.registerPortWithName(_port.sendPort, 'downloader_send_port');
+    _port.listen((dynamic data) {
+      String id = data[0];
+      DownloadTaskStatus status = DownloadTaskStatus.fromInt(data[1]);
+      int progress = data[2];
+      setState(() {});
+    });
+
+    FlutterDownloader.registerCallback(downloadCallback);
   }
 
   @override
   void dispose() {
+    IsolateNameServer.removePortNameMapping('downloader_send_port');
     _pageManager.dispose();
     super.dispose();
+  }
+
+  @pragma('vm:entry-point')
+  static void downloadCallback(String id, int status, int progress) {
+    if (IsolateNameServer.lookupPortByName('downloader_send_port') == null) {
+      return;
+    }
+    final SendPort send = IsolateNameServer.lookupPortByName('downloader_send_port')!;
+    send.send([id, status, progress]);
   }
 
   @override
@@ -73,7 +99,7 @@ class _ConcertPageState extends State<ConcertPage> {
                     );
                   }
                   if (concert.id == -1) {
-                    print('here');
+                    print('concert id is -1');
                     return Text("Error: Concert could not be retrieved");
                   }
                   return CustomScrollView(
@@ -318,27 +344,32 @@ class _ConcertPageState extends State<ConcertPage> {
                           ),
                         ),
                       ),
-                      /*Center(
-                        child: Container(
-                          padding: const EdgeInsets.all(5),
-                          decoration: BoxDecoration(
-                            color: gold,
-                            border: Border.all(color: black),
-                          ),
-                          child: OutlinedButton(
-                            onPressed: null,
-                            child: Text(
-                              'Download',
-                              style: TextStyle(
-                                fontSize: bigButtonFontSize,
-                                color: buttonTextColor,
+                      SliverToBoxAdapter(
+                        child: Center(
+                          child: Container(
+                            padding: const EdgeInsets.all(5),
+                            margin: const EdgeInsets.all(5),
+                            decoration: BoxDecoration(
+                              color: mainSchemeColor,
+                              border: Border.all(color: black),
+                            ),
+                            child: TextButton(
+                              onPressed: () async {
+                                await download();
+                              },
+                              child: Text(
+                                'Download',
+                                style: TextStyle(
+                                  fontSize: bigButtonFontSize,
+                                  color: buttonTextColor,
+                                ),
+                                textAlign: TextAlign.center,
                               ),
-                              textAlign: TextAlign.center,
                             ),
                           ),
                         ),
                       ),
-                      Center(
+                      /*Center(
                         child: TextButton(
                           onPressed: null,
                           child: Text(
@@ -368,6 +399,7 @@ class _ConcertPageState extends State<ConcertPage> {
 
 
     if (res.statusCode != 200) {
+      print(res.body);
       return false;
     }
 
@@ -381,7 +413,54 @@ class _ConcertPageState extends State<ConcertPage> {
     return true;
   }
 
-  /*Concert getConcert(int ID) {
-    return Concert.songFromJson(ConcertsAPI.getSong);
-  }*/
+  Future<bool> _checkPermission() async {
+    if (Platform.isIOS) {
+      return true;
+    }
+
+    if (Platform.isAndroid) {
+      final info = await DeviceInfoPlugin().androidInfo;
+      if (info.version.sdkInt > 28) {
+        return true;
+      }
+
+      final status = await Permission.storage.status;
+      if (status == PermissionStatus.granted) {
+        return true;
+      }
+
+      final result = await Permission.storage.request();
+      if (result != PermissionStatus.granted) {
+        return false;
+      }
+      return true;
+    }
+
+    throw StateError('unknown platform');
+  }
+
+  Future<void> download() async {
+    bool hasPerms = await _checkPermission();
+    if (!hasPerms) {
+      return;
+    }
+
+    WidgetsFlutterBinding.ensureInitialized();
+    if (!FlutterDownloader.initialized) {
+      await FlutterDownloader.initialize(
+        debug: false,
+        ignoreSsl: true,
+      );
+    }
+
+    final taskId = await FlutterDownloader.enqueue(
+      url: 'http://johncagetribute.org/api/concerts/downloadConcertFile?id=${concert.id}',//'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3',
+      headers: {}, // optional: header send with url (auth token etc)
+      savedDir: '/storage/emulated/0/Download/',
+      showNotification: true, // show download progress in status bar (for Android)
+      openFileFromNotification: true, // click on notification to open downloaded file (for Android)
+    );
+
+    await FlutterDownloader.registerCallback(downloadCallback);
+  }
 }

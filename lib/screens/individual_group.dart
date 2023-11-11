@@ -38,8 +38,6 @@ class _IndividualGroupState extends State<IndividualGroup> {
     super.initState();
     done = retrieveGroup();
     method = methods.first;
-    //_concertDate.text =
-    //    DateFormat('yyyy-mm-dd HH:mm').format(group.date!);
     _title.text = '';
   }
 
@@ -48,7 +46,6 @@ class _IndividualGroupState extends State<IndividualGroup> {
   bool titleUnfilled = false;
   final _passcode = PasscodeAlert();
   final _username = PasscodeAlert();
-  //Future<bool>? done;
 
   bool created() {
     if (user.id != group.maestroID) {
@@ -211,7 +208,7 @@ class _IndividualGroupState extends State<IndividualGroup> {
                           ),
                         ),
                       ),
-                      if (group.passcodes != null)
+                      if (passcodes.isNotEmpty)
                         SliverToBoxAdapter(
                           child: Container(
                             width: double.infinity,
@@ -223,13 +220,13 @@ class _IndividualGroupState extends State<IndividualGroup> {
                             ),
                           ),
                         ),
-                      if (group.passcodes != null)
+                      if (passcodes.isNotEmpty)
                         SliverToBoxAdapter(
                           child: ListView.builder(
                             shrinkWrap: true,
                             physics: const NeverScrollableScrollPhysics(),
                             padding: const EdgeInsets.symmetric(horizontal: 10),
-                            itemCount: group.passcodes!.length,
+                            itemCount: passcodes.length,
                             itemBuilder: (context, index) {
                               return Row(
                                 children: <Widget>[
@@ -238,18 +235,18 @@ class _IndividualGroupState extends State<IndividualGroup> {
                                       'Maestro Passcode: ',
                                       style: defaultTextStyle,
                                     ),
-                                  if (index == group.passcodes!.length - 1)
+                                  if (index == passcodes.length - 1)
                                     Text(
                                       'Listener Passcode: ',
                                       style: defaultTextStyle,
                                     ),
-                                  if (index != 0 && index != group.passcodes!.length - 1)
+                                  if (index != 0 && index != passcodes.length - 1)
                                     Text(
                                       'User$index Passcode: ',
                                       style: defaultTextStyle,
                                     ),
                                   Text(
-                                    group.passcodes![index].toString(),
+                                    passcodes[index].toString(),
                                     style: defaultTextStyle,
                                   ),
                                 ],
@@ -642,7 +639,6 @@ class _IndividualGroupState extends State<IndividualGroup> {
     }
 
     var data = json.decode(res.body);
-    print(data);
     if (!data.containsKey('group')) {
       return false;
     }

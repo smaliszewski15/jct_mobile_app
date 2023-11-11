@@ -1,7 +1,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.john_cage_tribute">
+    package="com.example.john_cage_tribute" xmlns:tools="http://schemas.android.com/tools">
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
    <application
         android:label="John Cage Tribute"
         android:name="${applicationName}"
@@ -28,6 +33,34 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+       <provider
+           android:name="vn.hunghd.flutterdownloader.DownloadedFileProvider"
+           android:authorities="${applicationId}.flutter_downloader.provider"
+           android:exported="false"
+           android:grantUriPermissions="true">
+           <meta-data
+               android:name="android.support.FILE_PROVIDER_PATHS"
+               android:resource="@xml/provider_paths"/>
+       </provider>
+       <provider
+           android:name="androidx.startup.InitializationProvider"
+           android:authorities="${applicationId}.androidx-startup"
+           android:exported="false"
+           tools:node="merge">
+           <meta-data
+               android:name="androidx.work.WorkManagerInitializer"
+               android:value="androidx.startup"
+               tools:node="remove" />
+       </provider>
+       <provider
+           android:name="vn.hunghd.flutterdownloader.FlutterDownloaderInitializer"
+           android:authorities="${applicationId}.flutter-downloader-init"
+           android:exported="false">
+           <!-- changes this number to configure the maximum number of concurrent tasks -->
+           <meta-data
+               android:name="vn.hunghd.flutterdownloader.MAX_CONCURRENT_TASKS"
+               android:value="5" />
+       </provider>
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
         <meta-data

@@ -20,7 +20,6 @@ class ConcertsAPI {
 
   static Future<http.Response> getSongData(Map<String, dynamic> query) async {
     http.Response response;
-    print(query);
 
     try {
       response = await http.get(Uri.http(API_PREFIX, '${apiRoute}/getSongData', query),

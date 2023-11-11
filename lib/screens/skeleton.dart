@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'concerts_screen.dart';
 import 'home_screen.dart';
 import 'schedule_screen.dart';
@@ -19,19 +20,33 @@ class Skeleton extends StatefulWidget {
 
 class _SkeletonState extends State<Skeleton> {
   late final NavStateManager _navManager;
-  //late final TagsUpdater _tagManager;
   late final ConcertSearchManager _concertFilterManager;
   late final ScheduleManager _scheduleManager;
   Future<bool>? done;
+  bool asked = false;
 
   @override
   void initState() {
     super.initState();
     _navManager = NavStateManager();
-    //_tagManager = TagsUpdater();
     _concertFilterManager = ConcertSearchManager();
     _scheduleManager = ScheduleManager();
     done = getUser();
+    askPerms();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  void askPerms() async {
+    final status = await Permission.notification.status;
+
+    if (!status.isGranted && !asked) {
+      Permission.notification.request();
+      asked = true;
+    }
   }
 
   @override

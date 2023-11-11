@@ -438,14 +438,13 @@ class _AddGroupState extends State<AddGroup> {
 
         var data = json.decode(res.body);
         var group = data['group'];
-        print(group.toString());
         var schedule = data['schedule'];
-        print(schedule.toString());
 
         Group newGroup = Group.fromScheduleJson(group);
         newGroup.addPasscodes(schedule);
+        passcodes = newGroup.passcodes!;
         if (context.mounted) {
-          Navigator.pushReplacementNamed(context, '/group/group',
+          Navigator.pushReplacementNamed(context, '/group/group', result: true,
               arguments: newGroup.groupID);
         }
       });

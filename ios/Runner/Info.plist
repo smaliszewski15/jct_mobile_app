@@ -49,5 +49,9 @@
 	<true/>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Microphone access required</string>
+	<key>NSAppTransportSecurity</key>
+    <dict>
+        <key>NSAllowsArbitraryLoads</key><true/>
+    </dict>
 </dict>
 </plist>
