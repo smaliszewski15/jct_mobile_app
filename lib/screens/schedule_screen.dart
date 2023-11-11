@@ -25,7 +25,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
   int currentDay = DateTime.now().day;
   Future<bool>? done;
   List<Group> groups = [];
-  double totalHeight = 120;
+  double totalHeight = 100;
   bool reserving = false;
   bool browsing = true;
   Timer? refresh;
@@ -106,7 +106,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                 TextButton(
                   onPressed: _reserveToggle
                       ? () {
-                    totalHeight = 120;
+                    totalHeight = 100;
                     reserving = false;
                     browsing = true;
                     setState(() => _reserveToggle = false);
@@ -311,7 +311,8 @@ class Section extends StatelessWidget {
                 groupList >= 0 &&
                 tempList[index] == groups[groupList].date) {
               return GroupCard(
-                group: groups[groupList++],
+                id: groups[groupList++].groupID,
+                date: tempList[index],
                 height: totalHeight,
                 clickable: browsing,
                 added: changed,
