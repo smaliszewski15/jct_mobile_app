@@ -9,7 +9,7 @@ Big thanks to all the contributions the previous teams put into this, as they he
 
 The structure of the app is important to how the app should be read. Each type of flutter file is put into its corresponding folder, denoting what to expect in those files.
 There are 7 folders inside the 'lib' folder:
-## /APIfunctions
+## [/APIfunctions](lib/APIfunctions)
 APIfunctions contain the separated out API calls that will be made to the server. There is an 'api_globals.dart' file that contains the functions by most, if not all, the other API functions.
 Each API route is split into its own file, each of which contain a class that houses all of the endpoints that will be communicated with.
 ### concertAPI
@@ -18,7 +18,7 @@ Has the endpoints that are related to the concerts. They all call the '/api/conc
 Has the endpoints that are related to the groups. They all call the '/api/groups' endpoint and its extensions. Groups refers to the 'sessions' that one can schedule.
 ### userAPI
 Has the endpoints that are related to the users. They all call the '/api/users' endpoint and its extensions. Users are...well...users.
-## /components
+## [/components](lib/components)
 components contain the smaller UI elements used throughout the app. It contains some smaller widgets, as well as all of the drawers.
 ### audio_wavepainter
 This is the waveforms that can be seen when recording on the maestro or performer screens. Fairly barebones.
@@ -38,7 +38,7 @@ This is the drawer seen on every major screen in the top left. This lets a user 
 Has the textfields seen on the profile and login/register screens. Leftover from when I was going to use the same kind of format for every textfield but decided it wasn't that useful.
 ### tooltips
 Has the tooltips seen on the profile and login/register screens. Used to help give notes on what kind of information is required when loggin in and registering.
-## /managers
+## [/managers](lib/managers)
 managers contains the classes that will "control" some of the major components. They contain the major functions that those components will be using, moving the rsponsibilities away from the components themselves, leaving just the UI in them.
 ### concert_search_manager
 Manages the concert_filter. Holds the dates that can be filtered by, as well as houses the date picker.
@@ -48,11 +48,11 @@ Unused. Holdover from when we were going to have a list of tags that a user can 
 Manages the state of the bottom navigation bar. Can be expanded to include more buttons on the bottom.
 ### schedule_manager
 Manages the group_filter. Same functionality as the concert_search_manager.
-## /models
+## [/models](lib/models)
 models contains the major objects used within the project, those being users, groups, and concerts. They house the data that can be displayed to the users of the app.
-## /routes
+## [/routes](lib/routes)
 routes contains one route file that houses all of the navigation between different screens. It also controls what data is sent to each screen, if there is any.
-## /screens
+## [/screens](lib/screens)
 screens contains each major(and minor) screen that the user will visit using the app. Here is the flow of what each screen is and where each screen leads:
 ### skeleton
 This is the main screen that has most of the logic for navigation in the app. It allows for the navigation of most other screens. This houses the bottom nav bar that leads to three other screens.
@@ -89,7 +89,7 @@ Lets the user edit their profile. Users can only update their username. (Going t
 In case something goes wrong with the route navigiation, this screen is there to notify the user of that and not scare them with the red screen of death.
 ### groups_screen
 Unused. Holdover from when the groups weren't fully fleshed out uet. Similar style as the concerts screen, but would have led to any groups that the user had joined.
-## /utils
+## [/utils](lib/utils)
 utils contain the general utilities that don't fit into the definition of models or managers. These are classes that are used by other classes that sorta interface with existing libraries.
 Player and recorder both interface with the "flutter_sound" plugin. They contain the functions that would be involved with the player and recorder functionality.
 Socket interfaces with the "WebSocketChannel." Is actually an abstract class that is implemented into the three socket variants. Each variant is labeled "socket___" to signify which socket endpoint it connects to.
