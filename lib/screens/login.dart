@@ -142,6 +142,24 @@ class _LogInPageState extends State<LogInPage> {
                         ),
                         Container(
                           width: MediaQuery.of(context).size.width,
+                          child: TextButton(
+                            style: TextButton.styleFrom(
+                              textStyle: invalidTextStyle.copyWith(
+                                fontStyle: FontStyle.italic,
+                                decoration: TextDecoration.underline,
+                              ),
+                              foregroundColor: invalidColor,
+                            ),
+                            onPressed: () {
+                              Navigator.restorablePushNamed(context, '/login/forgotPassword');
+                            },
+                            child: Text(
+                                'Forgot Password?',
+                            ),
+                          ),
+                        ),
+                        Container(
+                          width: MediaQuery.of(context).size.width,
                           height: 20,
                           margin: const EdgeInsets.all(5),
                           child: Text(

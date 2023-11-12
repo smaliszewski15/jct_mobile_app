@@ -6,12 +6,12 @@ import '../screens/individual_group.dart';
 import '../screens/skeleton.dart';
 import '../screens/individual_concert.dart';
 import '../screens/edit_profile.dart';
+import '../screens/forgot_password.dart';
 import '../screens/login.dart';
 import '../screens/listen_screen.dart';
 import '../screens/performer_screen.dart';
 import '../screens/maestro_screen.dart';
 import '../screens/register.dart';
-import '../models/group.dart';
 
 class Routes {
   static const String skeletonScreen = '/skeleton';
@@ -29,6 +29,7 @@ class Routes {
   static const String editPasswordScreen = '/profile/edit/password';
 
   static const String login = '/login';
+  static const String forgot = '/login/forgotPassword';
   static const String register = '/register';
 
   static const String adminScreen = '/admin';
@@ -38,8 +39,9 @@ class Routes {
     '/': (context) => Skeleton(),
     profileScreen: (context) => UserProfilePage(),
     editProfileScreen: (context) => EditUserProfilePage(),
-    editPasswordScreen: (context) => EditPasswordPage(),
+    //editPasswordScreen: (context) => EditPasswordPage(),
     login: (context) => LogInPage(),
+    forgot: (context) => ForgotPage(),
     register: (context) => RegisterPage(),
 
     //addGroupScreen: (context) => AddGroup(),

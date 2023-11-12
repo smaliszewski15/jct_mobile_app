@@ -100,6 +100,11 @@ class _ProfileState extends State<Profile> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        title: Text(
+          'Profile',
+          style: whiteTitleTextStyle,
+        ),
+        centerTitle: true,
         backgroundColor: accentColor,
         actions: <Widget>[
           IconButton(
@@ -277,29 +282,29 @@ class _ProfileState extends State<Profile> {
                             ),
                           ),
                         ),
-                        Expanded(
-                          flex: 5,
-                          child: Container(
-                            margin: const EdgeInsets.symmetric(
-                                vertical: 5, horizontal: 10),
-                            padding: const EdgeInsets.all(5),
-                            decoration: BoxDecoration(
-                              color: mainSchemeColor,
-                              border: Border.all(color: black, width: 3),
-                            ),
-                            child: TextButton(
-                              onPressed: () {
-                                Navigator.restorablePushNamed(
-                                    context, '/profile/edit/password');
-                              },
-                              child: Text(
-                                'Change Password',
-                                style: buttonTextStyle,
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                          ),
-                        ),
+                        // Expanded(
+                        //   flex: 5,
+                        //   child: Container(
+                        //     margin: const EdgeInsets.symmetric(
+                        //         vertical: 5, horizontal: 10),
+                        //     padding: const EdgeInsets.all(5),
+                        //     decoration: BoxDecoration(
+                        //       color: mainSchemeColor,
+                        //       border: Border.all(color: black, width: 3),
+                        //     ),
+                        //     child: TextButton(
+                        //       onPressed: () {
+                        //         Navigator.restorablePushNamed(
+                        //             context, '/profile/edit/password');
+                        //       },
+                        //       child: Text(
+                        //         'Change Password',
+                        //         style: buttonTextStyle,
+                        //         textAlign: TextAlign.center,
+                        //       ),
+                        //     ),
+                        //   ),
+                        // ),
                       ],
                     ),
 

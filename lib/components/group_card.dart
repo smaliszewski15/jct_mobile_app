@@ -31,6 +31,7 @@ class _GroupCardState extends State<GroupCard>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return ValueListenableBuilder<double>(
       valueListenable: widget.buttonNotifier,
       builder: (_, value, __) {

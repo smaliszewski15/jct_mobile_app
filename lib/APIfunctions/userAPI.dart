@@ -53,6 +53,22 @@ class UserAPI {
     return response;
   }
 
+  static Future<http.Response> forgotPassword(Map<String, dynamic> queries) async {
+    http.Response response;
+
+    try {
+      response = await http.post(
+          Uri.http(API_PREFIX, '${apiRoute}/forgot-password'),
+          body: json.encode(queries),
+          headers: baseHeader);
+    } catch (e) {
+      print(e.toString());
+      throw Exception('Could not connect to server');
+    }
+
+    return response;
+  }
+
   static Future<http.Response> getUser(int id) async {
     http.Response response;
 
