@@ -7,6 +7,8 @@ A tribute to avant grade musician John Cage
 This is the mobile part of the John Cage Tribute project. This is V3 of the team working on this.
 Big thanks to all the contributions the previous teams put into this, as they helped greatly to understand where to start.
 
+**NOTE:** This app has _only_ been tested on an Android device. This will all have to be tested on an IOS device for future projects
+
 The structure of the app is important to how the app should be read. Each type of flutter file is put into its corresponding folder, denoting what to expect in those files.
 There are 7 folders inside the 'lib' folder:
 ## [/APIfunctions](lib/APIfunctions)
