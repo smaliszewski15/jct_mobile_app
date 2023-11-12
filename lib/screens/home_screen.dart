@@ -42,8 +42,8 @@ class HomeScreen extends StatelessWidget {
                 ],
               ),
               child: Image.asset(
-                  'assets/images/johncage.jpg',
-                  fit: BoxFit.fitHeight
+                  'assets/images/JC.png',
+                  fit: BoxFit.cover
               ),
             ),
             Padding(
@@ -128,7 +128,7 @@ class HomeScreen extends StatelessWidget {
                     ],
                   ),
                   child: Image.asset(
-                      'assets/images/Kyle.jpg',
+                      'assets/images/Kyle.png',
                       fit: BoxFit.fitWidth
                   ),
                 ),
@@ -168,7 +168,7 @@ class HomeScreen extends StatelessWidget {
                     ],
                   ),
                   child: Image.asset(
-                      'assets/images/Demetri.jpg',
+                      'assets/images/Demetri.png',
                       fit: BoxFit.fitWidth
                   ),
                 ),
@@ -207,7 +207,7 @@ class HomeScreen extends StatelessWidget {
                   ),
                   margin: const EdgeInsets.symmetric(vertical: 30),
                   child: Image.asset(
-                      'assets/images/Rayyan.jpg',
+                      'assets/images/Rayyan.png',
                       fit: BoxFit.fitWidth
                   ),
                 ),
@@ -246,7 +246,7 @@ class HomeScreen extends StatelessWidget {
                   ),
                   margin: const EdgeInsets.symmetric(vertical: 30),
                   child: Image.asset(
-                      'assets/images/Himil.jpg',
+                      'assets/images/Himil.png',
                       fit: BoxFit.fitWidth
                   ),
                 ),
@@ -285,7 +285,7 @@ class HomeScreen extends StatelessWidget {
                   ),
                   margin: const EdgeInsets.symmetric(vertical: 30),
                   child: Image.asset(
-                      'assets/images/Stephen.jpg',
+                      'assets/images/Stephen.png',
                       fit: BoxFit.fitWidth
                   ),
                 ),
