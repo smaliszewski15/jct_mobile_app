@@ -173,13 +173,13 @@ void updateTextStyles(double scaler) {
 
   titleTextStyle = TextStyle(
     fontSize: titleFontSize / scaler,
-    color: whiteTextColor,
+    color: textColor,
     fontFamily: 'Balthazar',
   );
 
   whiteTitleTextStyle = TextStyle(
     fontSize: titleFontSize / scaler,
-    color: textfieldTextColor,
+    color: whiteTextColor,
     fontFamily: 'Balthazar',
   );
 

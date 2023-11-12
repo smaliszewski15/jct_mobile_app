@@ -110,7 +110,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
             onPressed: () => Navigator.restorablePushNamed(context, '/profile'),
             child: Text(
               'View Profile',
-              style: titleTextStyle.copyWith(color: whiteTextColor),
+              style: whiteTitleTextStyle,
               textAlign: TextAlign.center,
             )
           )

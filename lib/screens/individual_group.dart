@@ -95,7 +95,7 @@ class _IndividualGroupState extends State<IndividualGroup> {
                           padding: const EdgeInsets.all(20),
                           child: Text(
                             group.title,
-                            style: titleTextStyle.copyWith(color: textColor),
+                            style: titleTextStyle,
                             textAlign: TextAlign.center,
                           ),
                         ),

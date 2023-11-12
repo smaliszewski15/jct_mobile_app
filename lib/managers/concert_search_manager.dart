@@ -56,8 +56,8 @@ class ConcertSearchManager {
         lastDate: DateTime.now(),
         builder: (BuildContext context, Widget? child) {
           return Theme(
-              data: ThemeData.dark().copyWith(
-                colorScheme: ColorScheme.dark(
+              data: ThemeData.light().copyWith(
+                colorScheme: ColorScheme.light(
                   primary: mainSchemeColor,
                   onPrimary: black,
                   surface: mainSchemeColor,
@@ -89,8 +89,8 @@ class ConcertSearchManager {
         lastDate: DateTime.now(),
         builder: (BuildContext context, Widget? child) {
           return Theme(
-              data: ThemeData.dark().copyWith(
-                colorScheme: ColorScheme.dark(
+              data: ThemeData.light().copyWith(
+                colorScheme: ColorScheme.light(
                   primary: mainSchemeColor,
                   onPrimary: black,
                   surface: mainSchemeColor,

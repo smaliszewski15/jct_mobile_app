@@ -101,7 +101,6 @@ class _MaestroScreenState extends State<MaestroScreen> with WidgetsBindingObserv
   }
 
   Future<void> connect() async {
-    print(user.username);
     socket = SocketMaestro(user.username, widget.passcode);
     isConnected = true;
     socket!.socket.stream.listen(
@@ -142,10 +141,6 @@ class _MaestroScreenState extends State<MaestroScreen> with WidgetsBindingObserv
   }
 
   Future<void> stopEverything() async {
-    if (isConnected) {
-      isConnected = false;
-    }
-
     await stopRecorder();
     await stopPlayer();
     disconnect();
@@ -156,8 +151,8 @@ class _MaestroScreenState extends State<MaestroScreen> with WidgetsBindingObserv
   void disconnect() {
     if (socket != null) {
       socket!.disconnect();
+      socket = null;
     }
-    socket = null;
     participants = [];
     isConnected = false;
   }
@@ -331,12 +326,13 @@ class _MaestroScreenState extends State<MaestroScreen> with WidgetsBindingObserv
                         if (_mRecorder.isRecording) {
                           socket!.socket.sink.add(stop);
                           await stopEverything();
+                          passcodes = [];
                           if (context.mounted) {
                             Navigator.pop(context);
                           }
                         } else {
-                          if (socket == null) {
-                            connect();
+                          if (!isConnected) {
+                            await connect();
                           }
                           await record();
                           await listenForSink();

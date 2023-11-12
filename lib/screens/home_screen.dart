@@ -18,7 +18,7 @@ class HomeScreen extends StatelessWidget {
               padding: const EdgeInsets.symmetric(vertical: 10),
               child: Text(
                 'Welcome to John Cage Tribute!',
-                style: titleTextStyle.copyWith(color: textColor),
+                style: titleTextStyle,
                 textAlign: TextAlign.center,
               ),
             ),

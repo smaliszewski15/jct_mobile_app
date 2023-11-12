@@ -110,7 +110,7 @@ class _ConcertPageState extends State<ConcertPage> {
                             margin: const EdgeInsets.symmetric(vertical: 30),
                             child: Text(
                               concert.title,
-                              style: titleTextStyle.copyWith(color: textColor),
+                              style: titleTextStyle,
                               textAlign: TextAlign.center,
                             ),
                           ),
