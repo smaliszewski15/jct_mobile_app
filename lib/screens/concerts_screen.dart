@@ -26,7 +26,7 @@ class _ConcertsState extends State<ConcertsScreen> {
   void initState() {
     super.initState();
     widget.filter.end = DateTime.now();
-    widget.filter.toChangeEnd = DateTime.now();
+    widget.filter.doUpdate();
     getNextConcert();
     done = getConcertList('');
     searchFocus.addListener(() => searchLostFocus());
@@ -52,6 +52,12 @@ class _ConcertsState extends State<ConcertsScreen> {
       done = getConcertList(_search.value.text);
       setState(() {});
     }
+  }
+
+  void updateTime() {
+    widget.filter.end = DateTime.now();
+    widget.filter.doUpdate();
+    widget.filter;
   }
 
   @override
@@ -189,7 +195,7 @@ class _ConcertsState extends State<ConcertsScreen> {
                       ),
                       child: Text(
                         'Prev',
-                        style: defaultTextStyle.copyWith(color: whiteTextColor),
+                        style: whiteDefaultTextStyle,
                       ),
                     ),
                     Text(
@@ -211,7 +217,7 @@ class _ConcertsState extends State<ConcertsScreen> {
                       ),
                       child: Text(
                         'Next',
-                        style: defaultTextStyle.copyWith(color: page+1 == totalPages ? textColor : textfieldTextColor),
+                        style: whiteDefaultTextStyle,
                       ),
                     ),
                   ]
@@ -278,6 +284,9 @@ class _ConcertsState extends State<ConcertsScreen> {
 
     DateTime fromDateTime = widget.filter.start.toUtc();
     DateTime toDateTime = widget.filter.end.toUtc();
+    if (toDateTime.month == DateTime.now().month && toDateTime.day == DateTime.now().day) {
+      toDateTime = toDateTime.add(const Duration(days: 1));
+    }
     String fromDate = DateFormat("yyyy-MM-ddTHH:mm:ss").format(fromDateTime);
     String toDate = DateFormat("yyyy-MM-ddTHH:mm:ss").format(toDateTime);
 
@@ -403,15 +412,4 @@ class _ConcertsState extends State<ConcertsScreen> {
   // }
 
   //Old method of retrieving concerts, without API attached
-/*Future<bool> getConcertList() async {
-    searchResults = [];
-    var data = ConcertsAPI.searchSongs;
-    for (var map in data['searchResults']) {
-      if (map.containsKey('title') && map.containsKey('id') && map.containsKey('maestro')) {
-        searchResults.add(Concert(title: map['title'], id: map['id'], maestro: map['maestro']));
-      }
-    }
-
-    return true;
-  }*/
 }

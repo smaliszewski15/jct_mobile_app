@@ -82,11 +82,12 @@ class ConcertSearchManager {
   }
 
   Future<void> selectEndDate(BuildContext context) async {
+    DateTime now = DateTime.now();
     DateTime? newSelectedDate = await showDatePicker(
         context: context,
         initialDate: toChangeEnd,
         firstDate: toChangeStart,
-        lastDate: DateTime.now(),
+        lastDate: now,
         builder: (BuildContext context, Widget? child) {
           return Theme(
               data: ThemeData.light().copyWith(
