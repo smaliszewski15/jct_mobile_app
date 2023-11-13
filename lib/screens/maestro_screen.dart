@@ -129,9 +129,7 @@ class _MaestroScreenState extends State<MaestroScreen> with WidgetsBindingObserv
 
       },
       onDone: () {
-          if (isConnected == true) {
-            stopEverything();
-          }
+          stopEverything();
           print('hereDone');
           setState(() {});
       },
