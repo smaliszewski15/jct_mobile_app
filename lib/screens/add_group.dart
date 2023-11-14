@@ -42,14 +42,14 @@ class _AddGroupState extends State<AddGroup> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(Icons.navigate_before, color: mainSchemeColor),
+          icon: Icon(Icons.navigate_before, color: accentColor),
           iconSize: 35,
           onPressed: () {
             Navigator.pop(context, false);
           },
         ),
         actions: null,
-        backgroundColor: black,
+        backgroundColor: mainSchemeColor,
         automaticallyImplyLeading: false,
       ),
       backgroundColor: backgroundColor,

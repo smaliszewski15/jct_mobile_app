@@ -33,6 +33,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
   @override
   void initState() {
     widget.filter.refreshFilter();
+    widget.filter.doUpdate();
     DateTime now = DateTime.now();
     int minutes = 20 - (now.minute % 20);
     refresh = Timer.periodic(Duration(minutes: minutes), (Timer t) {
@@ -197,15 +198,19 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
       Group newGroup = Group.fromDateConcert(concerts);
       if (groups.isNotEmpty) {
         int place = 0;
-        if (newGroup.date!.isBefore(groups[place].date!)) {
-          break;
+        while (place < groups.length && newGroup.date!.isAfter(groups[place].date!)) {
+          place++;
         }
-        place++;
-        groups.insert(place, newGroup);
+        if (place == groups.length) {
+          groups.add(newGroup);
+        } else {
+          groups.insert(place, newGroup);
+        }
       } else {
         groups.add(newGroup);
       }
     }
+    print(groups);
     return true;
   }
 

@@ -148,6 +148,7 @@ class _ForgotPageState extends State<ForgotPage> {
             child: TextButton(
               onPressed: () async {
                 if (!fieldsValid()) {
+                  errorMessage = 'Email is invalid';
                   setState(() {});
                   return;
                 }
