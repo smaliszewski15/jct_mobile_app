@@ -452,6 +452,56 @@ class _ConcertPageState extends State<ConcertPage> {
         ignoreSsl: true,
       );
     }
+    var filePathWav = '/storage/emulated/0/Download/${concert.title}.wav';
+    var filePathMP3 = '/storage/emulated/0/Download/${concert.title}.MP3';
+    bool existsWav = await File(filePathWav).exists();
+    bool existsMP3 = await File(filePathMP3).exists();
+    if (existsWav || existsMP3) {
+      var replace = await showDialog(context: context, builder: (context) {
+        return AlertDialog(
+          shape:  RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10)),
+          elevation: 15,
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context, false);
+              },
+              child: Text(
+                'Don\'t Replace',
+                style: invalidTextStyle,
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context, true);
+              },
+              child: Text(
+                'Replace',
+                style: invalidTextStyle,
+              ),
+            ),
+          ],
+          content: const Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Flexible(
+                  child: Text(
+                      'This file already exists. Do you want to replace it?')),
+            ],
+          ),
+        );
+      });
+
+      if (replace != true) {
+        return;
+      }
+      if (existsWav) {
+        await File(filePathWav).delete();
+      } else {
+        await File(filePathMP3).delete();
+      }
+    }
 
     final taskId = await FlutterDownloader.enqueue(
       url: 'http://johncagetribute.org/api/concerts/downloadConcertFile?id=${concert.id}',//'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3',
